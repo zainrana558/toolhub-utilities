@@ -22,17 +22,27 @@ export default function Home() {
     return () => window.removeEventListener("tool-change", handler);
   }, [setActiveTool]);
 
-  // Update document title when tool changes
+  // Update document title, meta, and URL hash when tool changes
   useEffect(() => {
     if (activeToolId) {
       const tool = tools.find((t) => t.id === activeToolId);
       if (tool) {
-        document.title = `${tool.name} - Free ${tool.shortName} Online | ToolVerse`;
+        document.title = tool.metaTitle;
+        window.history.replaceState(null, "", `#tool-${tool.id}`);
       }
     } else {
       document.title = "ToolVerse - Free Online Tools | Word Counter, Password Generator, BMI Calculator & More";
+      window.history.replaceState(null, "", "/");
     }
   }, [activeToolId]);
+
+  // Read hash on mount to restore tool from URL
+  useEffect(() => {
+    const hash = window.location.hash.replace("#tool-", "");
+    if (hash && tools.find((t) => t.id === hash)) {
+      setActiveTool(hash);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">

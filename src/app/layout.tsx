@@ -49,18 +49,70 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD structured data for the website
-const jsonLd = {
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolverse.com";
+
+// WebSite schema
+const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "ToolVerse",
   description: "Free online tools that work instantly in your browser. No sign-up required.",
-  url: "/",
+  url: BASE_URL,
   potentialAction: {
     "@type": "SearchAction",
-    target: "/?q={search_term_string}",
+    target: `${BASE_URL}/?q={search_term_string}`,
     "query-input": "required name=search_term_string",
   },
+};
+
+// FAQPage schema for homepage FAQ
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Are these tools free to use?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, all tools on this website are completely free to use with no registration, sign-up, or hidden fees. You can use them as many times as you want without any limitations.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is my data safe and private?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Absolutely. All tools run entirely in your browser — no data is sent to any server. Your text, passwords, calculations, and files never leave your device. We don't track, store, or collect any of the data you process through our tools.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do I need to create an account?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. There is no account creation, sign-up, or login required. Simply visit the tool you need and start using it immediately.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I use these tools on my phone?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes! All tools are fully responsive and work on any device — smartphones, tablets, laptops, and desktops. The interface adapts to your screen size for the best experience.",
+      },
+    },
+  ],
+};
+
+// Organization schema
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ToolVerse",
+  url: BASE_URL,
+  logo: `${BASE_URL}/logo.svg`,
+  sameAs: [],
 };
 
 export default function RootLayout({
@@ -71,9 +123,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
       </head>
       <body
