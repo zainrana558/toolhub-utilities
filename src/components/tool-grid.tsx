@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ad-slot";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface ToolGridProps {
   onToolClick: (toolId: string) => void;
@@ -134,9 +135,9 @@ export function ToolGrid({ onToolClick }: ToolGridProps) {
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
+                  <Link href={`/tools/${tool.id}`}>
                   <Card
                     className="cursor-pointer hover:shadow-lg hover:border-primary/30 transition-all duration-200 group h-full overflow-hidden"
-                    onClick={() => onToolClick(tool.id)}
                   >
                     <CardContent className="p-5 relative">
                       {/* Hover glow effect */}
@@ -160,6 +161,7 @@ export function ToolGrid({ onToolClick }: ToolGridProps) {
                       </div>
                     </CardContent>
                   </Card>
+                  </Link>
                 </motion.div>
               );
             })}

@@ -39,14 +39,20 @@ export const metadata: Metadata = {
     siteName: "ToolVerse",
     title: "ToolVerse - Free Online Tools",
     description: "Free online tools that work instantly in your browser. Word counter, password generator, BMI calculator, and 7 more useful utilities.",
+    url: BASE_URL,
   },
   twitter: {
     card: "summary_large_image",
     title: "ToolVerse - Free Online Tools",
     description: "Free online tools that work instantly in your browser. No sign-up required.",
+    site: "@toolverse",
   },
   alternates: {
     canonical: "/",
+  },
+  category: "technology",
+  verification: {
+    google: "IZ_kgkZCobezDHfENC4rcTL_eNcV1i71jvcEVmTRrlc",
   },
 };
 
@@ -125,6 +131,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
         <meta name="google-site-verification" content="IZ_kgkZCobezDHfENC4rcTL_eNcV1i71jvcEVmTRrlc" />
         <script
           type="application/ld+json"

@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { AdSlot } from "@/components/ad-slot";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -181,12 +182,9 @@ export default function Home() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {tools.slice(0, 5).map((tool) => (
                   <li key={tool.id}>
-                    <button
-                      onClick={() => { setActiveTool(tool.id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="hover:text-foreground transition-colors"
-                    >
+                    <Link href={`/tools/${tool.id}`} className="hover:text-foreground transition-colors">
                       {tool.name}
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -197,12 +195,9 @@ export default function Home() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {tools.slice(5, 10).map((tool) => (
                   <li key={tool.id}>
-                    <button
-                      onClick={() => { setActiveTool(tool.id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="hover:text-foreground transition-colors"
-                    >
+                    <Link href={`/tools/${tool.id}`} className="hover:text-foreground transition-colors">
                       {tool.name}
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>

@@ -1,0 +1,18 @@
+{
+  "name": "ToolVerse - Free Online Tools",
+  "short_name": "ToolVerse",
+  "description": "Free online tools that work instantly in your browser. Word counter, password generator, BMI calculator, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "categories": ["utilities", "productivity", "developer tools"],
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
