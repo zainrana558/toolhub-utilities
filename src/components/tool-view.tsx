@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, ThumbsUp, Share2, Link2, Copy, Check, ChevronRight, Home } from "lucide-react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
 // Dynamic imports for code splitting
 const WordCounter = dynamic(() => import("@/components/tools/word-counter").then((m) => ({ default: m.WordCounter })), { ssr: false });
@@ -38,6 +38,15 @@ const toolComponents: Record<string, React.ComponentType> = {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolverse.com";
 
+const stagger = {
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+};
+
 interface ToolViewProps {
   toolId: string;
   onBack: () => void;
@@ -57,7 +66,6 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
     const toolUrl = `${BASE_URL}/#tool-${tool.id}`;
     const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
 
-    // WebPage + SoftwareApplication schema
     const webPageSchema = {
       "@context": "https://schema.org",
       "@type": "WebPage",
@@ -82,7 +90,6 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
       },
     };
 
-    // Per-tool FAQPage schema
     const faqSchema = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -93,7 +100,6 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
       })),
     };
 
-    // HowTo schema
     const howToSchema = {
       "@context": "https://schema.org",
       "@type": "HowTo",
@@ -106,11 +112,9 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
       })),
     };
 
-    // Remove old scripts
     document.querySelectorAll("script[data-tool-schema]").forEach((el) => el.remove());
 
-    // Inject new schemas
-    [webPageSchema, faqSchema, howToSchema].forEach((schema, i) => {
+    [webPageSchema, faqSchema, howToSchema].forEach((schema) => {
       const script = document.createElement("script");
       script.type = "application/ld+json";
       script.setAttribute("data-tool-schema", tool.id);
@@ -118,7 +122,6 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
       document.head.appendChild(script);
     });
 
-    // Update meta description
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {
       metaDesc = document.createElement("meta");
@@ -127,7 +130,6 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
     }
     metaDesc.setAttribute("content", tool.metaDescription);
 
-    // Update meta keywords
     let metaKeywords = document.querySelector('meta[name="keywords"]');
     if (!metaKeywords) {
       metaKeywords = document.createElement("meta");
@@ -170,9 +172,18 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-6"
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+    >
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-sm text-muted-foreground" aria-label="Breadcrumb">
+      <motion.nav
+        className="flex items-center gap-1.5 text-sm text-muted-foreground"
+        aria-label="Breadcrumb"
+        variants={fadeUp}
+      >
         <button onClick={onBack} className="hover:text-foreground transition-colors flex items-center gap-1">
           <Home className="h-3.5 w-3.5" /> Home
         </button>
@@ -182,165 +193,231 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
         </button>
         <ChevronRight className="h-3.5 w-3.5" />
         <span className="text-foreground font-medium">{tool.name}</span>
-      </nav>
+      </motion.nav>
 
       {/* Tool header */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
+      <motion.div className="space-y-2" variants={fadeUp}>
+        <motion.div
+          className="flex items-center gap-2"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30, delay: 0.05 }}
+        >
           <Badge variant="secondary">{categoryLabel}</Badge>
-        </div>
+        </motion.div>
         <h1 className="text-2xl md:text-3xl font-bold">{tool.name}</h1>
         <p className="text-muted-foreground max-w-3xl">{tool.longDescription}</p>
-      </div>
+      </motion.div>
 
-      <AdSlot variant="horizontal" />
+      <motion.div variants={fadeUp}>
+        <AdSlot variant="horizontal" />
+      </motion.div>
 
       {/* How to Use */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">How to Use {tool.name}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ol className="space-y-2">
-            {tool.howToUse.map((step, i) => (
-              <li key={i} className="flex gap-3 text-sm">
-                <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                  {i + 1}
-                </span>
-                <span className="text-muted-foreground pt-0.5">{step}</span>
-              </li>
-            ))}
-          </ol>
-        </CardContent>
-      </Card>
+      <motion.div variants={fadeUp}>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">How to Use {tool.name}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ol className="space-y-2">
+              {tool.howToUse.map((step, i) => (
+                <motion.li
+                  key={i}
+                  className="flex gap-3 text-sm"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 + i * 0.08, duration: 0.3 }}
+                >
+                  <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                    {i + 1}
+                  </span>
+                  <span className="text-muted-foreground pt-0.5">{step}</span>
+                </motion.li>
+              ))}
+            </ol>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Main tool content */}
-      <div className="max-w-4xl">
+      <motion.div
+        className="max-w-4xl"
+        variants={fadeUp}
+      >
         <ToolComponent />
-      </div>
+      </motion.div>
 
-      <AdSlot variant="horizontal" />
+      <motion.div variants={fadeUp}>
+        <AdSlot variant="horizontal" />
+      </motion.div>
 
       {/* Per-tool FAQ */}
       {tool.faq.length > 0 && (
-        <section className="border-t pt-8">
+        <motion.section className="border-t pt-8" variants={fadeUp}>
           <h2 className="text-xl font-semibold mb-4">Frequently Asked Questions about {tool.name}</h2>
           <div className="space-y-3">
             {tool.faq.map((item, i) => (
-              <div key={i} className="border rounded-lg">
+              <motion.div
+                key={i}
+                className="border rounded-lg overflow-hidden"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.06 }}
+              >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full text-left p-4 flex justify-between items-center hover:bg-muted/50 transition-colors"
                 >
                   <span className="font-medium text-sm pr-4">{item.question}</span>
-                  <span className="text-muted-foreground text-lg leading-none shrink-0">{openFaq === i ? "−" : "+"}</span>
+                  <motion.span
+                    className="text-muted-foreground text-lg leading-none shrink-0"
+                    animate={{ rotate: openFaq === i ? 180 : 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    +
+                  </motion.span>
                 </button>
-                {openFaq === i && (
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: openFaq === i ? "auto" : 0,
+                    opacity: openFaq === i ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
                   <div className="px-4 pb-4 text-sm text-muted-foreground">
                     {item.answer}
                   </div>
-                )}
-              </div>
+                </motion.div>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
 
-      {/* Link to This Tool - Backlink Builder */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Link2 className="h-4 w-4" /> Link to This Tool
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Share this tool on your website or blog. A link back helps others discover these free tools.
-          </p>
-          <div className="space-y-3">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Direct Link</label>
-              <div className="flex gap-2">
-                <Input readOnly value={toolUrl} className="text-sm font-mono" />
-                <Button variant="outline" size="sm" onClick={copyLink}>
-                  {linkCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                </Button>
+      {/* Link to This Tool */}
+      <motion.div variants={fadeUp}>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Link2 className="h-4 w-4" /> Link to This Tool
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Share this tool on your website or blog. A link back helps others discover these free tools.
+            </p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Direct Link</label>
+                <div className="flex gap-2">
+                  <Input readOnly value={toolUrl} className="text-sm font-mono" />
+                  <motion.div whileTap={{ scale: 0.9 }}>
+                    <Button variant="outline" size="sm" onClick={copyLink}>
+                      {linkCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                  </motion.div>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Embed Code</label>
+                <div className="flex gap-2">
+                  <Input readOnly value={embedCode} className="text-sm font-mono text-xs" />
+                  <motion.div whileTap={{ scale: 0.9 }}>
+                    <Button variant="outline" size="sm" onClick={copyEmbed}>
+                      {embedCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                  </motion.div>
+                </div>
               </div>
             </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Embed Code</label>
-              <div className="flex gap-2">
-                <Input readOnly value={embedCode} className="text-sm font-mono text-xs" />
-                <Button variant="outline" size="sm" onClick={copyEmbed}>
-                  {embedCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-      <AdSlot variant="square" />
+      <motion.div variants={fadeUp}>
+        <AdSlot variant="square" />
+      </motion.div>
 
       {/* Related tools */}
       {relatedTools.length > 0 && (
-        <section className="border-t pt-8">
+        <motion.section className="border-t pt-8" variants={fadeUp}>
           <h2 className="text-xl font-semibold mb-4">Related Tools</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {relatedTools.map((rt) => {
+            {relatedTools.map((rt, i) => {
               const Icon = rt.icon;
               return (
-                <Card
+                <motion.div
                   key={rt.id}
-                  className="cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => {
-                    window.scrollTo(0, 0);
-                    window.dispatchEvent(new CustomEvent("tool-change", { detail: rt.id }));
-                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1, duration: 0.4 }}
+                  whileHover={{ y: -3, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{rt.name}</p>
-                      <p className="text-xs text-muted-foreground line-clamp-1">{rt.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                  <Card
+                    className="cursor-pointer hover:shadow-lg transition-shadow h-full"
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                      window.dispatchEvent(new CustomEvent("tool-change", { detail: rt.id }));
+                    }}
+                  >
+                    <CardContent className="p-4 flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{rt.name}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-1">{rt.description}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               );
             })}
           </div>
-        </section>
+        </motion.section>
       )}
 
       {/* Tool footer CTA */}
-      <Card className="bg-primary/5">
-        <CardContent className="p-6 text-center space-y-3">
-          <h3 className="font-semibold">Found this tool helpful?</h3>
-          <p className="text-sm text-muted-foreground">
-            Share it with others who might need it. All tools are free and work on any device.
-          </p>
-          <div className="flex justify-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (navigator.share) {
-                  navigator.share({ title: tool.name, text: tool.description, url: toolUrl });
-                } else {
-                  copyLink();
-                }
-              }}
-            >
-              <Share2 className="h-4 w-4 mr-1" /> Share
-            </Button>
-            <Button variant="outline" size="sm" onClick={onBack}>
-              <ThumbsUp className="h-4 w-4 mr-1" /> Browse More Tools
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+      <motion.div
+        variants={fadeUp}
+        whileHover={{ scale: 1.01 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <Card className="bg-primary/5 overflow-hidden">
+          <CardContent className="p-6 text-center space-y-3">
+            <h3 className="font-semibold">Found this tool helpful?</h3>
+            <p className="text-sm text-muted-foreground">
+              Share it with others who might need it. All tools are free and work on any device.
+            </p>
+            <div className="flex justify-center gap-2">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({ title: tool.name, text: tool.description, url: toolUrl });
+                    } else {
+                      copyLink();
+                    }
+                  }}
+                >
+                  <Share2 className="h-4 w-4 mr-1" /> Share
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button variant="outline" size="sm" onClick={onBack}>
+                  <ThumbsUp className="h-4 w-4 mr-1" /> Browse More Tools
+                </Button>
+              </motion.div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 }

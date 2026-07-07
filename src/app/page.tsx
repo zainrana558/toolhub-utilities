@@ -5,9 +5,17 @@ import { useToolStore } from "@/store/tool-store";
 import { ToolGrid } from "@/components/tool-grid";
 import { ToolView } from "@/components/tool-view";
 import { tools } from "@/lib/tools-data";
-import { Wrench, Github, Twitter } from "lucide-react";
+import { Wrench } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { AdSlot } from "@/components/ad-slot";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { motion, AnimatePresence } from "framer-motion";
+
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -12 },
+};
 
 export default function Home() {
   const { activeToolId, setActiveTool } = useToolStore();
@@ -47,70 +55,114 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
-            <button
+            <motion.button
               onClick={() => { setActiveTool(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
-              <Wrench className="h-5 w-5 text-primary" />
+              <motion.div
+                animate={{ rotate: activeToolId ? 360 : 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                <Wrench className="h-5 w-5 text-primary" />
+              </motion.div>
               <span className="font-bold text-lg">ToolVerse</span>
-            </button>
+            </motion.button>
 
             {activeToolId && (
-              <div className="flex items-center gap-2 md:hidden">
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 md:hidden"
+              >
                 <button
                   onClick={() => { setActiveTool(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                   className="text-sm text-primary hover:underline"
                 >
                   All Tools
                 </button>
-              </div>
+              </motion.div>
             )}
 
-            <nav className="hidden md:flex items-center gap-4 text-sm">
-              <button
-                onClick={() => { setActiveTool(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                className={`transition-colors ${!activeToolId ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
-              >
-                All Tools
-              </button>
-              {tools.slice(0, 5).map((tool) => (
+            <div className="flex items-center gap-3">
+              <nav className="hidden md:flex items-center gap-4 text-sm">
                 <button
-                  key={tool.id}
-                  onClick={() => {
-                    setActiveTool(tool.id);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className={`transition-colors ${activeToolId === tool.id ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
+                  onClick={() => { setActiveTool(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                  className={`transition-colors ${!activeToolId ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
                 >
-                  {tool.shortName}
+                  All Tools
                 </button>
-              ))}
-            </nav>
+                {tools.slice(0, 5).map((tool) => (
+                  <button
+                    key={tool.id}
+                    onClick={() => {
+                      setActiveTool(tool.id);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className={`transition-colors ${activeToolId === tool.id ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
+                  >
+                    {tool.shortName}
+                  </button>
+                ))}
+              </nav>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Main content */}
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
           <div className="max-w-6xl mx-auto">
-            {activeToolId ? (
-              <ToolView toolId={activeToolId} onBack={() => setActiveTool(null)} />
-            ) : (
-              <ToolGrid onToolClick={(id) => {
-                setActiveTool(id);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }} />
-            )}
+            <AnimatePresence mode="wait">
+              {activeToolId ? (
+                <motion.div
+                  key={activeToolId}
+                  variants={pageVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <ToolView toolId={activeToolId} onBack={() => setActiveTool(null)} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="tool-grid"
+                  variants={pageVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <ToolGrid onToolClick={(id) => {
+                    setActiveTool(id);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t mt-auto">
+      <motion.footer
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className="border-t mt-auto"
+      >
         <AdSlot variant="horizontal" className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -168,7 +220,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </footer>
+      </motion.footer>
     </div>
   );
 }
