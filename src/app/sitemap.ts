@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { tools, toolCategories } from "@/lib/tools-data";
+import { tools } from "@/lib/tools-data";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolverse.com";
 
@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 1.0,
   };
 
-  // Individual tool pages (REAL URLs - Google can crawl these)
+  // Individual tool pages (real crawlable URLs)
   const toolPages = tools.map((tool) => ({
     url: `${BASE_URL}/tools/${tool.id}`,
     lastModified: new Date(),
@@ -20,23 +20,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  // Category landing pages
-  const categoryPages = toolCategories.map((cat) => ({
-    url: `${BASE_URL}/#${cat.id}-tools`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: `${BASE_URL}/#all-tools`,
+      url: `${BASE_URL}/privacy`,
       lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/terms`,
+      lastModified: new Date(),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
     },
   ];
 
-  return [homePage, ...toolPages, ...categoryPages, ...staticPages];
+  return [homePage, ...toolPages, ...staticPages];
 }

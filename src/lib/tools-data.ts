@@ -24,6 +24,7 @@ export interface ToolDef {
   keywords: string[];
   metaTitle: string;
   metaDescription: string;
+  primaryKeyword: string;
   howToUse: string[];
   faq: { question: string; answer: string }[];
 }
@@ -45,8 +46,9 @@ export const tools: ToolDef[] = [
     category: "text",
     icon: Type,
     keywords: ["word counter", "character counter", "word count tool", "online word counter", "text counter", "sentence counter", "reading time calculator"],
-    metaTitle: "Free Word Counter Tool - Count Words, Characters & Reading Time Online",
-    metaDescription: "Count words, characters, sentences, paragraphs and reading time instantly. Free online word counter tool for writers, students and SEO professionals.",
+    metaTitle: "Free Word Counter - Count Words, Characters & Reading Time",
+    metaDescription: "Count words, characters, sentences and reading time instantly. Free online word counter for writers, students and SEO professionals. No sign-up.",
+    primaryKeyword: "word counter",
     howToUse: ["Type or paste your text into the text area above.", "View real-time counts for words, characters, sentences, and paragraphs.", "Check the keyword density section to see your most used words.", "Use the reading time estimate to plan your content."],
     faq: [
       { question: "How does the word counter count words?", answer: "The word counter splits your text by whitespace and counts each group as one word. It handles multiple spaces, tabs, and line breaks correctly." },
@@ -63,8 +65,9 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Shield,
     keywords: ["password generator", "strong password", "secure password", "random password", "password maker", "create password"],
-    metaTitle: "Free Password Generator - Create Strong & Secure Passwords Online",
-    metaDescription: "Generate strong, secure passwords instantly. Customize length, characters, and check password strength. Free online password generator tool.",
+    metaTitle: "Free Password Generator - Create Strong Secure Passwords",
+    metaDescription: "Generate strong, secure passwords instantly. Customize length and characters. Check password strength. Free online tool, no data stored.",
+    primaryKeyword: "password generator",
     howToUse: ["Adjust the password length using the slider (4 to 64 characters).", "Toggle character types: uppercase, lowercase, numbers, and symbols.", "Click 'Generate New Password' to create a fresh password.", "Click the copy icon to copy the password to your clipboard."],
     faq: [
       { question: "Are the generated passwords truly random?", answer: "Yes, we use the Web Crypto API (crypto.getRandomValues) which provides cryptographically secure random numbers." },
@@ -81,8 +84,9 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Heart,
     keywords: ["bmi calculator", "body mass index", "bmi checker", "healthy weight", "bmi chart", "weight calculator"],
-    metaTitle: "Free BMI Calculator - Calculate Body Mass Index Online | Health Tool",
-    metaDescription: "Calculate your Body Mass Index (BMI) instantly. Free online BMI calculator with health categories and BMI chart. Check if your weight is healthy.",
+    metaTitle: "Free BMI Calculator - Calculate Body Mass Index Online",
+    metaDescription: "Calculate your BMI instantly with metric or imperial units. Free online BMI calculator with health categories and visual chart. No sign-up required.",
+    primaryKeyword: "BMI calculator",
     howToUse: ["Select your preferred unit system (Metric or Imperial).", "Enter your weight and height in the fields provided.", "Click 'Calculate BMI' to see your results.", "Review the BMI scale and health category for context."],
     faq: [
       { question: "What is a healthy BMI range?", answer: "A BMI between 18.5 and 24.9 is considered normal weight. Below 18.5 is underweight, 25-29.9 is overweight, and 30 or above is classified as obese." },
@@ -99,8 +103,9 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Percent,
     keywords: ["percentage calculator", "percent calculator", "percentage increase", "percentage decrease", "percent of", "calculate percentage"],
-    metaTitle: "Free Percentage Calculator - Calculate Percentages Online Instantly",
-    metaDescription: "Calculate percentages, percentage change, increase, and decrease instantly. Free online percentage calculator for students and business.",
+    metaTitle: "Free Percentage Calculator - Calculate Percentages Instantly",
+    metaDescription: "Calculate percentages, increase, decrease and change instantly. Free online percentage calculator for students, business and finance. Works in browser.",
+    primaryKeyword: "percentage calculator",
     howToUse: ["Choose a calculation mode: '% of Number', '% of What?', or '% Change'.", "Enter your numbers in the input fields.", "Click 'Calculate' to see the result instantly.", "Use the common examples below for quick reference."],
     faq: [
       { question: "How do I calculate percentage increase?", answer: "Use the '% Change' tab. Enter the original value in 'From' and the new value in 'To'. The calculator shows the percentage increase or decrease." },
@@ -117,8 +122,9 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Calendar,
     keywords: ["age calculator", "calculate age", "how old am I", "age in days", "birthday calculator", "date of birth calculator"],
-    metaTitle: "Free Age Calculator - Calculate Your Exact Age in Years, Months & Days",
-    metaDescription: "Calculate your exact age in years, months, days, hours and seconds. Free online age calculator with next birthday countdown.",
+    metaTitle: "Free Age Calculator - Exact Age in Years, Months & Days",
+    metaDescription: "Calculate your exact age in years, months, days, hours and seconds. Free online age calculator with next birthday countdown and zodiac sign.",
+    primaryKeyword: "age calculator",
     howToUse: ["Enter your date of birth in the first date field.", "Optionally change the 'Age at Date' to calculate age at a specific point.", "Click 'Calculate Age' to see a detailed age breakdown.", "View your zodiac sign, day of birth, and next birthday countdown."],
     faq: [
       { question: "How accurate is the age calculator?", answer: "The age calculator is accurate to the day, accounting for leap years and varying month lengths. It shows your exact age in multiple units." },
@@ -135,8 +141,9 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Banknote,
     keywords: ["loan calculator", "mortgage calculator", "emi calculator", "monthly payment", "interest calculator", "amortization schedule"],
-    metaTitle: "Free Loan Calculator - Monthly Payment & Amortization Schedule",
-    metaDescription: "Calculate monthly loan payments, total interest, and view amortization schedule. Free mortgage, car loan, and EMI calculator online.",
+    metaTitle: "Free Loan Calculator - Monthly Payment & Amortization",
+    metaDescription: "Calculate monthly loan payments, total interest and view amortization schedule. Free mortgage and EMI calculator. Works for any fixed-rate loan.",
+    primaryKeyword: "loan calculator",
     howToUse: ["Enter the total loan amount in dollars.", "Enter the annual interest rate as a percentage (e.g., 6.5 for 6.5%).", "Enter the loan term in years.", "Click 'Calculate Payment' to see monthly payment, total cost, and full amortization schedule."],
     faq: [
       { question: "What types of loans does this calculator work for?", answer: "This calculator works for any fixed-rate loan including mortgages, car loans, personal loans, student loans, and business loans." },
@@ -153,8 +160,9 @@ export const tools: ToolDef[] = [
     category: "converter",
     icon: ArrowLeftRight,
     keywords: ["unit converter", "length converter", "weight converter", "temperature converter", "metric converter", "measurement converter"],
-    metaTitle: "Free Unit Converter - Convert Length, Weight, Temperature & More",
-    metaDescription: "Convert between units of length, weight, temperature, volume, speed and more. Free online unit conversion tool.",
+    metaTitle: "Free Unit Converter - Length, Weight, Temperature & More",
+    metaDescription: "Convert between units of length, weight, temperature, volume, speed and data storage. Free online unit converter. Metric and imperial supported.",
+    primaryKeyword: "unit converter",
     howToUse: ["Select a category (Length, Weight, Temperature, Volume, Area, Speed, or Data).", "Choose the unit you're converting from and to using the dropdowns.", "Enter a value in the 'From' field — the 'To' field updates instantly.", "Click the swap button to reverse the conversion direction."],
     faq: [
       { question: "How many unit categories are available?", answer: "There are 7 categories: Length, Weight, Temperature, Volume, Area, Speed, and Data Storage. Each category has multiple units to convert between." },
@@ -171,8 +179,9 @@ export const tools: ToolDef[] = [
     category: "text",
     icon: CaseSensitive,
     keywords: ["case converter", "uppercase converter", "lowercase converter", "title case", "sentence case", "text case changer"],
-    metaTitle: "Free Case Converter - Uppercase, Lowercase, Title Case & More",
-    metaDescription: "Convert text to uppercase, lowercase, title case, sentence case, camelCase and more. Free online case converter tool.",
+    metaTitle: "Free Case Converter - Uppercase, Title Case, camelCase & More",
+    metaDescription: "Convert text to uppercase, lowercase, title case, camelCase, snake_case and more. Free online case converter. Copy results instantly.",
+    primaryKeyword: "case converter",
     howToUse: ["Type or paste your text into the input area.", "Click any conversion button (UPPERCASE, lowercase, Title Case, etc.).", "The converted text appears in the result section below.", "Click 'Copy' to copy the converted text to your clipboard."],
     faq: [
       { question: "What is camelCase?", answer: "camelCase starts with a lowercase letter and each subsequent word starts with an uppercase letter with no spaces. Example: 'helloWorld'. Commonly used in JavaScript and Java." },
@@ -189,8 +198,9 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Palette,
     keywords: ["color picker", "hex color", "rgb color", "hsl color", "color converter", "color palette generator"],
-    metaTitle: "Free Color Picker - HEX, RGB, HSL Color Converter & Palette Tool",
-    metaDescription: "Pick colors and convert between HEX, RGB, HSL, and CMYK formats. Free online color picker tool for designers and developers.",
+    metaTitle: "Free Color Picker - HEX, RGB, HSL Converter & Palette Tool",
+    metaDescription: "Pick colors and convert between HEX, RGB, HSL formats instantly. Free online color picker with palette generator for designers and developers.",
+    primaryKeyword: "color picker",
     howToUse: ["Use the HEX input to enter a color code directly, or adjust the RGB/HSL sliders.", "Click any color value (HEX, RGB, HSL) to copy it to your clipboard.", "View color variations: lighter, darker, and complementary colors.", "Use the generated palette at the bottom for shading inspiration."],
     faq: [
       { question: "What is the difference between HEX and RGB?", answer: "HEX is a hexadecimal color code (e.g., #FF5733) commonly used in web design. RGB represents color as three numbers (e.g., 255, 87, 51) representing red, green, and blue intensity." },
@@ -208,7 +218,8 @@ export const tools: ToolDef[] = [
     icon: Braces,
     keywords: ["json formatter", "json beautifier", "json validator", "json viewer", "format json", "pretty print json"],
     metaTitle: "Free JSON Formatter & Validator - Beautify JSON Online",
-    metaDescription: "Format, validate and beautify JSON data instantly with syntax highlighting. Free online JSON formatter, validator and viewer tool.",
+    metaDescription: "Format, validate and beautify JSON instantly with syntax highlighting. Free online JSON formatter with tree view and minifier. 100% private.",
+    primaryKeyword: "JSON formatter",
     howToUse: ["Paste your JSON data into the input text area, or click 'Upload .json' to load a file.", "Click 'Format / Beautify' to pretty-print the JSON with proper indentation.", "Click 'Minify' to compress JSON to a single line.", "Click 'Validate' to check if your JSON is valid without reformatting."],
     faq: [
       { question: "What is JSON?", answer: "JSON (JavaScript Object Notation) is a lightweight data-interchange format that's easy for humans to read and write, and easy for machines to parse and generate. It's used widely in APIs and configuration files." },

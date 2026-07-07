@@ -69,6 +69,7 @@ export default function Home() {
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
+              aria-label="ToolVerse - Home"
             >
               <motion.div
                 animate={{ rotate: activeToolId ? 360 : 0 }}
@@ -209,9 +210,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <p>Copyright 2025 ToolVerse. All rights reserved. All tools run locally in your browser.</p>
             <div className="flex items-center gap-4">
-              <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-foreground transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-foreground transition-colors">Contact</a>
+              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+              <Link href="mailto:hello@toolverse.com" className="hover:text-foreground transition-colors">Contact</Link>
             </div>
           </div>
         </div>

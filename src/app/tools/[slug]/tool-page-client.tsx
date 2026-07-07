@@ -98,8 +98,8 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <Wrench className="h-5 w-5 text-primary" />
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity" aria-label="ToolVerse - Back to all free online tools">
+              <Wrench className="h-5 w-5 text-primary" aria-hidden="true" />
               <span className="font-bold text-lg">ToolVerse</span>
             </Link>
             <ThemeToggle />
@@ -301,11 +301,11 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                           whileHover={{ y: -3, scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          <Link href={`/tools/${rt.id}`}>
+                          <Link href={`/tools/${rt.id}`} className="block">
                             <Card className="hover:shadow-lg transition-shadow h-full">
                               <CardContent className="p-4 flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                                  <RtIcon className="h-4 w-4" />
+                                  <RtIcon className="h-4 w-4" aria-hidden="true" />
                                 </div>
                                 <div>
                                   <p className="font-medium text-sm">{rt.name}</p>
@@ -320,6 +320,22 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                   </div>
                 </motion.section>
               )}
+
+              {/* All Tools for cross-category internal linking */}
+              <motion.section className="border-t pt-8" variants={fadeUp}>
+                <h2 className="text-xl font-semibold mb-4">Explore All Free Online Tools</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                  {tools.filter((t) => t.id !== tool.id).map((t) => (
+                    <Link
+                      key={t.id}
+                      href={`/tools/${t.id}`}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors py-1.5 px-2 rounded hover:bg-muted/50 truncate"
+                    >
+                      {t.name}
+                    </Link>
+                  ))}
+                </div>
+              </motion.section>
 
               {/* CTA */}
               <motion.div
