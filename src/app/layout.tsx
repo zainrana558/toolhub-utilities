@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ToolVerse - 10 Free Online Tools | No Sign-Up",
+    default: "ToolVerse - 20 Free Online Tools | No Sign-Up",
     template: "%s | ToolVerse",
   },
   description:
-    "10 free online tools: word counter, password generator, BMI calculator, unit converter, JSON formatter and more. No sign-up, 100% private.",
+    "20 free online tools: word counter, password generator, BMI calculator, image compressor, QR code generator, PDF compressor, unit converter, JSON formatter and more. No sign-up, 100% private.",
   keywords: [
     "free online tools", "word counter", "password generator", "BMI calculator",
     "percentage calculator", "age calculator", "loan calculator", "unit converter",
@@ -37,14 +37,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "ToolVerse",
-    title: "ToolVerse - 10 Free Online Tools | No Sign-Up",
-    description: "10 free online tools: word counter, password generator, BMI calculator, unit converter, JSON formatter and more. No sign-up, 100% private.",
+    title: "ToolVerse - 20 Free Online Tools | No Sign-Up",
+    description: "20 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor and more. No sign-up, 100% private.",
     url: BASE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ToolVerse - 10 Free Online Tools | No Sign-Up",
-    description: "10 free online tools: word counter, password generator, BMI calculator, unit converter, JSON formatter and more. No sign-up, 100% private.",
+    title: "ToolVerse - 20 Free Online Tools | No Sign-Up",
+    description: "20 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor and more. No sign-up, 100% private.",
     site: "@toolverse",
   },
   alternates: {

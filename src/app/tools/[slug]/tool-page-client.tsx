@@ -25,6 +25,16 @@ const UnitConverter = dynamic(() => import("@/components/tools/unit-converter").
 const CaseConverter = dynamic(() => import("@/components/tools/case-converter").then((m) => ({ default: m.CaseConverter })), { ssr: false });
 const ColorPicker = dynamic(() => import("@/components/tools/color-picker").then((m) => ({ default: m.ColorPicker })), { ssr: false });
 const JSONFormatter = dynamic(() => import("@/components/tools/json-formatter").then((m) => ({ default: m.JSONFormatter })), { ssr: false });
+const ImageCompressor = dynamic(() => import("@/components/tools/image-compressor").then((m) => ({ default: m.ImageCompressor })), { ssr: false });
+const QRCodeGenerator = dynamic(() => import("@/components/tools/qr-code-generator").then((m) => ({ default: m.QRCodeGenerator })), { ssr: false });
+const Base64Encoder = dynamic(() => import("@/components/tools/base64-encoder").then((m) => ({ default: m.Base64Encoder })), { ssr: false });
+const URLEncoder = dynamic(() => import("@/components/tools/url-encoder").then((m) => ({ default: m.URLEncoder })), { ssr: false });
+const LoremIpsumGenerator = dynamic(() => import("@/components/tools/lorem-ipsum-generator").then((m) => ({ default: m.LoremIpsumGenerator })), { ssr: false });
+const MarkdownPreviewer = dynamic(() => import("@/components/tools/markdown-previewer").then((m) => ({ default: m.MarkdownPreviewer })), { ssr: false });
+const HashGenerator = dynamic(() => import("@/components/tools/hash-generator").then((m) => ({ default: m.HashGenerator })), { ssr: false });
+const NumberBaseConverter = dynamic(() => import("@/components/tools/number-base-converter").then((m) => ({ default: m.NumberBaseConverter })), { ssr: false });
+const TextDiffChecker = dynamic(() => import("@/components/tools/text-diff-checker").then((m) => ({ default: m.TextDiffChecker })), { ssr: false });
+const PdfCompressor = dynamic(() => import("@/components/tools/pdf-compressor").then((m) => ({ default: m.PdfCompressor })), { ssr: false });
 
 const toolComponents: Record<string, React.ComponentType> = {
   "word-counter": WordCounter,
@@ -37,6 +47,16 @@ const toolComponents: Record<string, React.ComponentType> = {
   "case-converter": CaseConverter,
   "color-picker": ColorPicker,
   "json-formatter": JSONFormatter,
+  "image-compressor": ImageCompressor,
+  "qr-code-generator": QRCodeGenerator,
+  "base64-encoder": Base64Encoder,
+  "url-encoder": URLEncoder,
+  "lorem-ipsum-generator": LoremIpsumGenerator,
+  "markdown-previewer": MarkdownPreviewer,
+  "hash-generator": HashGenerator,
+  "number-base-converter": NumberBaseConverter,
+  "text-diff-checker": TextDiffChecker,
+  "pdf-compressor": PdfCompressor,
 };
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
