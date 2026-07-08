@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   },
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolverse.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
 
 // WebSite schema
 const websiteJsonLd = {

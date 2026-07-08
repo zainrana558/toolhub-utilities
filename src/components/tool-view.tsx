@@ -36,7 +36,7 @@ const toolComponents: Record<string, React.ComponentType> = {
   "json-formatter": JSONFormatter,
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolverse.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
 
 const stagger = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },

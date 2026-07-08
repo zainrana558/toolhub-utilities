@@ -1,7 +1,7 @@
 import { tools, toolCategories } from "@/lib/tools-data";
 import { ToolPageClient } from "./tool-page-client";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolverse.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
 
 export async function generateStaticParams() {
   return tools.map((tool) => ({
