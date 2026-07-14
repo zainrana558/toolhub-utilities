@@ -210,6 +210,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <p>Copyright 2025 ToolVerse. All rights reserved. All tools run locally in your browser.</p>
             <div className="flex items-center gap-4">
+              <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
               <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
               <Link href="mailto:hello@toolverse.com" className="hover:text-foreground transition-colors">Contact</Link>
