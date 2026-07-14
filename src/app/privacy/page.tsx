@@ -1,18 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "ToolVerse privacy policy. Learn how we handle your data — spoiler: we don't collect any.",
+  title: "Privacy Policy - ToolVerse",
+  description: "ToolVerse privacy policy. We don't collect, store, or transmit any data you process through our tools. Everything runs in your browser.",
   robots: { index: true, follow: true },
-  alternates: { canonical: "/privacy" },
+  alternates: { canonical: `${BASE_URL}/privacy` },
+  openGraph: {
+    title: "Privacy Policy - ToolVerse",
+    description: "ToolVerse privacy policy. We don't collect any data — all tools run in your browser.",
+    url: `${BASE_URL}/privacy`,
+  },
+};
+
+const privacyJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Privacy Policy - ToolVerse",
+  "description": "ToolVerse privacy policy. We don't collect, store, or transmit any data.",
+  "url": `${BASE_URL}/privacy`,
+  "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": BASE_URL },
 };
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(privacyJsonLd) }}
+      />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link href="/" className="text-sm text-primary hover:underline mb-8 inline-block">Back to All Tools</Link>
+        <nav className="mb-8 text-sm text-muted-foreground">
+          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+          <span className="mx-2">/</span>
+          <span className="text-foreground font-medium">Privacy Policy</span>
+        </nav>
         <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
         <div className="prose prose-sm dark:prose-invert max-w-none space-y-4 text-muted-foreground">
           <p><strong className="text-foreground">Last updated:</strong> July 2025</p>

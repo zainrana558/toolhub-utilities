@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: ["/api/", "/_next/"],
+        disallow: ["/api/", "/_next/", "/tools/*/embed"],
       },
       // Bing Search
       {
@@ -72,6 +72,13 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/_next/"],
       },
     ],
-    sitemap: `${BASE_URL}/sitemap.xml`,
+    sitemap: [
+      `${BASE_URL}/sitemap.xml`,
+      `${BASE_URL}/sitemaps/tools-text.xml`,
+      `${BASE_URL}/sitemaps/tools-math.xml`,
+      `${BASE_URL}/sitemaps/tools-dev.xml`,
+      `${BASE_URL}/sitemaps/tools-converters.xml`,
+      `${BASE_URL}/sitemaps/pages.xml`,
+    ],
   };
 }

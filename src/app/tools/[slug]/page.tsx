@@ -35,11 +35,13 @@ export async function generateMetadata({
       siteName: "ToolVerse",
       title: tool.metaTitle,
       description: tool.metaDescription,
+      images: [{ url: `${BASE_URL}/og-${tool.id}.png`, width: 1200, height: 630, alt: tool.metaTitle }],
     },
     twitter: {
       card: "summary_large_image" as const,
       title: tool.metaTitle,
       description: tool.metaDescription,
+      images: [`${BASE_URL}/og-${tool.id}.png`],
     },
     alternates: {
       canonical: `/tools/${tool.id}`,
@@ -86,10 +88,12 @@ export default async function ToolPage({
 
   const webPageSchema = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
+    "@type": "WebApplication",
     name: tool.metaTitle,
     description: tool.metaDescription,
     url: toolUrl,
+    isAccessibleForFree: true,
+    browserRequirements: "Requires JavaScript. Requires HTML5.",
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
@@ -102,9 +106,12 @@ export default async function ToolPage({
       "@type": "SoftwareApplication",
       name: tool.name,
       applicationCategory: "UtilitiesApplication",
+      applicationSubCategory: categoryLabel,
       operatingSystem: "Any",
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       description: tool.longDescription,
+      featureList: tool.howToUse.join(", "),
+      screenshot: toolUrl,
       aggregateRating: {
         "@type": "AggregateRating",
         ratingValue: "4.8",
@@ -137,6 +144,17 @@ export default async function ToolPage({
     })),
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "All Tools", item: `${BASE_URL}/#all-tools` },
+      { "@type": "ListItem", position: 3, name: categoryLabel, item: `${BASE_URL}/#${tool.category}-tools` },
+      { "@type": "ListItem", position: 4, name: tool.name, item: toolUrl },
+    ],
+  };
+
   return (
     <>
       <script
@@ -150,6 +168,10 @@ export default async function ToolPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <ToolPageClient toolId={tool.id} />
     </>

@@ -4,6 +4,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -15,6 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: "ToolVerse - 20 Free Online Tools | No Sign-Up",
     template: "%s | ToolVerse",
@@ -40,12 +43,14 @@ export const metadata: Metadata = {
     title: "ToolVerse - 20 Free Online Tools | No Sign-Up",
     description: "20 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor and more. No sign-up, 100% private.",
     url: BASE_URL,
+    images: [{ url: `${BASE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 20 Free Online Tools" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ToolVerse - 20 Free Online Tools | No Sign-Up",
     description: "20 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor and more. No sign-up, 100% private.",
     site: "@toolverse",
+    images: [`${BASE_URL}/og-default.png`],
   },
   alternates: {
     canonical: "/",
@@ -55,8 +60,6 @@ export const metadata: Metadata = {
     google: "IZ_kgkZCobezDHfENC4rcTL_eNcV1i71jvcEVmTRrlc",
   },
 };
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
 
 // WebSite schema
 const websiteJsonLd = {
@@ -119,7 +122,37 @@ const orgJsonLd = {
   name: "ToolVerse",
   url: BASE_URL,
   logo: `${BASE_URL}/logo.svg`,
-  sameAs: [],
+  description: "Free online tools that work instantly in your browser. 20+ utilities across text, math, developer tools, and converters. No sign-up required.",
+  foundingDate: "2025",
+  founder: {
+    "@type": "Person",
+    name: "Zain Rana",
+    jobTitle: "Founder & Lead Developer",
+    description: "Full-stack developer with 5+ years of experience building web applications.",
+  },
+  sameAs: [
+    "https://github.com/zainrana558/toolhub-utilities",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "hello@toolverse.com",
+    contactType: "customer support",
+  },
+};
+
+// Person schema (E-E-A-T)
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Zain Rana",
+  url: BASE_URL,
+  jobTitle: "Full-Stack Developer & Founder",
+  worksFor: {
+    "@type": "Organization",
+    name: "ToolVerse",
+  },
+  knowsAbout: ["Web Development", "JavaScript", "TypeScript", "React", "Next.js", "SEO", "Online Tools"],
+  sameAs: ["https://github.com/zainrana558"],
 };
 
 export default function RootLayout({
@@ -145,6 +178,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
       </head>
       <body

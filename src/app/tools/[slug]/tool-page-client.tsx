@@ -137,7 +137,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
               initial="hidden"
               animate="show"
             >
-              {/* Breadcrumb */}
+              {/* Breadcrumb — Change C: Added category link */}
               <motion.nav
                 className="flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap"
                 aria-label="Breadcrumb"
@@ -147,6 +147,10 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
               >
                 <Link href="/" className="hover:text-foreground transition-colors flex items-center gap-1" itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
                   <Home className="h-3.5 w-3.5" /> <span itemProp="name">Home</span>
+                </Link>
+                <ChevronRight className="h-3.5 w-3.5" />
+                <Link href={`/#${tool.category}-tools`} className="hover:text-foreground transition-colors" itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                  <span itemProp="name">{categoryLabel}</span>
                 </Link>
                 <ChevronRight className="h-3.5 w-3.5" />
                 <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
@@ -181,35 +185,37 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
 
               <AdSlot variant="horizontal" />
 
-              {/* How to Use */}
-              <motion.div variants={fadeUp}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">How to Use {tool.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ol className="space-y-2" itemScope itemType="https://schema.org/HowTo">
-                      {tool.howToUse.map((step, i) => (
-                        <motion.li
-                          key={i}
-                          className="flex gap-3 text-sm"
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.15 + i * 0.08, duration: 0.3 }}
-                          itemProp="step"
-                          itemScope
-                          itemType="https://schema.org/HowToStep"
-                        >
-                          <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                            {i + 1}
-                          </span>
-                          <span className="text-muted-foreground pt-0.5" itemProp="text">{step}</span>
-                        </motion.li>
-                      ))}
-                    </ol>
-                  </CardContent>
-                </Card>
-              </motion.div>
+              {/* How to Use — Change A: wrapped in section with aria-labelledby, added id to CardTitle */}
+              <section aria-labelledby="howto-heading">
+                <motion.div variants={fadeUp}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base" id="howto-heading">How to Use {tool.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ol className="space-y-2" itemScope itemType="https://schema.org/HowTo">
+                        {tool.howToUse.map((step, i) => (
+                          <motion.li
+                            key={i}
+                            className="flex gap-3 text-sm"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.15 + i * 0.08, duration: 0.3 }}
+                            itemProp="step"
+                            itemScope
+                            itemType="https://schema.org/HowToStep"
+                          >
+                            <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                              {i + 1}
+                            </span>
+                            <span className="text-muted-foreground pt-0.5" itemProp="text">{step}</span>
+                          </motion.li>
+                        ))}
+                      </ol>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </section>
 
               {/* Main tool */}
               <motion.div variants={fadeUp}>
@@ -218,8 +224,10 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
 
               <AdSlot variant="horizontal" />
 
-              {/* SEO Content: Conversational long-tail headers + immediate answers */}
-              <motion.section className="border-t pt-8 space-y-8" variants={fadeUp}>
+              {/* SEO Content: Change A — <article> instead of <section>, added <time> freshness signal */}
+              <motion.article className="border-t pt-8 space-y-8" variants={fadeUp}>
+                <p className="text-xs text-muted-foreground mb-4">Last updated: <time dateTime="2026-07-15">July 15, 2026</time></p>
+
                 <h2 className="text-xl font-semibold">
                   What is {tool.name} and How Does It Work?
                 </h2>
@@ -236,19 +244,19 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                 </h2>
                 <ul className="space-y-2 text-muted-foreground text-sm list-disc list-inside">
                   <li>
-                    <strong className="text-foreground">Completely free</strong> — no sign-up, no premium tier, no feature limits. Use it as many times as you want.
+                    <strong className="text-foreground"><data value="free">Completely free</data></strong> — no sign-up, no premium tier, no feature limits. Use it as many times as you want.
                   </li>
                   <li>
-                    <strong className="text-foreground">100% private</strong> — all processing happens in your browser. Your data never leaves your device.
+                    <strong className="text-foreground"><data value="private">100% private</data></strong> — all processing happens in your browser. Your data never leaves your device.
                   </li>
                   <li>
-                    <strong className="text-foreground">Works on any device</strong> — fully responsive design that works on phones, tablets, laptops, and desktops.
+                    <strong className="text-foreground"><data value="cross-device">Works on any device</data></strong> — fully responsive design that works on phones, tablets, laptops, and desktops.
                   </li>
                   <li>
-                    <strong className="text-foreground">No installation needed</strong> — just open the page and start using it immediately.
+                    <strong className="text-foreground"><data value="no-install">No installation needed</data></strong> — just open the page and start using it immediately.
                   </li>
                   <li>
-                    <strong className="text-foreground">Built by developers</strong> — created by people who actually use these tools daily in professional work.
+                    <strong className="text-foreground"><data value="developer-built">Built by developers</data></strong> — created by people who actually use these tools daily in professional work.
                   </li>
                 </ul>
 
@@ -278,12 +286,12 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                   Yes, {tool.name} is completely safe. All processing runs in your browser using standard web technologies like JavaScript and the HTML5 Canvas API. We use{" "}
                   <strong className="text-foreground">cryptographically secure methods</strong> where applicable (such as the Web Crypto API for password generation and hash computation). No plugins, extensions, or downloads are required. You can verify this by opening your browser&apos;s developer tools and confirming that no network requests are made during tool operation.
                 </p>
-              </motion.section>
+              </motion.article>
 
-              {/* FAQ */}
+              {/* FAQ — Change A: added id="faq-heading" */}
               {tool.faq.length > 0 && (
                 <motion.section className="border-t pt-8" variants={fadeUp}>
-                  <h2 className="text-xl font-semibold mb-4">Frequently Asked Questions about {tool.name}</h2>
+                  <h2 className="text-xl font-semibold mb-4" id="faq-heading">Frequently Asked Questions about {tool.name}</h2>
                   <div className="space-y-3">
                     {tool.faq.map((item, i) => (
                       <motion.div
@@ -324,6 +332,23 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                   </div>
                 </motion.section>
               )}
+
+              {/* E-E-A-T: Author Info — Change G */}
+              <motion.aside className="border-t pt-8" variants={fadeUp}>
+                <div className="flex items-start gap-4 rounded-xl border bg-card/50 p-5">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-base">
+                    Z
+                  </div>
+                  <div>
+                    <p className="text-sm">
+                      <strong className="text-foreground">Written by Zain Rana</strong> — Full-stack developer and founder of ToolVerse. 
+                      With over 5 years of experience building web applications, Zain creates and tests every tool personally to ensure 
+                      accuracy, speed, and privacy.{" "}
+                      <Link href="/about" className="text-primary hover:underline">Learn more about us</Link>.
+                    </p>
+                  </div>
+                </div>
+              </motion.aside>
 
               {/* Link to This Tool */}
               <motion.div variants={fadeUp}>
@@ -367,10 +392,10 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
 
               <AdSlot variant="square" />
 
-              {/* Related tools */}
+              {/* Related tools — Change A: added id="related-heading" */}
               {relatedTools.length > 0 && (
                 <motion.section className="border-t pt-8" variants={fadeUp}>
-                  <h2 className="text-xl font-semibold mb-4">Related Tools</h2>
+                  <h2 className="text-xl font-semibold mb-4" id="related-heading">Related Tools</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {relatedTools.map((rt, i) => {
                       const RtIcon = rt.icon;
@@ -403,19 +428,39 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                 </motion.section>
               )}
 
-              {/* All Tools for cross-category internal linking */}
-              <motion.section className="border-t pt-8" variants={fadeUp}>
-                <h2 className="text-xl font-semibold mb-4">Explore All Free Online Tools</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                  {tools.filter((t) => t.id !== tool.id).map((t) => (
-                    <Link
-                      key={t.id}
-                      href={`/tools/${t.id}`}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors py-1.5 px-2 rounded hover:bg-muted/50 truncate"
-                    >
-                      {t.name}
-                    </Link>
-                  ))}
+              {/* Explore All Free Online Tools by Category — Change B: Topic Cluster structure */}
+              <motion.section className="border-t pt-8" variants={fadeUp} id="all-tools" aria-labelledby="all-tools-heading">
+                <h2 className="text-xl font-semibold mb-6" id="all-tools-heading">
+                  Explore All Free Online Tools by Category
+                </h2>
+                <div className="space-y-6">
+                  {toolCategories.map((cat) => {
+                    const catTools = tools.filter((t) => t.category === cat.id && t.id !== tool.id);
+                    if (catTools.length === 0) return null;
+                    return (
+                      <div key={cat.id}>
+                        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                          <span className={cat.color}>{cat.name}</span>
+                          <Badge variant="outline" className="text-xs font-normal">{catTools.length} tools</Badge>
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {catTools.map((t) => {
+                            const TIcon = t.icon;
+                            return (
+                              <Link
+                                key={t.id}
+                                href={`/tools/${t.id}`}
+                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-1.5 px-2 rounded hover:bg-muted/50 group"
+                              >
+                                <TIcon className="h-3.5 w-3.5 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                                <span className="truncate">{t.name}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </motion.section>
 
@@ -463,7 +508,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
         </div>
       </main>
 
-      {/* Footer */}
+      {/* Footer — Change D: Added About, Privacy, Terms links */}
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -477,6 +522,9 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
             <div className="flex items-center gap-4">
               <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
               <Link href="/#all-tools" className="hover:text-foreground transition-colors">All Tools</Link>
+              <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
+              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
             </div>
           </div>
         </div>

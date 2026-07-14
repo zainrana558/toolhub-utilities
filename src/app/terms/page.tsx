@@ -1,18 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "ToolVerse terms of service. Read the terms for using our free online tools.",
+  title: "Terms of Service - ToolVerse",
+  description: "Terms of service for ToolVerse free online tools. Read the terms for using our 20+ browser-based utilities.",
   robots: { index: true, follow: true },
-  alternates: { canonical: "/terms" },
+  alternates: { canonical: `${BASE_URL}/terms` },
+  openGraph: {
+    title: "Terms of Service - ToolVerse",
+    description: "Terms of service for ToolVerse free online tools.",
+    url: `${BASE_URL}/terms`,
+  },
+};
+
+const termsJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Terms of Service - ToolVerse",
+  "description": "Terms of service for ToolVerse free online tools.",
+  "url": `${BASE_URL}/terms`,
+  "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": BASE_URL },
 };
 
 export default function TermsOfService() {
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(termsJsonLd) }}
+      />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link href="/" className="text-sm text-primary hover:underline mb-8 inline-block">Back to All Tools</Link>
+        <nav className="mb-8 text-sm text-muted-foreground">
+          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+          <span className="mx-2">/</span>
+          <span className="text-foreground font-medium">Terms of Service</span>
+        </nav>
         <h1 className="text-3xl font-bold mb-6">Terms of Service</h1>
         <div className="prose prose-sm dark:prose-invert max-w-none space-y-4 text-muted-foreground">
           <p><strong className="text-foreground">Last updated:</strong> July 2025</p>

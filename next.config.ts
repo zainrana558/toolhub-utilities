@@ -51,6 +51,20 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      // Cache tool pages at CDN edge with stale-while-revalidate
+      {
+        source: "/tools/:slug*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" },
+        ],
+      },
+      // Cache static info pages at CDN edge
+      {
+        source: "/(about|privacy|terms)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" },
+        ],
+      },
     ];
   },
   // Optimize images
