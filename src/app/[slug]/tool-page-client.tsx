@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { tools, toolCategories } from "@/lib/tools-data";
+import { crossCategoryLinks } from "@/lib/cross-category-links";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -96,6 +97,11 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
   }
 
   const relatedTools = tools.filter((t) => t.category === tool.category && t.id !== tool.id).slice(0, 3);
+  const crossRelatedIds = crossCategoryLinks[tool.id] || [];
+  const crossRelatedTools = crossRelatedIds
+    .map((id) => tools.find((t) => t.id === id))
+    .filter(Boolean)
+    .slice(0, 4);
   const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
   const toolUrl = `${BASE_URL}/${tool.id}`;
   const embedCode = `<a href="${toolUrl}" title="${tool.name} - Free Online Tool">${tool.name}</a> - Free online ${tool.name.toLowerCase()} by ToolVerse`;
@@ -452,6 +458,24 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                             </Card>
                           </Link>
                         </motion.div>
+                      );
+                    })}
+                  </div>
+                </motion.section>
+              )}
+
+              {/* Cross-category internal links */}
+              {crossRelatedTools.length > 0 && (
+                <motion.section className="border-t pt-8" variants={fadeUp}>
+                  <h2 className="text-xl font-semibold mb-4">You May Also Like</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {crossRelatedTools.map((crt, i) => {
+                      const CrIcon = crt.icon;
+                      return (
+                        <Link key={crt.id} href={`/${crt.id}`} className="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-primary transition-colors py-2 px-3 rounded-lg hover:bg-muted/50 group">
+                          <CrIcon className="h-4 w-4 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                          <span className="truncate">{crt.name}</span>
+                        </Link>
                       );
                     })}
                   </div>

@@ -1,0 +1,25 @@
+// Cross-category tool relationships for internal linking
+// Each tool maps to 4 related tools from OTHER categories
+export const crossCategoryLinks: Record<string, string[]> = {
+  "word-counter": ["character-counter", "case-converter", "markdown-previewer", "lorem-ipsum-generator"],
+  "character-counter": ["word-counter", "case-converter", "url-encoder", "base64-encoder"],
+  "case-converter": ["word-counter", "character-counter", "url-encoder", "json-formatter"],
+  "lorem-ipsum-generator": ["word-counter", "character-counter", "markdown-previewer", "case-converter"],
+  "markdown-previewer": ["word-counter", "lorem-ipsum-generator", "json-formatter", "text-diff-checker"],
+  "password-generator": ["hash-generator", "base64-encoder", "qr-code-generator", "number-base-converter"],
+  "color-picker": ["image-compressor", "markdown-previewer", "case-converter", "base64-encoder"],
+  "json-formatter": ["markdown-previewer", "text-diff-checker", "base64-encoder", "url-encoder"],
+  "image-compressor": ["color-picker", "pdf-compressor", "qr-code-generator", "base64-encoder"],
+  "qr-code-generator": ["password-generator", "url-encoder", "color-picker", "image-compressor"],
+  "base64-encoder": ["password-generator", "hash-generator", "json-formatter", "url-encoder"],
+  "url-encoder": ["base64-encoder", "json-formatter", "qr-code-generator", "markdown-previewer"],
+  "hash-generator": ["password-generator", "base64-encoder", "number-base-converter", "text-diff-checker"],
+  "number-base-converter": ["hash-generator", "password-generator", "unit-converter", "base64-encoder"],
+  "text-diff-checker": ["json-formatter", "markdown-previewer", "hash-generator", "base64-encoder"],
+  "pdf-compressor": ["image-compressor", "qr-code-generator", "color-picker", "base64-encoder"],
+  "bmi-calculator": ["percentage-calculator", "age-calculator", "unit-converter", "loan-calculator"],
+  "percentage-calculator": ["bmi-calculator", "loan-calculator", "unit-converter", "age-calculator"],
+  "age-calculator": ["bmi-calculator", "loan-calculator", "percentage-calculator", "unit-converter"],
+  "loan-calculator": ["percentage-calculator", "bmi-calculator", "age-calculator", "unit-converter"],
+  "unit-converter": ["number-base-converter", "percentage-calculator", "bmi-calculator", "loan-calculator"],
+};
