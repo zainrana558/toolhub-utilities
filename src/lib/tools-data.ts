@@ -19,6 +19,7 @@ import {
   Lock,
   Diff,
   FileDown,
+  TextCursorInput,
 } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 
@@ -40,9 +41,9 @@ export interface ToolDef {
 
 export const toolCategories = [
   { id: "text", name: "Text Tools", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300" },
-  { id: "math", name: "Math & Finance", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300" },
+  { id: "math", name: "Math Calculators", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300" },
   { id: "dev", name: "Developer Tools", color: "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300" },
-  { id: "converter", name: "Converters", color: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300" },
+  { id: "image", name: "Image Tools", color: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300" },
 ];
 
 export const tools: ToolDef[] = [
@@ -63,6 +64,25 @@ export const tools: ToolDef[] = [
       { question: "How does the word counter count words?", answer: "The word counter splits your text by whitespace and counts each group as one word. It handles multiple spaces, tabs, and line breaks correctly." },
       { question: "How is reading time calculated?", answer: "Reading time is estimated based on an average reading speed of 200 words per minute, which is the standard for adult readers." },
       { question: "Does the word counter count numbers?", answer: "Yes, any group of characters separated by spaces is counted as a word, including numbers and mixed alphanumeric strings." },
+    ],
+  },
+  {
+    id: "character-counter",
+    name: "Character Counter",
+    shortName: "Char Count",
+    description: "Count characters, analyze frequency, and get detailed text composition stats.",
+    longDescription: "Count characters with and without spaces, analyze character frequency distribution, and get a detailed breakdown of your text composition including letters, numbers, spaces, and special characters. Perfect for Twitter/X posts, SMS messages, meta descriptions, and any content with character limits.",
+    category: "text",
+    icon: TextCursorInput,
+    keywords: ["character counter", "letter counter", "character count", "text analysis", "character frequency", "char counter", "text composition"],
+    metaTitle: "Free Character Counter - Count Characters & Analyze Text",
+    metaDescription: "Count characters, analyze frequency and get text composition stats instantly. Free online character counter for social media, SMS and SEO. No sign-up.",
+    primaryKeyword: "character counter",
+    howToUse: ["Type or paste your text into the text area.", "View real-time character counts including total, without spaces, and unique characters.", "Check the character density breakdown to see letters, numbers, spaces, and special characters.", "Review the top 10 most-used characters with frequency percentages."],
+    faq: [
+      { question: "What's the difference between characters with and without spaces?", answer: "Characters with spaces counts every single character including spaces, tabs, and line breaks. Characters without spaces excludes all whitespace, giving you the count of actual visible characters." },
+      { question: "How is character frequency calculated?", answer: "Each unique character in your text is counted and ranked by frequency. The tool shows the top 10 most-used characters along with their count and percentage of total characters." },
+      { question: "Why would I use a character counter instead of a word counter?", answer: "Character counters are essential when you have character limits — like Twitter (280 chars), SMS (160 chars), meta descriptions (160 chars), or file naming limits. Word counters can't tell you if you're within these limits." },
     ],
   },
   {
@@ -166,7 +186,7 @@ export const tools: ToolDef[] = [
     shortName: "Unit Convert",
     description: "Convert between units of length, weight, temperature, and more.",
     longDescription: "Convert between hundreds of units across multiple categories including length, weight, temperature, volume, area, speed, time, and data. Fast, accurate, and easy to use unit conversion tool for students, professionals, and everyday use.",
-    category: "converter",
+    category: "math",
     icon: ArrowLeftRight,
     keywords: ["unit converter", "length converter", "weight converter", "temperature converter", "metric converter", "measurement converter"],
     metaTitle: "Free Unit Converter - Length, Weight, Temperature & More",
@@ -242,7 +262,7 @@ export const tools: ToolDef[] = [
     shortName: "Image Compress",
     description: "Compress and resize images right in your browser. Supports JPEG, PNG, WebP.",
     longDescription: "Compress and resize images directly in your browser without uploading to any server. Adjust quality, change dimensions, and convert between JPEG, PNG, and WebP formats. See instant file size comparison before downloading. Perfect for optimizing images for web, email, and social media.",
-    category: "converter",
+    category: "image",
     icon: ImageDown,
     keywords: ["image compressor", "compress image", "resize image", "reduce image size", "image optimizer", "jpeg compressor", "png compressor", "webp converter"],
     metaTitle: "Free Image Compressor - Compress JPEG, PNG, WebP Online",
@@ -413,7 +433,7 @@ export const tools: ToolDef[] = [
     shortName: "PDF Compress",
     description: "Compress PDF files in your browser. Reduce file size with three compression levels.",
     longDescription: "Compress PDF files directly in your browser without uploading to any server. Choose from three compression levels — Low (structural optimization), Medium (metadata stripping), or High (image re-encoding). See the file size reduction before downloading. Perfect for reducing PDF sizes for email attachments and web uploads.",
-    category: "converter",
+    category: "image",
     icon: FileDown,
     keywords: ["pdf compressor", "compress pdf", "reduce pdf size", "pdf optimizer", "pdf compression", "make pdf smaller", "online pdf compressor"],
     metaTitle: "Free PDF Compressor - Reduce PDF File Size Online",

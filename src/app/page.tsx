@@ -167,7 +167,7 @@ export default function Home() {
       >
         <AdSlot variant="horizontal" className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Wrench className="h-5 w-5 text-primary" />
@@ -192,15 +192,22 @@ export default function Home() {
             </div>
 
             <div>
-              <h3 className="font-semibold text-sm mb-3">More Tools</h3>
+              <h3 className="font-semibold text-sm mb-3">Resources</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                {tools.slice(5, 10).map((tool) => (
-                  <li key={tool.id}>
-                    <Link href={`/tools/${tool.id}`} className="hover:text-foreground transition-colors">
-                      {tool.name}
-                    </Link>
-                  </li>
-                ))}
+                <li><Link href="/blog" className="hover:text-foreground transition-colors">Blog</Link></li>
+                <li><Link href="/tutorials" className="hover:text-foreground transition-colors">Tutorials</Link></li>
+                <li><Link href="/faq" className="hover:text-foreground transition-colors">FAQ</Link></li>
+                <li><Link href="/api-docs" className="hover:text-foreground transition-colors">API Docs</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-sm mb-3">Company</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link href="/about" className="hover:text-foreground transition-colors">About</Link></li>
+                <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
+                <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>

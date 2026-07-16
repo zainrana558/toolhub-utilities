@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 
 // Dynamic imports for code splitting
 const WordCounter = dynamic(() => import("@/components/tools/word-counter").then((m) => ({ default: m.WordCounter })), { ssr: false });
+const CharacterCounter = dynamic(() => import("@/components/tools/character-counter").then((m) => ({ default: m.CharacterCounter })), { ssr: false });
 const PasswordGenerator = dynamic(() => import("@/components/tools/password-generator").then((m) => ({ default: m.PasswordGenerator })), { ssr: false });
 const BMICalculator = dynamic(() => import("@/components/tools/bmi-calculator").then((m) => ({ default: m.BMICalculator })), { ssr: false });
 const PercentageCalculator = dynamic(() => import("@/components/tools/percentage-calculator").then((m) => ({ default: m.PercentageCalculator })), { ssr: false });
@@ -35,6 +36,7 @@ const PdfCompressor = dynamic(() => import("@/components/tools/pdf-compressor").
 
 const toolComponents: Record<string, React.ComponentType> = {
   "word-counter": WordCounter,
+  "character-counter": CharacterCounter,
   "password-generator": PasswordGenerator,
   "bmi-calculator": BMICalculator,
   "percentage-calculator": PercentageCalculator,

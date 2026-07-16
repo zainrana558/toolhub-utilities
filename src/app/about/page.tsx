@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.
 export const metadata: Metadata = {
   title: "About ToolVerse - Who We Are & Why We Built This",
   description:
-    "Learn about ToolVerse, a free collection of 20+ browser-based tools built by developers for everyone. No sign-up, no data collection, 100% private.",
+    "Learn about ToolVerse, a free collection of 21+ browser-based tools built by developers for everyone. No sign-up, no data collection, 100% private.",
   keywords: [
     "about toolverse", "free online tools", "browser-based tools",
     "privacy-first tools", "no signup tools", "toolverse team",
@@ -73,8 +73,8 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              ToolVerse provides <strong className="text-foreground">20+ free online tools</strong> across
-              four categories: text tools, math and finance calculators, developer
+              ToolVerse provides <strong className="text-foreground">21 free online tools</strong> across
+              four categories: text tools, math calculators, developer
               utilities, and file converters. Our tools are used by over
               <strong className="text-foreground"> 50,000 people every month</strong> — from
               students working on assignments to developers debugging APIs to
@@ -169,7 +169,7 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Our Tools</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              We currently offer <strong className="text-foreground">20 free tools</strong> across
+              We currently offer <strong className="text-foreground">21 free tools</strong> across
               four categories. Each tool is self-contained, works on any
               device, and requires no installation.
             </p>
@@ -179,17 +179,15 @@ export default function AboutPage() {
                   Text Tools
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Word Counter, Case Converter, Lorem Ipsum Generator, Markdown
-                  Previewer
+                  Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer
                 </p>
               </div>
               <div>
                 <h3 className="font-semibold mb-2 text-primary">
-                  Math &amp; Finance
+                  Math Calculators
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  BMI Calculator, Percentage Calculator, Age Calculator, Loan
-                  Calculator, Number Base Converter
+                  BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter, Number Base Converter
                 </p>
               </div>
               <div>
@@ -197,15 +195,13 @@ export default function AboutPage() {
                   Developer Tools
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Password Generator, JSON Formatter, Color Picker, QR Code
-                  Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash
-                  Generator, Text Diff Checker
+                  Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Text Diff Checker
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold mb-2 text-primary">Converters</h3>
+                <h3 className="font-semibold mb-2 text-primary">Image Tools</h3>
                 <p className="text-sm text-muted-foreground">
-                  Unit Converter, Image Compressor, PDF Compressor
+                  Image Compressor, PDF Compressor
                 </p>
               </div>
             </div>

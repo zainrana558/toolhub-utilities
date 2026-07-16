@@ -19,11 +19,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "ToolVerse - 20 Free Online Tools | No Sign-Up",
+    default: "ToolVerse - 21 Free Online Tools | No Sign-Up",
     template: "%s | ToolVerse",
   },
   description:
-    "20 free online tools: word counter, password generator, BMI calculator, image compressor, QR code generator, PDF compressor, unit converter, JSON formatter and more. No sign-up, 100% private.",
+    "21 free online tools: word counter, character counter, password generator, BMI calculator, image compressor, QR code generator, PDF compressor, unit converter, JSON formatter and more. No sign-up, 100% private.",
   keywords: [
     "free online tools", "word counter", "password generator", "BMI calculator",
     "percentage calculator", "age calculator", "loan calculator", "unit converter",
