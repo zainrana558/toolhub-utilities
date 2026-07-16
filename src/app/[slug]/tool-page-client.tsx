@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import { tools, toolCategories } from "@/lib/tools-data";
-import { AdSlot } from "@/components/ad-slot";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ThumbsUp, Share2, Link2, Copy, Check, ChevronRight, Home, Wrench } from "lucide-react";
-import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
-import Link from "next/link";
+
+// Lazy-load below-the-fold ad slots
+const AdSlot = dynamic(() => import("@/components/ad-slot").then((m) => ({ default: m.AdSlot })), {
+  ssr: false,
+  loading: () => <div className="w-full h-[90px]" />,
+});
 
 // Dynamic imports for code splitting
 const WordCounter = dynamic(() => import("@/components/tools/word-counter").then((m) => ({ default: m.WordCounter })), { ssr: false });
@@ -192,10 +197,10 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
 
               <AdSlot variant="horizontal" />
 
-              {/* ===== INTRODUCTION ===== */}
+              {/* ===== BENEFIT HEADING ===== */}
               <motion.section className="border-t pt-8" variants={fadeUp}>
                 <h2 className="text-xl font-semibold mb-3">
-                  What is {tool.name}?
+                  {tool.benefitHeading}
                 </h2>
                 <p className="text-muted-foreground leading-relaxed">
                   <strong className="text-foreground">{tool.name}</strong> is a{" "}
@@ -227,15 +232,12 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                 </div>
               </motion.section>
 
-              {/* ===== HOW TO USE ===== */}
-              <section aria-labelledby="howto-heading">
-                <motion.div variants={fadeUp}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base" id="howto-heading">How to Use {tool.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ol className="space-y-3" itemScope itemType="https://schema.org/HowTo">
+              {/* ===== HOW IT WORKS ===== */}
+              <motion.section className="border-t pt-8" variants={fadeUp}>
+                <h2 className="text-xl font-semibold mb-4">How It Works</h2>
+                <Card>
+                  <CardContent>
+                    <ol className="space-y-3" itemScope itemType="https://schema.org/HowTo">
                         {tool.howToUse.map((step, i) => (
                           <motion.li
                             key={i}
@@ -254,14 +256,12 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                           </motion.li>
                         ))}
                       </ol>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </section>
+                  </CardContent>
+                </Card>
+              </motion.section>
 
-              {/* ===== EXAMPLES ===== */}
+              {/* ===== EXAMPLE ===== */}
               <motion.section className="border-t pt-8" variants={fadeUp}>
-                <h2 className="text-xl font-semibold mb-4">Example</h2>
                 <Card>
                   <CardContent className="p-5 space-y-4">
                     <div>
@@ -287,9 +287,9 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
               <motion.article className="border-t pt-8 space-y-6" variants={fadeUp}>
                 <p className="text-xs text-muted-foreground">Last updated: <time dateTime="2026-07-16">July 16, 2026</time></p>
 
-                <h2 className="text-xl font-semibold">
+                <h3 className="text-lg font-semibold">
                   Why Use {tool.name} Instead of Alternatives?
-                </h2>
+                </h3>
                 <ul className="space-y-2 text-muted-foreground text-sm list-none">
                   <li className="flex gap-2">
                     <span className="text-green-500 shrink-0">✓</span>
@@ -313,7 +313,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                   </li>
                 </ul>
 
-                <h2 className="text-xl font-semibold">Is {tool.name} Safe to Use?</h2>
+                <h3 className="text-lg font-semibold">Is {tool.name} Safe to Use?</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
                   Yes. All processing runs in your browser using standard web technologies. We use{" "}
                   <strong className="text-foreground">cryptographically secure methods</strong> where applicable (such as the Web Crypto API for password generation and hash computation). No plugins, extensions, or downloads are required. Open your browser&apos;s developer tools to verify no network requests are made during tool operation.
@@ -323,7 +323,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
               {/* FAQ — Change A: added id="faq-heading" */}
               {tool.faq.length > 0 && (
                 <motion.section className="border-t pt-8" variants={fadeUp}>
-                  <h2 className="text-xl font-semibold mb-4" id="faq-heading">Frequently Asked Questions about {tool.name}</h2>
+                  <h2 className="text-xl font-semibold mb-4" id="faq-heading">Frequently Asked Questions</h2>
                   <div className="space-y-3">
                     {tool.faq.map((item, i) => (
                       <motion.div
@@ -385,12 +385,10 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
               {/* Link to This Tool */}
               <motion.div variants={fadeUp}>
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base flex items-center gap-2">
+                  <CardContent className="pt-6 space-y-4">
+                    <div className="text-base font-semibold flex items-center gap-2">
                       <Link2 className="h-4 w-4" /> Link to This Tool
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       Share this tool on your website or blog. A link back helps others discover these free tools.
                     </p>

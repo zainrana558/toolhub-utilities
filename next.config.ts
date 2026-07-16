@@ -65,6 +65,21 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" },
         ],
       },
+      // Tool pages: aggressive CDN caching with stale-while-revalidate
+      {
+        source: "/(word-counter|character-counter|password-generator|bmi-calculator|percentage-calculator|age-calculator|loan-calculator|unit-converter|case-converter|color-picker|json-formatter|image-compressor|qr-code-generator|base64-encoder|url-encoder|lorem-ipsum-generator|markdown-previewer|hash-generator|number-base-converter|text-diff-checker|pdf-compressor)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" },
+          { key: "Vary", value: "Accept-Encoding" },
+        ],
+      },
+      // Hint for Brotli/compression on HTML
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "Vary", value: "Accept-Encoding" },
+        ],
+      },
     ];
   },
   // Optimize images

@@ -35,6 +35,7 @@ export interface ToolDef {
   metaTitle: string;
   metaDescription: string;
   primaryKeyword: string;
+  benefitHeading: string;
   howToUse: string[];
   faq: { question: string; answer: string }[];
   features: string[];
@@ -59,7 +60,8 @@ export const tools: ToolDef[] = [
     icon: Type,
     keywords: ["word counter", "character counter", "word count tool", "online word counter", "text counter", "sentence counter", "reading time calculator"],
     metaTitle: "Free Word Counter \u2013 Count Words, Characters & Reading Time",
-    metaDescription: "Count words, characters, sentences and reading time instantly. Free online word counter for writers, students and SEO professionals. No sign-up.",
+    metaDescription: "Count words, characters, sentences, paragraphs, reading time, and speaking time instantly. Free online Word Counter.",
+    benefitHeading: "Count Words Online",
     primaryKeyword: "word counter",
     howToUse: ["Type or paste your text into the text area above.", "View real-time counts for words, characters, sentences, and paragraphs.", "Check the keyword density section to see your most used words.", "Use the reading time estimate to plan your content."],    faq: [
       { question: "What is a Word Counter?", answer: "A word counter is a free online tool that instantly counts the total number of words, characters, sentences, and paragraphs in any text you paste or type. It also estimates reading and speaking time, making it essential for writers, students, bloggers, and SEO professionals who need to meet specific word count requirements." },
@@ -82,7 +84,8 @@ export const tools: ToolDef[] = [
     icon: TextCursorInput,
     keywords: ["character counter", "letter counter", "character count", "text analysis", "character frequency", "char counter", "text composition"],
     metaTitle: "Free Character Counter \u2013 Count Characters & Analyze Text",
-    metaDescription: "Count characters, analyze frequency and get text composition stats instantly. Free online character counter for social media, SMS and SEO. No sign-up.",
+    metaDescription: "Count characters, analyze frequency distribution, and get detailed text composition stats instantly. Free online Character Counter.",
+    benefitHeading: "Analyze Characters & Text Composition",
     primaryKeyword: "character counter",
     howToUse: ["Type or paste your text into the text area.", "View real-time character counts including total, without spaces, and unique characters.", "Check the character density breakdown to see letters, numbers, spaces, and special characters.", "Review the top 10 most-used characters with frequency percentages."],    faq: [
       { question: "What is a Character Counter?", answer: "A character counter is a free online tool that counts the total number of characters in your text, including or excluding spaces. It also provides a detailed breakdown of character types \u2014 letters, numbers, spaces, and special characters \u2014 along with frequency analysis of your most-used characters." },
@@ -105,7 +108,8 @@ export const tools: ToolDef[] = [
     icon: Shield,
     keywords: ["password generator", "strong password", "secure password", "random password", "password maker", "create password"],
     metaTitle: "Free Password Generator – Create Strong Secure Passwords",
-    metaDescription: "Generate strong, secure passwords instantly. Customize length and characters. Check password strength. Free online tool, no data stored.",
+    metaDescription: "Generate strong, cryptographically secure passwords with customizable length and character types. Check strength in real time. Free online Password Generator.",
+    benefitHeading: "Generate Secure Passwords",
     primaryKeyword: "password generator",
     howToUse: ["Adjust the password length using the slider (4 to 64 characters).", "Toggle character types: uppercase, lowercase, numbers, and symbols.", "Click 'Generate New Password' to create a fresh password.", "Click the copy icon to copy the password to your clipboard."],    faq: [
       { question: "What is a Password Generator?", answer: "A password generator is a free online tool that creates strong, random passwords using cryptographically secure algorithms. You can customize the length and character types (uppercase, lowercase, numbers, symbols) to generate passwords that meet any website's requirements." },
@@ -128,7 +132,8 @@ export const tools: ToolDef[] = [
     icon: Heart,
     keywords: ["bmi calculator", "body mass index", "bmi checker", "healthy weight", "bmi chart", "weight calculator"],
     metaTitle: "Free BMI Calculator – Calculate Body Mass Index Online",
-    metaDescription: "Calculate your BMI instantly with metric or imperial units. Free online BMI calculator with health categories and visual chart. No sign-up required.",
+    metaDescription: "Calculate your Body Mass Index with metric or imperial units. See health categories and visual BMI chart. Free online BMI Calculator.",
+    benefitHeading: "Calculate Your Body Mass Index",
     primaryKeyword: "BMI calculator",
     howToUse: ["Select your preferred unit system (Metric or Imperial).", "Enter your weight and height in the fields provided.", "Click 'Calculate BMI' to see your results.", "Review the BMI scale and health category for context."],    faq: [
       { question: "What is a BMI Calculator?", answer: "A BMI (Body Mass Index) calculator is a free online tool that estimates whether your weight is in a healthy range relative to your height. It uses the standard BMI formula and categorizes your result as underweight, normal weight, overweight, or obese based on WHO guidelines." },
@@ -151,7 +156,8 @@ export const tools: ToolDef[] = [
     icon: Percent,
     keywords: ["percentage calculator", "percent calculator", "percentage increase", "percentage decrease", "percent of", "calculate percentage"],
     metaTitle: "Free Percentage Calculator – Calculate Percentages Instantly",
-    metaDescription: "Calculate percentages, increase, decrease and change instantly. Free online percentage calculator for students, business and finance. Works in browser.",
+    metaDescription: "Calculate percentages, percentage increase, decrease, and difference between two numbers instantly. Free online Percentage Calculator.",
+    benefitHeading: "Calculate Percentages Instantly",
     primaryKeyword: "percentage calculator",
     howToUse: ["Choose a calculation mode: '% of Number', '% of What?', or '% Change'.", "Enter your numbers in the input fields.", "Click 'Calculate' to see the result instantly.", "Use the common examples below for quick reference."],    faq: [
       { question: "What is a Percentage Calculator?", answer: "A percentage calculator is a free online tool that lets you quickly compute percentages, percentage increases and decreases, and percentage differences between two numbers. It offers multiple calculation modes so you can solve any percentage problem without memorizing formulas." },
@@ -174,7 +180,8 @@ export const tools: ToolDef[] = [
     icon: Calendar,
     keywords: ["age calculator", "calculate age", "how old am I", "age in days", "birthday calculator", "date of birth calculator"],
     metaTitle: "Free Age Calculator – Exact Age in Years, Months & Days",
-    metaDescription: "Calculate your exact age in years, months, days, hours and seconds. Free online age calculator with next birthday countdown and zodiac sign.",
+    metaDescription: "Calculate your exact age in years, months, days, hours, minutes, and seconds. Includes zodiac sign and birthday countdown. Free online Age Calculator.",
+    benefitHeading: "Calculate Your Exact Age",
     primaryKeyword: "age calculator",
     howToUse: ["Enter your date of birth in the first date field.", "Optionally change the 'Age at Date' to calculate age at a specific point.", "Click 'Calculate Age' to see a detailed age breakdown.", "View your zodiac sign, day of birth, and next birthday countdown."],    faq: [
       { question: "What is an Age Calculator?", answer: "An age calculator is a free online tool that computes your exact age in years, months, weeks, days, hours, minutes, and seconds from your date of birth. It also shows your zodiac sign, day of the week you were born, and a countdown to your next birthday." },
@@ -197,7 +204,8 @@ export const tools: ToolDef[] = [
     icon: Banknote,
     keywords: ["loan calculator", "mortgage calculator", "emi calculator", "monthly payment", "interest calculator", "amortization schedule"],
     metaTitle: "Free Loan Calculator – Monthly Payment & Amortization",
-    metaDescription: "Calculate monthly loan payments, total interest and view amortization schedule. Free mortgage and EMI calculator. Works for any fixed-rate loan.",
+    metaDescription: "Calculate monthly payments, total interest, and view a full amortization schedule for any fixed-rate loan. Free online Loan Calculator.",
+    benefitHeading: "Calculate Loan Payments & Amortization",
     primaryKeyword: "loan calculator",
     howToUse: ["Enter the total loan amount in dollars.", "Enter the annual interest rate as a percentage (e.g., 6.5 for 6.5%).", "Enter the loan term in years.", "Click 'Calculate Payment' to see monthly payment, total cost, and full amortization schedule."],    faq: [
       { question: "What is a Loan Calculator?", answer: "A loan calculator is a free online tool that computes your monthly payment, total interest paid, and total cost for any fixed-rate loan. It also generates a complete amortization schedule showing how each payment is split between principal and interest over the life of the loan." },
@@ -220,7 +228,8 @@ export const tools: ToolDef[] = [
     icon: ArrowLeftRight,
     keywords: ["unit converter", "length converter", "weight converter", "temperature converter", "metric converter", "measurement converter"],
     metaTitle: "Free Unit Converter – Length, Weight, Temperature & More",
-    metaDescription: "Convert between units of length, weight, temperature, volume, speed and data storage. Free online unit converter. Metric and imperial supported.",
+    metaDescription: "Convert between units of length, weight, temperature, volume, area, speed, and data storage instantly. Free online Unit Converter.",
+    benefitHeading: "Convert Between Any Unit",
     primaryKeyword: "unit converter",
     howToUse: ["Select a category (Length, Weight, Temperature, Volume, Area, Speed, or Data).", "Choose the unit you're converting from and to using the dropdowns.", "Enter a value in the 'From' field — the 'To' field updates instantly.", "Click the swap button to reverse the conversion direction."],    faq: [
       { question: "What is a Unit Converter?", answer: "A unit converter is a free online tool that converts values between different units of measurement across 7 categories: length, weight, temperature, volume, area, speed, and data storage. It supports both metric and imperial systems and converts between them instantly." },
@@ -243,7 +252,8 @@ export const tools: ToolDef[] = [
     icon: CaseSensitive,
     keywords: ["case converter", "uppercase converter", "lowercase converter", "title case", "sentence case", "text case changer"],
     metaTitle: "Free Case Converter – Uppercase, Title Case, camelCase & More",
-    metaDescription: "Convert text to uppercase, lowercase, title case, camelCase, snake_case and more. Free online case converter. Copy results instantly.",
+    metaDescription: "Convert text between UPPERCASE, lowercase, Title Case, camelCase, PascalCase, snake_case, and kebab-case instantly. Free online Case Converter.",
+    benefitHeading: "Convert Text to Any Case",
     primaryKeyword: "case converter",
     howToUse: ["Type or paste your text into the input area.", "Click any conversion button (UPPERCASE, lowercase, Title Case, etc.).", "The converted text appears in the result section below.", "Click 'Copy' to copy the converted text to your clipboard."],    faq: [
       { question: "What is a Case Converter?", answer: "A case converter is a free online tool that transforms text between different letter cases including UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, and kebab-case. It is essential for developers, writers, and anyone who needs to reformat text quickly." },
@@ -266,7 +276,8 @@ export const tools: ToolDef[] = [
     icon: Palette,
     keywords: ["color picker", "hex color", "rgb color", "hsl color", "color converter", "color palette generator"],
     metaTitle: "Free Color Picker – HEX, RGB, HSL Converter & Palette Tool",
-    metaDescription: "Pick colors and convert between HEX, RGB, HSL formats instantly. Free online color picker with palette generator for designers and developers.",
+    metaDescription: "Pick any color and convert between HEX, RGB, and HSL formats. Generate palettes and complementary colors. Free online Color Picker.",
+    benefitHeading: "Pick Colors & Convert Formats",
     primaryKeyword: "color picker",
     howToUse: ["Use the HEX input to enter a color code directly, or adjust the RGB/HSL sliders.", "Click any color value (HEX, RGB, HSL) to copy it to your clipboard.", "View color variations: lighter, darker, and complementary colors.", "Use the generated palette at the bottom for shading inspiration."],    faq: [
       { question: "What is a Color Picker?", answer: "A color picker is a free online tool that lets you select any color and instantly see its values in multiple formats: HEX (#FF5733), RGB (255, 87, 51), and HSL. It also generates color palettes, lighter/darker variations, and complementary colors for design work." },
@@ -289,7 +300,8 @@ export const tools: ToolDef[] = [
     icon: Braces,
     keywords: ["json formatter", "json beautifier", "json validator", "json viewer", "format json", "pretty print json"],
     metaTitle: "Free JSON Formatter & Validator – Beautify JSON Online",
-    metaDescription: "Format, validate and beautify JSON instantly with syntax highlighting. Free online JSON formatter with tree view and minifier. 100% private.",
+    metaDescription: "Format, validate, beautify, and minify JSON data with syntax highlighting and error detection. Free online JSON Formatter.",
+    benefitHeading: "Format & Validate JSON Data",
     primaryKeyword: "JSON formatter",
     howToUse: ["Paste your JSON data into the input text area, or click 'Upload .json' to load a file.", "Click 'Format / Beautify' to pretty-print the JSON with proper indentation.", "Click 'Minify' to compress JSON to a single line.", "Click 'Validate' to check if your JSON is valid without reformatting."],    faq: [
       { question: "What is a JSON Formatter?", answer: "A JSON formatter (also called a JSON beautifier) is a free online developer tool that takes messy or minified JSON data and formats it with proper indentation, line breaks, and syntax highlighting. It also validates JSON syntax and can minify formatted JSON back to a compact single-line form." },
@@ -312,7 +324,8 @@ export const tools: ToolDef[] = [
     icon: ImageDown,
     keywords: ["image compressor", "compress image", "resize image", "reduce image size", "image optimizer", "jpeg compressor", "png compressor", "webp converter"],
     metaTitle: "Free Image Compressor – Compress JPEG, PNG, WebP Online",
-    metaDescription: "Compress and resize images online for free. Reduce file size up to 90%. Convert between JPEG, PNG and WebP. 100% private, all processing in your browser.",
+    metaDescription: "Compress and resize images with quality control. Supports JPEG, PNG, and WebP. Reduce file size up to 90% in your browser. Free online Image Compressor.",
+    benefitHeading: "Compress & Resize Images",
     primaryKeyword: "image compressor",
     howToUse: ["Click or drag and drop an image file into the upload area.", "Adjust the quality slider and optionally set max width/height.", "Choose your preferred output format (JPEG, PNG, or WebP).", "Click 'Download Compressed Image' to save the optimized file."],    faq: [
       { question: "What is an Image Compressor?", answer: "An image compressor is a free online tool that reduces the file size of images directly in your browser. It supports JPEG, PNG, and WebP formats and lets you adjust quality settings and dimensions. You can see the before/after file size comparison before downloading." },
@@ -335,7 +348,8 @@ export const tools: ToolDef[] = [
     icon: QrCode,
     keywords: ["qr code generator", "create qr code", "qr code maker", "free qr code", "qr code online", "generate qr", "custom qr code"],
     metaTitle: "Free QR Code Generator – Create Custom QR Codes Online",
-    metaDescription: "Generate free QR codes from text or URLs. Customize colors and size. Download as PNG. No sign-up required, 100% free.",
+    metaDescription: "Generate customizable QR codes from text, URLs, or any data. Choose size, colors, and download as PNG. Free online QR Code Generator.",
+    benefitHeading: "Generate Custom QR Codes",
     primaryKeyword: "QR code generator",
     howToUse: ["Enter your text or URL in the input field.", "Customize the QR code size using the slider.", "Optionally change the foreground and background colors.", "Click 'Download PNG' or 'Copy to Clipboard' to save your QR code."],    faq: [
       { question: "What is a QR Code Generator?", answer: "A QR code generator is a free online tool that creates scannable QR codes from any text or URL. You can customize the size, colors, and download the result as a high-quality PNG image. QR codes are used for sharing links, business cards, WiFi passwords, and more." },
@@ -358,7 +372,8 @@ export const tools: ToolDef[] = [
     icon: Binary,
     keywords: ["base64 encoder", "base64 decoder", "encode base64", "decode base64", "base64 converter", "file to base64", "base64 to file"],
     metaTitle: "Free Base64 Encoder/Decoder – Text & File Conversion",
-    metaDescription: "Encode text or files to Base64 and decode Base64 back. Supports Unicode text, file uploads, and data URI conversion. Free online tool.",
+    metaDescription: "Encode text or files to Base64 and decode Base64 back to text. Supports Unicode, emojis, and file uploads. Free online Base64 Encoder.",
+    benefitHeading: "Encode & Decode Base64",
     primaryKeyword: "base64 encoder",
     howToUse: ["Switch to the 'Encode' tab to convert text or files to Base64.", "Switch to the 'Decode' tab to convert Base64 back to text or a file.", "Paste your input or upload a file, then click the action button.", "Copy the result or download the decoded file."],    faq: [
       { question: "What is Base64 encoding?", answer: "Base64 is a binary-to-text encoding scheme that represents binary data using a set of 64 ASCII characters (A-Z, a-z, 0-9, +, /). It is commonly used to embed images in HTML/CSS, send binary data in JSON payloads, encode email attachments, and represent binary data in text-based formats like XML or configuration files." },
@@ -381,7 +396,8 @@ export const tools: ToolDef[] = [
     icon: Link,
     keywords: ["url encoder", "url decoder", "encode url", "decode url", "percent encoding", "url encode online", "urlencode"],
     metaTitle: "Free URL Encoder/Decoder – Percent Encoding Tool",
-    metaDescription: "Encode and decode URLs instantly. See automatic URL breakdown with scheme, host, path and query params. Free online tool for developers.",
+    metaDescription: "Encode and decode URLs with percent-encoding. See automatic URL breakdown with scheme, host, path, and query params. Free online URL Encoder.",
+    benefitHeading: "Encode & Decode URLs",
     primaryKeyword: "URL encoder",
     howToUse: ["Switch to 'Encode' tab to encode special characters in a URL.", "Switch to 'Decode' tab to decode a percent-encoded URL.", "Paste your URL and click the action button.", "View the URL breakdown panel to see parsed components."],    faq: [
       { question: "What is a URL Encoder?", answer: "A URL encoder is a free online tool that converts special characters in URLs to percent-encoded format (e.g., space becomes %20) for safe transmission. It also decodes percent-encoded URLs back to readable text. It includes an automatic URL breakdown showing scheme, host, path, and query parameters." },
@@ -404,7 +420,8 @@ export const tools: ToolDef[] = [
     icon: FileText,
     keywords: ["lorem ipsum generator", "placeholder text", "dummy text", "filler text", "lorem ipsum", "sample text generator", "mockup text"],
     metaTitle: "Free Lorem Ipsum Generator – Placeholder Text Tool",
-    metaDescription: "Generate lorem ipsum placeholder text by paragraphs, sentences or words. Customizable count and options. Copy instantly. Free online tool.",
+    metaDescription: "Generate lorem ipsum placeholder text by paragraphs, sentences, or words with customizable count. Copy instantly. Free online Lorem Ipsum Generator.",
+    benefitHeading: "Generate Placeholder Text",
     primaryKeyword: "lorem ipsum generator",
     howToUse: ["Select the type: Paragraphs, Sentences, or Words.", "Set the count using the number input.", "Toggle 'Start with Lorem ipsum dolor sit amet' if desired.", "Click 'Copy All' to copy the generated text to your clipboard."],    faq: [
       { question: "What is a Lorem Ipsum Generator?", answer: "A lorem ipsum generator is a free online tool that creates placeholder (dummy) text for designs, mockups, and prototypes. It generates realistic-looking text that mimics natural language, allowing designers and developers to visualize how real content will look without needing actual copy." },
@@ -427,7 +444,8 @@ export const tools: ToolDef[] = [
     icon: AlignLeft,
     keywords: ["markdown previewer", "markdown editor", "markdown to html", "markdown viewer", "online markdown", "gfm previewer", "markdown live preview"],
     metaTitle: "Free Markdown Previewer – Live Editor with HTML Export",
-    metaDescription: "Write Markdown and see live HTML preview instantly. Supports GFM, tables, code blocks. Copy HTML output. Free online tool, no sign-up.",
+    metaDescription: "Write Markdown with a live HTML preview, split-view editor, and GFM support. Copy rendered HTML with one click. Free online Markdown Previewer.",
+    benefitHeading: "Preview Markdown in Real Time",
     primaryKeyword: "markdown previewer",
     howToUse: ["Type or paste Markdown in the left editor panel.", "See the rendered HTML preview on the right in real time.", "Switch between Split, Preview, and HTML Source views.", "Click 'Copy HTML' to copy the rendered HTML to your clipboard."],    faq: [
       { question: "What is a Markdown Previewer?", answer: "A Markdown previewer is a free online tool that lets you write Markdown text in a split-view editor and see a live HTML preview in real time. It supports GitHub Flavored Markdown (GFM) including tables, code blocks, task lists, and more. You can also copy the rendered HTML output for use in blogs, CMS platforms, or emails." },
@@ -450,7 +468,8 @@ export const tools: ToolDef[] = [
     icon: Lock,
     keywords: ["hash generator", "sha256", "sha512", "sha1", "hash calculator", "cryptographic hash", "checksum generator", "hash online"],
     metaTitle: "Free Hash Generator – SHA-1, SHA-256, SHA-512 Online",
-    metaDescription: "Generate SHA-1, SHA-256 and SHA-512 hashes from any text instantly. Uses Web Crypto API. Free online tool, 100% private.",
+    metaDescription: "Generate SHA-1, SHA-256, and SHA-512 cryptographic hashes from any text. Real-time hashing with Web Crypto API. Free online Hash Generator.",
+    benefitHeading: "Generate Cryptographic Hashes",
     primaryKeyword: "hash generator",
     howToUse: ["Enter or paste your text in the input field.", "View the generated hashes for SHA-1, SHA-256, and SHA-512 below.", "Click the copy icon next to any hash to copy it.", "Hashes update in real time as you type (debounced)."],    faq: [
       { question: "What is a Hash Generator?", answer: "A hash generator is a free online tool that creates cryptographic hash values from any text input. It supports SHA-1, SHA-256, and SHA-512 algorithms using the Web Crypto API. Hashes are used for verifying file integrity, securely storing passwords, generating checksums, and digital signatures." },
@@ -473,7 +492,8 @@ export const tools: ToolDef[] = [
     icon: Hash,
     keywords: ["number base converter", "binary converter", "hex converter", "decimal to binary", "hex to decimal", "octal converter", "radix converter"],
     metaTitle: "Free Number Base Converter – Binary, Hex, Octal, Decimal",
-    metaDescription: "Convert between binary, octal, decimal and hexadecimal instantly. Supports large numbers with BigInt. Free online tool for programmers and students.",
+    metaDescription: "Convert between binary, octal, decimal, and hexadecimal instantly. Supports arbitrary-precision with BigInt. Free online Number Base Converter.",
+    benefitHeading: "Convert Between Number Bases",
     primaryKeyword: "number base converter",
     howToUse: ["Select your input base (Binary, Octal, Decimal, or Hexadecimal).", "Enter your number in the input field.", "See the conversion results in all other bases instantly.", "Click any swap button to use a result as your new input."],    faq: [
       { question: "What is a Number Base Converter?", answer: "A number base converter is a free online tool that converts numbers between binary (base 2), octal (base 8), decimal (base 10), and hexadecimal (base 16) number systems. It uses JavaScript BigInt for arbitrary-precision arithmetic, so it handles very large numbers without any loss of precision." },
@@ -496,7 +516,8 @@ export const tools: ToolDef[] = [
     icon: Diff,
     keywords: ["text diff", "compare text", "text difference", "diff checker", "text comparison", "compare two texts", "find differences"],
     metaTitle: "Free Text Diff Checker – Compare Two Texts Online",
-    metaDescription: "Compare two texts and see differences highlighted instantly. Shows added, removed and unchanged lines with statistics. Free online diff tool.",
+    metaDescription: "Compare two texts side by side and see added, removed, and unchanged lines highlighted with statistics. Free online Text Diff Checker.",
+    benefitHeading: "Compare Two Texts Side by Side",
     primaryKeyword: "text diff checker",
     howToUse: ["Paste your original text in the left textarea.", "Paste the modified text in the right textarea.", "Click 'Compare' to see the differences highlighted.", "Review the stats showing lines added, removed, and unchanged."],    faq: [
       { question: "What is a Text Diff Checker?", answer: "A text diff checker is a free online tool that compares two pieces of text side by side and highlights the differences. Added lines appear in green, removed lines in red, and unchanged lines remain neutral. It shows statistics for lines added, removed, and unchanged \u2014 perfect for comparing code revisions, document versions, and text changes." },
@@ -519,7 +540,8 @@ export const tools: ToolDef[] = [
     icon: FileDown,
     keywords: ["pdf compressor", "compress pdf", "reduce pdf size", "pdf optimizer", "pdf compression", "make pdf smaller", "online pdf compressor"],
     metaTitle: "Free PDF Compressor – Reduce PDF File Size Online",
-    metaDescription: "Compress PDF files online for free. Three compression levels. No upload needed — all processing in your browser. Reduce PDF size by up to 80%.",
+    metaDescription: "Compress PDF files with three compression levels directly in your browser. Reduce file size by up to 80% with zero uploads. Free online PDF Compressor.",
+    benefitHeading: "Compress PDF Files in Your Browser",
     primaryKeyword: "PDF compressor",
     howToUse: ["Click or drag and drop a PDF file into the upload area.", "Select your compression level (Low, Medium, or High).", "Click 'Compress PDF' and wait for processing.", "Download the compressed PDF and check the size reduction."],    faq: [
       { question: "What is a PDF Compressor?", answer: "A PDF compressor is a free online tool that reduces the file size of PDF documents directly in your browser. It offers three compression levels \u2014 Low, Medium, and High \u2014 and shows you the file size reduction before you download. No upload to any server is required." },
