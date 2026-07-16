@@ -58,7 +58,7 @@ export const tools: ToolDef[] = [
     category: "text",
     icon: Type,
     keywords: ["word counter", "character counter", "word count tool", "online word counter", "text counter", "sentence counter", "reading time calculator"],
-    metaTitle: "Free Word Counter - Count Words, Characters & Reading Time",
+    metaTitle: "Free Word Counter \u2013 Count Words, Characters & Reading Time",
     metaDescription: "Count words, characters, sentences and reading time instantly. Free online word counter for writers, students and SEO professionals. No sign-up.",
     primaryKeyword: "word counter",
     howToUse: ["Type or paste your text into the text area above.", "View real-time counts for words, characters, sentences, and paragraphs.", "Check the keyword density section to see your most used words.", "Use the reading time estimate to plan your content."],    faq: [
@@ -81,7 +81,7 @@ export const tools: ToolDef[] = [
     category: "text",
     icon: TextCursorInput,
     keywords: ["character counter", "letter counter", "character count", "text analysis", "character frequency", "char counter", "text composition"],
-    metaTitle: "Free Character Counter - Count Characters & Analyze Text",
+    metaTitle: "Free Character Counter \u2013 Count Characters & Analyze Text",
     metaDescription: "Count characters, analyze frequency and get text composition stats instantly. Free online character counter for social media, SMS and SEO. No sign-up.",
     primaryKeyword: "character counter",
     howToUse: ["Type or paste your text into the text area.", "View real-time character counts including total, without spaces, and unique characters.", "Check the character density breakdown to see letters, numbers, spaces, and special characters.", "Review the top 10 most-used characters with frequency percentages."],    faq: [
@@ -104,7 +104,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Shield,
     keywords: ["password generator", "strong password", "secure password", "random password", "password maker", "create password"],
-    metaTitle: "Free Password Generator - Create Strong Secure Passwords",
+    metaTitle: "Free Password Generator – Create Strong Secure Passwords",
     metaDescription: "Generate strong, secure passwords instantly. Customize length and characters. Check password strength. Free online tool, no data stored.",
     primaryKeyword: "password generator",
     howToUse: ["Adjust the password length using the slider (4 to 64 characters).", "Toggle character types: uppercase, lowercase, numbers, and symbols.", "Click 'Generate New Password' to create a fresh password.", "Click the copy icon to copy the password to your clipboard."],    faq: [
@@ -127,7 +127,7 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Heart,
     keywords: ["bmi calculator", "body mass index", "bmi checker", "healthy weight", "bmi chart", "weight calculator"],
-    metaTitle: "Free BMI Calculator - Calculate Body Mass Index Online",
+    metaTitle: "Free BMI Calculator – Calculate Body Mass Index Online",
     metaDescription: "Calculate your BMI instantly with metric or imperial units. Free online BMI calculator with health categories and visual chart. No sign-up required.",
     primaryKeyword: "BMI calculator",
     howToUse: ["Select your preferred unit system (Metric or Imperial).", "Enter your weight and height in the fields provided.", "Click 'Calculate BMI' to see your results.", "Review the BMI scale and health category for context."],    faq: [
@@ -150,7 +150,7 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Percent,
     keywords: ["percentage calculator", "percent calculator", "percentage increase", "percentage decrease", "percent of", "calculate percentage"],
-    metaTitle: "Free Percentage Calculator - Calculate Percentages Instantly",
+    metaTitle: "Free Percentage Calculator – Calculate Percentages Instantly",
     metaDescription: "Calculate percentages, increase, decrease and change instantly. Free online percentage calculator for students, business and finance. Works in browser.",
     primaryKeyword: "percentage calculator",
     howToUse: ["Choose a calculation mode: '% of Number', '% of What?', or '% Change'.", "Enter your numbers in the input fields.", "Click 'Calculate' to see the result instantly.", "Use the common examples below for quick reference."],    faq: [
@@ -173,7 +173,7 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Calendar,
     keywords: ["age calculator", "calculate age", "how old am I", "age in days", "birthday calculator", "date of birth calculator"],
-    metaTitle: "Free Age Calculator - Exact Age in Years, Months & Days",
+    metaTitle: "Free Age Calculator – Exact Age in Years, Months & Days",
     metaDescription: "Calculate your exact age in years, months, days, hours and seconds. Free online age calculator with next birthday countdown and zodiac sign.",
     primaryKeyword: "age calculator",
     howToUse: ["Enter your date of birth in the first date field.", "Optionally change the 'Age at Date' to calculate age at a specific point.", "Click 'Calculate Age' to see a detailed age breakdown.", "View your zodiac sign, day of birth, and next birthday countdown."],    faq: [
@@ -196,7 +196,7 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Banknote,
     keywords: ["loan calculator", "mortgage calculator", "emi calculator", "monthly payment", "interest calculator", "amortization schedule"],
-    metaTitle: "Free Loan Calculator - Monthly Payment & Amortization",
+    metaTitle: "Free Loan Calculator – Monthly Payment & Amortization",
     metaDescription: "Calculate monthly loan payments, total interest and view amortization schedule. Free mortgage and EMI calculator. Works for any fixed-rate loan.",
     primaryKeyword: "loan calculator",
     howToUse: ["Enter the total loan amount in dollars.", "Enter the annual interest rate as a percentage (e.g., 6.5 for 6.5%).", "Enter the loan term in years.", "Click 'Calculate Payment' to see monthly payment, total cost, and full amortization schedule."],    faq: [
@@ -219,7 +219,7 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: ArrowLeftRight,
     keywords: ["unit converter", "length converter", "weight converter", "temperature converter", "metric converter", "measurement converter"],
-    metaTitle: "Free Unit Converter - Length, Weight, Temperature & More",
+    metaTitle: "Free Unit Converter – Length, Weight, Temperature & More",
     metaDescription: "Convert between units of length, weight, temperature, volume, speed and data storage. Free online unit converter. Metric and imperial supported.",
     primaryKeyword: "unit converter",
     howToUse: ["Select a category (Length, Weight, Temperature, Volume, Area, Speed, or Data).", "Choose the unit you're converting from and to using the dropdowns.", "Enter a value in the 'From' field — the 'To' field updates instantly.", "Click the swap button to reverse the conversion direction."],    faq: [
@@ -242,7 +242,7 @@ export const tools: ToolDef[] = [
     category: "text",
     icon: CaseSensitive,
     keywords: ["case converter", "uppercase converter", "lowercase converter", "title case", "sentence case", "text case changer"],
-    metaTitle: "Free Case Converter - Uppercase, Title Case, camelCase & More",
+    metaTitle: "Free Case Converter – Uppercase, Title Case, camelCase & More",
     metaDescription: "Convert text to uppercase, lowercase, title case, camelCase, snake_case and more. Free online case converter. Copy results instantly.",
     primaryKeyword: "case converter",
     howToUse: ["Type or paste your text into the input area.", "Click any conversion button (UPPERCASE, lowercase, Title Case, etc.).", "The converted text appears in the result section below.", "Click 'Copy' to copy the converted text to your clipboard."],    faq: [
@@ -265,7 +265,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Palette,
     keywords: ["color picker", "hex color", "rgb color", "hsl color", "color converter", "color palette generator"],
-    metaTitle: "Free Color Picker - HEX, RGB, HSL Converter & Palette Tool",
+    metaTitle: "Free Color Picker – HEX, RGB, HSL Converter & Palette Tool",
     metaDescription: "Pick colors and convert between HEX, RGB, HSL formats instantly. Free online color picker with palette generator for designers and developers.",
     primaryKeyword: "color picker",
     howToUse: ["Use the HEX input to enter a color code directly, or adjust the RGB/HSL sliders.", "Click any color value (HEX, RGB, HSL) to copy it to your clipboard.", "View color variations: lighter, darker, and complementary colors.", "Use the generated palette at the bottom for shading inspiration."],    faq: [
@@ -288,7 +288,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Braces,
     keywords: ["json formatter", "json beautifier", "json validator", "json viewer", "format json", "pretty print json"],
-    metaTitle: "Free JSON Formatter & Validator - Beautify JSON Online",
+    metaTitle: "Free JSON Formatter & Validator – Beautify JSON Online",
     metaDescription: "Format, validate and beautify JSON instantly with syntax highlighting. Free online JSON formatter with tree view and minifier. 100% private.",
     primaryKeyword: "JSON formatter",
     howToUse: ["Paste your JSON data into the input text area, or click 'Upload .json' to load a file.", "Click 'Format / Beautify' to pretty-print the JSON with proper indentation.", "Click 'Minify' to compress JSON to a single line.", "Click 'Validate' to check if your JSON is valid without reformatting."],    faq: [
@@ -311,7 +311,7 @@ export const tools: ToolDef[] = [
     category: "image",
     icon: ImageDown,
     keywords: ["image compressor", "compress image", "resize image", "reduce image size", "image optimizer", "jpeg compressor", "png compressor", "webp converter"],
-    metaTitle: "Free Image Compressor - Compress JPEG, PNG, WebP Online",
+    metaTitle: "Free Image Compressor – Compress JPEG, PNG, WebP Online",
     metaDescription: "Compress and resize images online for free. Reduce file size up to 90%. Convert between JPEG, PNG and WebP. 100% private, all processing in your browser.",
     primaryKeyword: "image compressor",
     howToUse: ["Click or drag and drop an image file into the upload area.", "Adjust the quality slider and optionally set max width/height.", "Choose your preferred output format (JPEG, PNG, or WebP).", "Click 'Download Compressed Image' to save the optimized file."],    faq: [
@@ -334,7 +334,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: QrCode,
     keywords: ["qr code generator", "create qr code", "qr code maker", "free qr code", "qr code online", "generate qr", "custom qr code"],
-    metaTitle: "Free QR Code Generator - Create Custom QR Codes Online",
+    metaTitle: "Free QR Code Generator – Create Custom QR Codes Online",
     metaDescription: "Generate free QR codes from text or URLs. Customize colors and size. Download as PNG. No sign-up required, 100% free.",
     primaryKeyword: "QR code generator",
     howToUse: ["Enter your text or URL in the input field.", "Customize the QR code size using the slider.", "Optionally change the foreground and background colors.", "Click 'Download PNG' or 'Copy to Clipboard' to save your QR code."],    faq: [
@@ -357,7 +357,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Binary,
     keywords: ["base64 encoder", "base64 decoder", "encode base64", "decode base64", "base64 converter", "file to base64", "base64 to file"],
-    metaTitle: "Free Base64 Encoder/Decoder - Text & File Conversion",
+    metaTitle: "Free Base64 Encoder/Decoder – Text & File Conversion",
     metaDescription: "Encode text or files to Base64 and decode Base64 back. Supports Unicode text, file uploads, and data URI conversion. Free online tool.",
     primaryKeyword: "base64 encoder",
     howToUse: ["Switch to the 'Encode' tab to convert text or files to Base64.", "Switch to the 'Decode' tab to convert Base64 back to text or a file.", "Paste your input or upload a file, then click the action button.", "Copy the result or download the decoded file."],    faq: [
@@ -380,7 +380,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Link,
     keywords: ["url encoder", "url decoder", "encode url", "decode url", "percent encoding", "url encode online", "urlencode"],
-    metaTitle: "Free URL Encoder/Decoder - Percent Encoding Tool",
+    metaTitle: "Free URL Encoder/Decoder – Percent Encoding Tool",
     metaDescription: "Encode and decode URLs instantly. See automatic URL breakdown with scheme, host, path and query params. Free online tool for developers.",
     primaryKeyword: "URL encoder",
     howToUse: ["Switch to 'Encode' tab to encode special characters in a URL.", "Switch to 'Decode' tab to decode a percent-encoded URL.", "Paste your URL and click the action button.", "View the URL breakdown panel to see parsed components."],    faq: [
@@ -403,7 +403,7 @@ export const tools: ToolDef[] = [
     category: "text",
     icon: FileText,
     keywords: ["lorem ipsum generator", "placeholder text", "dummy text", "filler text", "lorem ipsum", "sample text generator", "mockup text"],
-    metaTitle: "Free Lorem Ipsum Generator - Placeholder Text Tool",
+    metaTitle: "Free Lorem Ipsum Generator – Placeholder Text Tool",
     metaDescription: "Generate lorem ipsum placeholder text by paragraphs, sentences or words. Customizable count and options. Copy instantly. Free online tool.",
     primaryKeyword: "lorem ipsum generator",
     howToUse: ["Select the type: Paragraphs, Sentences, or Words.", "Set the count using the number input.", "Toggle 'Start with Lorem ipsum dolor sit amet' if desired.", "Click 'Copy All' to copy the generated text to your clipboard."],    faq: [
@@ -426,7 +426,7 @@ export const tools: ToolDef[] = [
     category: "text",
     icon: AlignLeft,
     keywords: ["markdown previewer", "markdown editor", "markdown to html", "markdown viewer", "online markdown", "gfm previewer", "markdown live preview"],
-    metaTitle: "Free Markdown Previewer - Live Editor with HTML Export",
+    metaTitle: "Free Markdown Previewer – Live Editor with HTML Export",
     metaDescription: "Write Markdown and see live HTML preview instantly. Supports GFM, tables, code blocks. Copy HTML output. Free online tool, no sign-up.",
     primaryKeyword: "markdown previewer",
     howToUse: ["Type or paste Markdown in the left editor panel.", "See the rendered HTML preview on the right in real time.", "Switch between Split, Preview, and HTML Source views.", "Click 'Copy HTML' to copy the rendered HTML to your clipboard."],    faq: [
@@ -449,7 +449,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Lock,
     keywords: ["hash generator", "sha256", "sha512", "sha1", "hash calculator", "cryptographic hash", "checksum generator", "hash online"],
-    metaTitle: "Free Hash Generator - SHA-1, SHA-256, SHA-512 Online",
+    metaTitle: "Free Hash Generator – SHA-1, SHA-256, SHA-512 Online",
     metaDescription: "Generate SHA-1, SHA-256 and SHA-512 hashes from any text instantly. Uses Web Crypto API. Free online tool, 100% private.",
     primaryKeyword: "hash generator",
     howToUse: ["Enter or paste your text in the input field.", "View the generated hashes for SHA-1, SHA-256, and SHA-512 below.", "Click the copy icon next to any hash to copy it.", "Hashes update in real time as you type (debounced)."],    faq: [
@@ -472,7 +472,7 @@ export const tools: ToolDef[] = [
     category: "math",
     icon: Hash,
     keywords: ["number base converter", "binary converter", "hex converter", "decimal to binary", "hex to decimal", "octal converter", "radix converter"],
-    metaTitle: "Free Number Base Converter - Binary, Hex, Octal, Decimal",
+    metaTitle: "Free Number Base Converter – Binary, Hex, Octal, Decimal",
     metaDescription: "Convert between binary, octal, decimal and hexadecimal instantly. Supports large numbers with BigInt. Free online tool for programmers and students.",
     primaryKeyword: "number base converter",
     howToUse: ["Select your input base (Binary, Octal, Decimal, or Hexadecimal).", "Enter your number in the input field.", "See the conversion results in all other bases instantly.", "Click any swap button to use a result as your new input."],    faq: [
@@ -495,7 +495,7 @@ export const tools: ToolDef[] = [
     category: "dev",
     icon: Diff,
     keywords: ["text diff", "compare text", "text difference", "diff checker", "text comparison", "compare two texts", "find differences"],
-    metaTitle: "Free Text Diff Checker - Compare Two Texts Online",
+    metaTitle: "Free Text Diff Checker – Compare Two Texts Online",
     metaDescription: "Compare two texts and see differences highlighted instantly. Shows added, removed and unchanged lines with statistics. Free online diff tool.",
     primaryKeyword: "text diff checker",
     howToUse: ["Paste your original text in the left textarea.", "Paste the modified text in the right textarea.", "Click 'Compare' to see the differences highlighted.", "Review the stats showing lines added, removed, and unchanged."],    faq: [
@@ -518,7 +518,7 @@ export const tools: ToolDef[] = [
     category: "image",
     icon: FileDown,
     keywords: ["pdf compressor", "compress pdf", "reduce pdf size", "pdf optimizer", "pdf compression", "make pdf smaller", "online pdf compressor"],
-    metaTitle: "Free PDF Compressor - Reduce PDF File Size Online",
+    metaTitle: "Free PDF Compressor – Reduce PDF File Size Online",
     metaDescription: "Compress PDF files online for free. Three compression levels. No upload needed — all processing in your browser. Reduce PDF size by up to 80%.",
     primaryKeyword: "PDF compressor",
     howToUse: ["Click or drag and drop a PDF file into the upload area.", "Select your compression level (Low, Medium, or High).", "Click 'Compress PDF' and wait for processing.", "Download the compressed PDF and check the size reduction."],    faq: [
