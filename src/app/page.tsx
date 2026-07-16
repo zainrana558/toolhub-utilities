@@ -183,7 +183,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {tools.slice(0, 5).map((tool) => (
                   <li key={tool.id}>
-                    <Link href={`/tools/${tool.id}`} className="hover:text-foreground transition-colors">
+                    <Link href={`/${tool.id}`} className="hover:text-foreground transition-colors">
                       {tool.name}
                     </Link>
                   </li>

@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: ["/api/", "/_next/", "/tools/*/embed"],
+        disallow: ["/api/", "/_next/", "/*/embed"],
       },
       // Bing Search
       {

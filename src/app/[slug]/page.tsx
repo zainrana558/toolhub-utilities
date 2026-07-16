@@ -21,7 +21,7 @@ export async function generateMetadata({
     return { title: "Tool Not Found | ToolVerse" };
   }
 
-  const toolUrl = `${BASE_URL}/tools/${tool.id}`;
+  const toolUrl = `${BASE_URL}/${tool.id}`;
 
   return {
     title: tool.metaTitle,
@@ -44,7 +44,7 @@ export async function generateMetadata({
       images: [`${BASE_URL}/og-${tool.id}.png`],
     },
     alternates: {
-      canonical: `/tools/${tool.id}`,
+      canonical: `/${tool.id}`,
     },
     robots: {
       index: true,
@@ -83,7 +83,7 @@ export default async function ToolPage({
   }
 
   // Build structured data on the server
-  const toolUrl = `${BASE_URL}/tools/${tool.id}`;
+  const toolUrl = `${BASE_URL}/${tool.id}`;
   const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
 
   const webPageSchema = {

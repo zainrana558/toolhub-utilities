@@ -135,7 +135,7 @@ export function ToolGrid({ onToolClick }: ToolGridProps) {
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
-                  <Link href={`/tools/${tool.id}`}>
+                  <Link href={`/${tool.id}`}>
                   <Card
                     className="cursor-pointer hover:shadow-lg hover:border-primary/30 transition-all duration-200 group h-full overflow-hidden"
                   >

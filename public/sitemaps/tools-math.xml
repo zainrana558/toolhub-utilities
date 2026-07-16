@@ -4,43 +4,43 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
-    <loc>https://toolhub-utilities.vercel.app/tools/password-generator</loc>
+    <loc>https://toolhub-utilities.vercel.app/password-generator</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://toolhub-utilities.vercel.app/tools/bmi-calculator</loc>
+    <loc>https://toolhub-utilities.vercel.app/bmi-calculator</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub-utilities.vercel.app/tools/percentage-calculator</loc>
+    <loc>https://toolhub-utilities.vercel.app/percentage-calculator</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub-utilities.vercel.app/tools/age-calculator</loc>
+    <loc>https://toolhub-utilities.vercel.app/age-calculator</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub-utilities.vercel.app/tools/loan-calculator</loc>
+    <loc>https://toolhub-utilities.vercel.app/loan-calculator</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub-utilities.vercel.app/tools/unit-converter</loc>
+    <loc>https://toolhub-utilities.vercel.app/unit-converter</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub-utilities.vercel.app/tools/number-base-converter</loc>
+    <loc>https://toolhub-utilities.vercel.app/number-base-converter</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

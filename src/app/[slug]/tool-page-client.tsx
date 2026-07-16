@@ -92,7 +92,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
 
   const relatedTools = tools.filter((t) => t.category === tool.category && t.id !== tool.id).slice(0, 3);
   const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
-  const toolUrl = `${BASE_URL}/tools/${tool.id}`;
+  const toolUrl = `${BASE_URL}/${tool.id}`;
   const embedCode = `<a href="${toolUrl}" title="${tool.name} - Free Online Tool">${tool.name}</a> - Free online ${tool.name.toLowerCase()} by ToolVerse`;
 
   const copyLink = async () => {
@@ -410,7 +410,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                           whileHover={{ y: -3, scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          <Link href={`/tools/${rt.id}`} className="block">
+                          <Link href={`/${rt.id}`} className="block">
                             <Card className="hover:shadow-lg transition-shadow h-full">
                               <CardContent className="p-4 flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
@@ -451,7 +451,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                             return (
                               <Link
                                 key={t.id}
-                                href={`/tools/${t.id}`}
+                                href={`/${t.id}`}
                                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors py-1.5 px-2 rounded hover:bg-muted/50 group"
                               >
                                 <TIcon className="h-3.5 w-3.5 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true" />

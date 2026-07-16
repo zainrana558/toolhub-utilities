@@ -29,7 +29,14 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   // Redirect www to non-www (handles at edge, but add as fallback)
   async redirects() {
-    return [];
+    return [
+      // Redirect old /tools/* URLs to new top-level /* URLs
+      {
+        source: "/tools/:slug",
+        destination: "/:slug",
+        permanent: true, // 301 redirect
+      },
+    ];
   },
   async headers() {
     return [
@@ -49,13 +56,6 @@ const nextConfig: NextConfig = {
         source: "/_next/static/(.*)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
-      // Cache tool pages at CDN edge with stale-while-revalidate
-      {
-        source: "/tools/:slug*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" },
         ],
       },
       // Cache static info pages at CDN edge
