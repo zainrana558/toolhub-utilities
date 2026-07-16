@@ -182,12 +182,52 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                   </div>
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold">{tool.name}</h1>
-                <p className="text-muted-foreground text-base">{tool.longDescription}</p>
+                <p className="text-muted-foreground text-base">{tool.description}</p>
+              </motion.div>
+
+              {/* ===== INTERACTIVE TOOL — IMMEDIATELY VISIBLE ===== */}
+              <motion.div variants={fadeUp}>
+                <ToolComponent />
               </motion.div>
 
               <AdSlot variant="horizontal" />
 
-              {/* How to Use — Change A: wrapped in section with aria-labelledby, added id to CardTitle */}
+              {/* ===== INTRODUCTION ===== */}
+              <motion.section className="border-t pt-8" variants={fadeUp}>
+                <h2 className="text-xl font-semibold mb-3">
+                  What is {tool.name}?
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground">{tool.name}</strong> is a{" "}
+                  <strong className="text-foreground">free online {tool.primaryKeyword}</strong> that
+                  works directly in your browser. {tool.longDescription}
+                  {" "}Unlike most online tools, ToolVerse processes everything{" "}
+                  <strong className="text-foreground">100% on your device</strong> — no data is ever uploaded to a server.
+                </p>
+              </motion.section>
+
+              {/* ===== FEATURES ===== */}
+              <motion.section className="border-t pt-8" variants={fadeUp}>
+                <h2 className="text-xl font-semibold mb-4">Features</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {tool.features.map((feature, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-center gap-2.5 text-sm text-muted-foreground"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 + i * 0.04, duration: 0.25 }}
+                    >
+                      <svg className="h-4 w-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {feature}
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.section>
+
+              {/* ===== HOW TO USE ===== */}
               <section aria-labelledby="howto-heading">
                 <motion.div variants={fadeUp}>
                   <Card>
@@ -195,22 +235,22 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                       <CardTitle className="text-base" id="howto-heading">How to Use {tool.name}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ol className="space-y-2" itemScope itemType="https://schema.org/HowTo">
+                      <ol className="space-y-3" itemScope itemType="https://schema.org/HowTo">
                         {tool.howToUse.map((step, i) => (
                           <motion.li
                             key={i}
                             className="flex gap-3 text-sm"
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.15 + i * 0.08, duration: 0.3 }}
+                            transition={{ delay: 0.1 + i * 0.06, duration: 0.25 }}
                             itemProp="step"
                             itemScope
                             itemType="https://schema.org/HowToStep"
                           >
-                            <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                            <span className="shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
                               {i + 1}
                             </span>
-                            <span className="text-muted-foreground pt-0.5" itemProp="text">{step}</span>
+                            <span className="text-muted-foreground pt-1" itemProp="text">{step}</span>
                           </motion.li>
                         ))}
                       </ol>
@@ -219,74 +259,64 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                 </motion.div>
               </section>
 
-              {/* Main tool */}
-              <motion.div variants={fadeUp}>
-                <ToolComponent />
-              </motion.div>
+              {/* ===== EXAMPLES ===== */}
+              <motion.section className="border-t pt-8" variants={fadeUp}>
+                <h2 className="text-xl font-semibold mb-4">Example</h2>
+                <Card>
+                  <CardContent className="p-5 space-y-4">
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Input</p>
+                      <p className="text-sm font-mono bg-muted/50 rounded-lg px-4 py-3">{tool.examples.input}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Output</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {Object.entries(tool.examples.output).map(([key, value]) => (
+                          <div key={key} className="bg-muted/30 rounded-lg px-3 py-2.5">
+                            <p className="text-xs text-muted-foreground">{key}</p>
+                            <p className="text-sm font-semibold text-foreground mt-0.5">{value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.section>
 
-              <AdSlot variant="horizontal" />
-
-              {/* SEO Content: Change A — <article> instead of <section>, added <time> freshness signal */}
-              <motion.article className="border-t pt-8 space-y-8" variants={fadeUp}>
-                <p className="text-xs text-muted-foreground mb-4">Last updated: <time dateTime="2026-07-15">July 15, 2026</time></p>
-
-                <h2 className="text-xl font-semibold">
-                  What is {tool.name} and How Does It Work?
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  <strong className="text-foreground">{tool.name}</strong> is a{" "}
-                  <strong className="text-foreground">free online {tool.primaryKeyword}</strong> that
-                  works directly in your browser. {tool.longDescription.split(". ").slice(0, 3).join(". ") + "."}
-                  {" "}Unlike most online tools, ToolVerse processes everything{" "}
-                  <strong className="text-foreground">100% on your device</strong> — no data is ever uploaded to a server.
-                </p>
+              {/* SEO Content — condensed for below-the-fold */}
+              <motion.article className="border-t pt-8 space-y-6" variants={fadeUp}>
+                <p className="text-xs text-muted-foreground">Last updated: <time dateTime="2026-07-16">July 16, 2026</time></p>
 
                 <h2 className="text-xl font-semibold">
                   Why Use {tool.name} Instead of Alternatives?
                 </h2>
-                <ul className="space-y-2 text-muted-foreground text-sm list-disc list-inside">
-                  <li>
+                <ul className="space-y-2 text-muted-foreground text-sm list-none">
+                  <li className="flex gap-2">
+                    <span className="text-green-500 shrink-0">✓</span>
                     <strong className="text-foreground"><data value="free">Completely free</data></strong> — no sign-up, no premium tier, no feature limits. Use it as many times as you want.
                   </li>
-                  <li>
+                  <li className="flex gap-2">
+                    <span className="text-green-500 shrink-0">✓</span>
                     <strong className="text-foreground"><data value="private">100% private</data></strong> — all processing happens in your browser. Your data never leaves your device.
                   </li>
-                  <li>
+                  <li className="flex gap-2">
+                    <span className="text-green-500 shrink-0">✓</span>
                     <strong className="text-foreground"><data value="cross-device">Works on any device</data></strong> — fully responsive design that works on phones, tablets, laptops, and desktops.
                   </li>
-                  <li>
+                  <li className="flex gap-2">
+                    <span className="text-green-500 shrink-0">✓</span>
                     <strong className="text-foreground"><data value="no-install">No installation needed</data></strong> — just open the page and start using it immediately.
                   </li>
-                  <li>
+                  <li className="flex gap-2">
+                    <span className="text-green-500 shrink-0">✓</span>
                     <strong className="text-foreground"><data value="developer-built">Built by developers</data></strong> — created by people who actually use these tools daily in professional work.
                   </li>
                 </ul>
 
-                <h2 className="text-xl font-semibold">
-                  Who Uses {tool.name}?
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  {tool.name} is used by a wide range of people every day.{" "}
-                  {tool.category === "text" && (
-                    <>Writers and bloggers use it to prepare content for publishing. Students use it for assignments and research papers. Content marketers rely on it for optimizing their articles for specific word counts and formatting requirements.</>
-                  )}
-                  {tool.category === "math" && (
-                    <>Students use it for homework and exam preparation. Professionals use it for quick calculations in meetings and presentations. Financial advisors use it to help clients understand loans, percentages, and health metrics.</>
-                  )}
-                  {tool.category === "dev" && (
-                    <>Software developers use it daily during coding and debugging. DevOps engineers use it for configuration and data formatting. Security professionals use it for generating secure passwords and verifying data integrity.</>
-                  )}
-                  {tool.category === "converter" && (
-                    <>Designers use it to optimize images for web and social media. Professionals use it to compress PDFs before emailing. Students and engineers use it to convert between measurement units for assignments and projects.</>
-                  )}
-                </p>
-
-                <h2 className="text-xl font-semibold">
-                  Is {tool.name} Safe to Use?
-                </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Yes, {tool.name} is completely safe. All processing runs in your browser using standard web technologies like JavaScript and the HTML5 Canvas API. We use{" "}
-                  <strong className="text-foreground">cryptographically secure methods</strong> where applicable (such as the Web Crypto API for password generation and hash computation). No plugins, extensions, or downloads are required. You can verify this by opening your browser&apos;s developer tools and confirming that no network requests are made during tool operation.
+                <h2 className="text-xl font-semibold">Is {tool.name} Safe to Use?</h2>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Yes. All processing runs in your browser using standard web technologies. We use{" "}
+                  <strong className="text-foreground">cryptographically secure methods</strong> where applicable (such as the Web Crypto API for password generation and hash computation). No plugins, extensions, or downloads are required. Open your browser&apos;s developer tools to verify no network requests are made during tool operation.
                 </p>
               </motion.article>
 

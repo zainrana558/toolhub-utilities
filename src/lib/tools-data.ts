@@ -37,6 +37,8 @@ export interface ToolDef {
   primaryKeyword: string;
   howToUse: string[];
   faq: { question: string; answer: string }[];
+  features: string[];
+  examples: { input: string; output: Record<string, string> };
 }
 
 export const toolCategories = [
@@ -65,6 +67,8 @@ export const tools: ToolDef[] = [
       { question: "How is reading time calculated?", answer: "Reading time is estimated based on an average reading speed of 200 words per minute, which is the standard for adult readers." },
       { question: "Does the word counter count numbers?", answer: "Yes, any group of characters separated by spaces is counted as a word, including numbers and mixed alphanumeric strings." },
     ],
+    features: ["Word Count", "Character Count (with/without spaces)", "Sentence Count", "Paragraph Count", "Reading Time Estimate", "Speaking Time Estimate", "Keyword Density Analysis"],
+    examples: { input: "Hello World! This is a sample text for the word counter tool.", output: { Words: "12", Characters: "61", Sentences: "1", "Reading Time": "6 sec" } },
   },
   {
     id: "character-counter",
@@ -84,6 +88,8 @@ export const tools: ToolDef[] = [
       { question: "How is character frequency calculated?", answer: "Each unique character in your text is counted and ranked by frequency. The tool shows the top 10 most-used characters along with their count and percentage of total characters." },
       { question: "Why would I use a character counter instead of a word counter?", answer: "Character counters are essential when you have character limits — like Twitter (280 chars), SMS (160 chars), meta descriptions (160 chars), or file naming limits. Word counters can't tell you if you're within these limits." },
     ],
+    features: ["Total Character Count", "Characters Without Spaces", "Character Frequency Analysis", "Letter/Number/Space/Special Breakdown", "Unique Character Count", "Copy Stats to Clipboard"],
+    examples: { input: "Hello World", output: { Characters: "11", "Without Spaces:": "10", Letters: "10", "Spaces": "1" } },
   },
   {
     id: "password-generator",
@@ -103,6 +109,8 @@ export const tools: ToolDef[] = [
       { question: "How long should my password be?", answer: "We recommend at least 12 characters for strong security. Longer passwords with mixed character types are significantly harder to crack." },
       { question: "Are my passwords stored anywhere?", answer: "No. Passwords are generated entirely in your browser and are never sent to any server. Once you navigate away, the password is gone." },
     ],
+    features: ["Customizable Length (4-64 chars)", "Uppercase Letters", "Lowercase Letters", "Numbers", "Special Characters", "Real-time Strength Meter", "One-click Copy", "Cryptographically Secure (Web Crypto API)"],
+    examples: { input: "Length: 16, Uppercase: Yes, Numbers: Yes, Symbols: Yes", output: { "Generated Password": "xK9#mP2$vL5@nQ8w", Strength: "Very Strong" } },
   },
   {
     id: "bmi-calculator",
@@ -122,6 +130,8 @@ export const tools: ToolDef[] = [
       { question: "Is BMI accurate for everyone?", answer: "BMI is a useful screening tool but has limitations. It doesn't account for muscle mass, bone density, age, sex, or body composition. Athletes may have a high BMI due to muscle mass." },
       { question: "How is BMI calculated?", answer: "BMI is calculated by dividing your weight in kilograms by the square of your height in meters: BMI = weight (kg) / height (m) squared." },
     ],
+    features: ["Metric & Imperial Units", "BMI Calculation", "Health Category Classification", "Visual BMI Scale", "Underweight/Normal/Overweight/Obese Labels"],
+    examples: { input: "Weight: 70 kg, Height: 175 cm", output: { BMI: "22.9", Category: "Normal weight", "Healthy Range": "18.5 - 24.9" } },
   },
   {
     id: "percentage-calculator",
@@ -141,6 +151,8 @@ export const tools: ToolDef[] = [
       { question: "What is 10% of 500?", answer: "10% of 500 is 50. You can verify this using the '% of Number' tab: enter 10 in the percentage field and 500 in the number field." },
       { question: "How do I calculate what percentage one number is of another?", answer: "Use the '% of What?' tab. Enter the part in the first field and the whole in the second field. For example, 50 is 25% of 200." },
     ],
+    features: ["Percentage of a Number", "What Percent is X of Y", "Percentage Increase/Decrease", "Percentage Difference", "Instant Results"],
+    examples: { input: "What is 15% of 200?", output: { Result: "30", Calculation: "200 × 0.15 = 30" } },
   },
   {
     id: "age-calculator",
@@ -160,6 +172,8 @@ export const tools: ToolDef[] = [
       { question: "Does it account for leap years?", answer: "Yes, the calculator properly handles leap years when computing your exact age in days, weeks, and months." },
       { question: "Can I calculate age between two custom dates?", answer: "Yes! Change the 'Age at Date' field to any date to calculate the age difference between your birth date and that specific date." },
     ],
+    features: ["Exact Age in Years/Months/Days", "Age in Weeks, Hours, Minutes", "Next Birthday Countdown", "Zodiac Sign Detection", "Day of Birth", "Custom 'Age at Date' Support"],
+    examples: { input: "Date of Birth: January 15, 2000", output: { Age: "26 years, 6 months", "Total Days": "9,684", Zodiac: "Capricorn" } },
   },
   {
     id: "loan-calculator",
@@ -179,6 +193,8 @@ export const tools: ToolDef[] = [
       { question: "How is the monthly payment calculated?", answer: "The monthly payment is calculated using the standard amortization formula: M = P[r(1+r)^n]/[(1+r)^n-1], where P is principal, r is monthly rate, and n is total months." },
       { question: "What is an amortization schedule?", answer: "An amortization schedule shows how each monthly payment is split between principal and interest over the life of the loan, plus the remaining balance after each payment." },
     ],
+    features: ["Monthly Payment Calculation", "Total Interest Paid", "Total Cost of Loan", "Full Amortization Schedule", "Supports Any Fixed-Rate Loan", "Mortgage/Car/Personal Loan Ready"],
+    examples: { input: "Loan: $250,000, Rate: 6.5%, Term: 30 years", output: { "Monthly Payment": "$1,580.17", "Total Interest": "$318,861.22", "Total Cost": "$568,861.22" } },
   },
   {
     id: "unit-converter",
@@ -198,6 +214,8 @@ export const tools: ToolDef[] = [
       { question: "Is the unit converter accurate?", answer: "Yes, conversions use precise mathematical factors. For example, 1 inch equals exactly 2.54 centimeters, and temperature conversions use the exact Celsius-Fahrenheit formulas." },
       { question: "Can I convert between metric and imperial?", answer: "Absolutely! The converter supports both metric (km, kg, Celsius) and imperial (miles, pounds, Fahrenheit) systems and converts between them seamlessly." },
     ],
+    features: ["7 Unit Categories", "Length/Weight/Temperature/Volume/Area/Speed/Data", "Instant Conversion", "Swap Direction Button", "Metric & Imperial Support", "Precise Mathematical Factors"],
+    examples: { input: "100 kilometers → miles", output: { Result: "62.137 miles", Category: "Length" } },
   },
   {
     id: "case-converter",
@@ -217,6 +235,8 @@ export const tools: ToolDef[] = [
       { question: "What is the difference between Title Case and Sentence case?", answer: "Title Case capitalizes the first letter of every word (Hello World), while Sentence case only capitalizes the first letter of the sentence (Hello world)." },
       { question: "What is snake_case used for?", answer: "snake_case uses underscores between words with all lowercase letters (hello_world). It's commonly used in Python, Ruby, and database column names." },
     ],
+    features: ["UPPERCASE", "lowercase", "Title Case", "Sentence case", "camelCase", "PascalCase", "snake_case", "kebab-case", "One-click Copy"],
+    examples: { input: "hello world from toolverse", output: { UPPERCASE: "HELLO WORLD FROM TOOLVERSE", "Title Case": "Hello World From Toolverse", camelCase: "helloWorldFromToolverse" } },
   },
   {
     id: "color-picker",
@@ -236,6 +256,8 @@ export const tools: ToolDef[] = [
       { question: "What is HSL color format?", answer: "HSL stands for Hue (0-360 degrees on the color wheel), Saturation (0-100% intensity), and Lightness (0-100% brightness). It's more intuitive for adjusting colors." },
       { question: "How do I find a complementary color?", answer: "A complementary color is automatically calculated and shown in the Color Variations section. It's the color directly opposite on the color wheel, creating high contrast." },
     ],
+    features: ["Color Wheel Picker", "HEX/RGB/HSL Formats", "Color Palette Generator", "Lighter/Darker Variations", "Complementary Colors", "One-click Copy Any Value"],
+    examples: { input: "#FF5733", output: { HEX: "#FF5733", RGB: "rgb(255, 87, 51)", HSL: "hsl(11, 100%, 60%)" } },
   },
   {
     id: "json-formatter",
@@ -255,6 +277,8 @@ export const tools: ToolDef[] = [
       { question: "Why is my JSON showing an error?", answer: "Common JSON errors include missing commas between items, trailing commas (not allowed in JSON), unquoted keys, and single quotes instead of double quotes. The error message will tell you exactly where the problem is." },
       { question: "Is my JSON data sent to a server?", answer: "No. All JSON processing happens entirely in your browser. Your data is never transmitted to any external server, ensuring complete privacy." },
     ],
+    features: ["Format & Beautify", "Minify JSON", "Validate Syntax", "Syntax Highlighting", "Error Detection with Line Numbers", "Tree View", "Upload .json Files"],
+    examples: { input: '{"name":"John","age":30}', output: { Status: "Valid JSON", Formatted: "3 lines, properly indented", Keys: "2" } },
   },
   {
     id: "image-compressor",
@@ -274,6 +298,8 @@ export const tools: ToolDef[] = [
       { question: "What image formats are supported?", answer: "You can upload JPEG, PNG, WebP, GIF, and BMP images. Output formats available are JPEG, PNG, and WebP." },
       { question: "Is my image uploaded to a server?", answer: "No. All compression happens entirely in your browser using the HTML5 Canvas API. Your images never leave your device." },
     ],
+    features: ["JPEG/PNG/WebP Support", "Quality Slider (1-100%)", "Custom Width/Height Resize", "Before/After File Size Comparison", "Bulk Processing Ready", "100% Browser-side Processing"],
+    examples: { input: "photo.png (2.4 MB)", output: { "Compressed Size": "480 KB", Reduction: "80%", Format: "WebP" } },
   },
   {
     id: "qr-code-generator",
@@ -293,6 +319,8 @@ export const tools: ToolDef[] = [
       { question: "Is there a limit to QR code content length?", answer: "Yes. A standard QR code can hold up to about 4,296 alphanumeric characters or 7,089 numeric digits. Longer content results in denser QR codes that may be harder to scan." },
       { question: "Can I change the QR code colors?", answer: "Yes! You can customize both the foreground (dark) and background (light) colors. For best scanability, ensure there's good contrast between the two colors." },
     ],
+    features: ["Text/URL Encoding", "Custom Size (100-1000px)", "Custom Foreground Color", "Custom Background Color", "Download as PNG", "Copy to Clipboard"],
+    examples: { input: "https://toolhub-utilities.vercel.app", output: { Size: "300×300px", Format: "PNG", Scannable: "Yes" } },
   },
   {
     id: "base64-encoder",
@@ -312,6 +340,8 @@ export const tools: ToolDef[] = [
       { question: "Does it support Unicode characters?", answer: "Yes. The encoder handles Unicode text (including emojis and non-Latin scripts) by first converting to UTF-8 bytes before Base64 encoding." },
       { question: "Can I encode files to Base64?", answer: "Yes. Use the 'Upload File' button on the Encode tab. The file will be converted to a Base64 data URI string that you can use in HTML, CSS, or API calls." },
     ],
+    features: ["Text to Base64 Encoding", "Base64 to Text Decoding", "File to Base64 Data URI", "Base64 to File Download", "Unicode/Emoji Support", "UTF-8 Encoding"],
+    examples: { input: "Hello World", output: { Encoded: "SGVsbG8gV29ybGQ=", Decoded: "Hello World" } },
   },
   {
     id: "url-encoder",
@@ -331,6 +361,8 @@ export const tools: ToolDef[] = [
       { question: "What is percent encoding?", answer: "Percent encoding replaces unsafe ASCII characters with a '%' followed by two hexadecimal digits. For example, a space becomes '%20' and '&' becomes '%26'." },
       { question: "What is the difference between encodeURI and encodeURIComponent?", answer: "encodeURI encodes characters that are not allowed in a full URL but leaves URL structure characters (:, /, ?, &, =) intact. encodeURIComponent encodes ALL special characters including these, making it suitable for individual query parameter values." },
     ],
+    features: ["URL Encode Special Characters", "URL Decode Percent-Encoding", "Automatic URL Component Breakdown", "encodeURI vs encodeURIComponent", "Parse Scheme/Host/Path/Query"],
+    examples: { input: "hello world & foo=bar", output: { Encoded: "hello%20world%20%26%20foo%3Dbar", Decoded: "hello world & foo=bar" } },
   },
   {
     id: "lorem-ipsum-generator",
@@ -350,6 +382,8 @@ export const tools: ToolDef[] = [
       { question: "Is lorem ipsum readable Latin?", answer: "Not quite. While it's based on real Latin words from Cicero's De Finibus, the text has been scrambled and altered over centuries, so it's not grammatically correct Latin." },
       { question: "Can I customize the amount of text?", answer: "Yes. You can generate text by paragraphs (1-20), sentences (1-50), or words (1-500). The text regenerates instantly as you adjust the settings." },
     ],
+    features: ["Paragraphs/Sentences/Words Modes", "Custom Count (1-500)", "Classic Opening Option", "One-click Copy All", "Instant Regeneration"],
+    examples: { input: "Type: Paragraphs, Count: 2", output: { Words: "~80", Paragraphs: "2", Copied: "Yes" } },
   },
   {
     id: "markdown-previewer",
@@ -369,6 +403,8 @@ export const tools: ToolDef[] = [
       { question: "Can I export the HTML output?", answer: "Yes. Click the 'Copy HTML' button to copy the rendered HTML to your clipboard. You can then paste it into a CMS, email, or HTML file." },
       { question: "Does it support syntax highlighting for code blocks?", answer: "Code blocks are styled with proper formatting and background colors. Full syntax highlighting for specific languages requires additional libraries, but the code blocks are clearly formatted and readable." },
     ],
+    features: ["Live Split-View Editor", "GitHub Flavored Markdown", "Tables Support", "Code Blocks", "Task Lists", "Copy Rendered HTML", "Split/Preview/HTML Views"],
+    examples: { input: "# Hello\n**bold** and *italic*", output: { Rendered: "Heading + bold/italic text", HTML: "<h1>Hello</h1><p><strong>bold</strong>..." } },
   },
   {
     id: "hash-generator",
@@ -388,6 +424,8 @@ export const tools: ToolDef[] = [
       { question: "How are the hashes generated?", answer: "Hashes are generated using the Web Crypto API built into your browser. This uses the same cryptographic libraries that browsers use for HTTPS/TLS connections, ensuring high-quality, standards-compliant hash generation." },
       { question: "Is my text sent to a server?", answer: "No. All hashing happens entirely in your browser using the Web Crypto API. Your input text is never transmitted to any external server." },
     ],
+    features: ["SHA-1 Hash", "SHA-256 Hash", "SHA-512 Hash", "Real-time Hashing", "One-click Copy Each Hash", "Web Crypto API (Secure)"],
+    examples: { input: "password123", output: { "SHA-256": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f", "SHA-1": "cbfdac608f1e0c0a88a0c8f6a5dd0b9e705ea6ae3a823f9f5d7e0a3f8a0d0e0" } },
   },
   {
     id: "number-base-converter",
@@ -407,6 +445,8 @@ export const tools: ToolDef[] = [
       { question: "What is hexadecimal?", answer: "Hexadecimal (base 16) uses digits 0-9 and letters A-F. It's commonly used in programming to represent memory addresses, color codes (#FF5733), and binary data in a more compact form." },
       { question: "Does it support large numbers?", answer: "Yes. The converter uses JavaScript's BigInt for arbitrary-precision arithmetic, so it can handle numbers of any size without loss of precision." },
     ],
+    features: ["Binary (Base 2)", "Octal (Base 8)", "Decimal (Base 10)", "Hexadecimal (Base 16)", "BigInt Precision", "Instant All-base Conversion"],
+    examples: { input: "255 (Decimal)", output: { Binary: "11111111", Octal: "377", Hexadecimal: "FF" } },
   },
   {
     id: "text-diff-checker",
@@ -426,6 +466,8 @@ export const tools: ToolDef[] = [
       { question: "Is it case-sensitive?", answer: "Yes, the comparison is case-sensitive. 'Hello' and 'hello' are treated as different lines." },
       { question: "Can I compare code files?", answer: "Absolutely. The diff checker works with any text, including source code, configuration files, and plain text. Simply paste the code from both versions into the textareas." },
     ],
+    features: ["Side-by-side Comparison", "Added Lines (Green)", "Removed Lines (Red)", "Unchanged Lines (Gray)", "Diff Statistics", "Case-sensitive Matching"],
+    examples: { input: "Original vs Modified text", output: { Added: "2 lines", Removed: "1 line", Unchanged: "5 lines" } },
   },
   {
     id: "pdf-compressor",
@@ -445,5 +487,7 @@ export const tools: ToolDef[] = [
       { question: "Will compression affect PDF quality?", answer: "Low and Medium levels preserve all visual content. High level may reduce image quality within the PDF. Text, vector graphics, and layout are always preserved regardless of compression level." },
       { question: "Is my PDF uploaded to a server?", answer: "No. All compression happens entirely in your browser using client-side JavaScript. Your PDF files never leave your device, ensuring complete privacy and security." },
     ],
+    features: ["3 Compression Levels (Low/Medium/High)", "File Size Comparison", "No Upload Required", "Text & Layout Preserved", "Instant Download", "100% Private Processing"],
+    examples: { input: "document.pdf (5.2 MB)", output: { "Compressed Size": "1.8 MB", Reduction: "65%", Level: "Medium" } },
   },
 ];
