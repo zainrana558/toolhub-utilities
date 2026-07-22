@@ -110,6 +110,46 @@ const FileConverter = dynamic(
   () => import("@/components/tools/file-converter").then((m) => ({ default: m.FileConverter })),
   { ssr: false },
 );
+const PdfToJpg = dynamic(
+  () => import("@/components/tools/pdf-to-jpg").then((m) => ({ default: m.PdfToJpg })),
+  { ssr: false },
+);
+const JpgToPdf = dynamic(
+  () => import("@/components/tools/jpg-to-pdf").then((m) => ({ default: m.JpgToPdf })),
+  { ssr: false },
+);
+const MergePdf = dynamic(
+  () => import("@/components/tools/merge-pdf").then((m) => ({ default: m.MergePdf })),
+  { ssr: false },
+);
+const SplitPdf = dynamic(
+  () => import("@/components/tools/split-pdf").then((m) => ({ default: m.SplitPdf })),
+  { ssr: false },
+);
+const RotatePdf = dynamic(
+  () => import("@/components/tools/rotate-pdf").then((m) => ({ default: m.RotatePdf })),
+  { ssr: false },
+);
+const WatermarkPdf = dynamic(
+  () => import("@/components/tools/watermark-pdf").then((m) => ({ default: m.WatermarkPdf })),
+  { ssr: false },
+);
+const PdfNumber = dynamic(
+  () => import("@/components/tools/pdf-number").then((m) => ({ default: m.PdfNumber })),
+  { ssr: false },
+);
+const PdfToWord = dynamic(
+  () => import("@/components/tools/pdf-to-word").then((m) => ({ default: m.PdfToWord })),
+  { ssr: false },
+);
+const WordToPdf = dynamic(
+  () => import("@/components/tools/word-to-pdf").then((m) => ({ default: m.WordToPdf })),
+  { ssr: false },
+);
+const PdfToText = dynamic(
+  () => import("@/components/tools/pdf-to-text").then((m) => ({ default: m.PdfToText })),
+  { ssr: false },
+);
 
 export const toolComponents: Record<string, ComponentType> = {
   "word-counter": WordCounter,
@@ -134,6 +174,16 @@ export const toolComponents: Record<string, ComponentType> = {
   "text-diff-checker": TextDiffChecker,
   "pdf-compressor": PdfCompressor,
   "file-converter": FileConverter,
+  "pdf-to-jpg": PdfToJpg,
+  "jpg-to-pdf": JpgToPdf,
+  "merge-pdf": MergePdf,
+  "split-pdf": SplitPdf,
+  "rotate-pdf": RotatePdf,
+  "watermark-pdf": WatermarkPdf,
+  "pdf-number": PdfNumber,
+  "pdf-to-word": PdfToWord,
+  "word-to-pdf": WordToPdf,
+  "pdf-to-text": PdfToText,
 };
 
 /** Convenience helper: returns the component for a tool id (or undefined). */
