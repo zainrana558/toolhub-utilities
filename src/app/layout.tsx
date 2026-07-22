@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   },
   category: "technology",
   verification: {
-    google: "IZ_kgkZCobezDHfENC4rcTL_eNcV1i71jvcEVmTRrlc",
+    google: "GdNdcEZibJZdN6jmTnJqM3lEcFznkOvi5kayRqfMkiw",
   },
 };
 
@@ -168,7 +168,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#000000" />
-        <meta name="google-site-verification" content="IZ_kgkZCobezDHfENC4rcTL_eNcV1i71jvcEVmTRrlc" />
+        <meta name="google-site-verification" content="GdNdcEZibJZdN6jmTnJqM3lEcFznkOvi5kayRqfMkiw" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
