@@ -106,9 +106,9 @@ export function TextDiffChecker() {
   const [modifiedText, setModifiedText] = useState("");
   const [showDiff, setShowDiff] = useState(false);
 
-  const { diffLines, stats } = useMemo(() => {
+  const { diffLines, stats } = useMemo<{ diffLines: DiffLine[]; stats: DiffStats }>(() => {
     if (!showDiff) return { diffLines: [], stats: { added: 0, removed: 0, unchanged: 0 } };
-    return computeDiff(originalText, modifiedText);
+    return { diffLines: computeDiff(originalText, modifiedText).lines, stats: computeDiff(originalText, modifiedText).stats };
   }, [showDiff, originalText, modifiedText]);
 
   const handleCompare = () => {

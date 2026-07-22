@@ -5,7 +5,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.
 
 export const metadata: Metadata = {
   title: "Terms of Service - ToolVerse",
-  description: "Terms of service for ToolVerse free online tools. Read the terms for using our 20+ browser-based utilities.",
+  description: "Terms of service for ToolVerse free online tools. Read the terms for using our 20 browser-based utilities.",
   robots: { index: true, follow: true },
   alternates: { canonical: `${BASE_URL}/terms` },
   openGraph: {

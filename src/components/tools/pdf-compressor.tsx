@@ -71,7 +71,7 @@ function reencodeJpeg(
   quality: number
 ): Promise<Uint8Array> {
   return new Promise((resolve, reject) => {
-    const blob = new Blob([jpegBytes], { type: "image/jpeg" });
+    const blob = new Blob([jpegBytes as BlobPart], { type: "image/jpeg" });
     const url = URL.createObjectURL(blob);
     const img = new Image();
 
@@ -275,7 +275,7 @@ async function compressPdf(
     originalSize,
     compressedSize,
     reduction,
-    blob: new Blob([optimized], { type: "application/pdf" }),
+    blob: new Blob([optimized as BlobPart], { type: "application/pdf" }),
     fileName: "compressed.pdf",
   };
 }

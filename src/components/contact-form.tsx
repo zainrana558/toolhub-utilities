@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Github, Bug, Send } from "lucide-react";
+import { Mail, Github, Bug, Send, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -27,19 +27,57 @@ const subjectOptions = [
   "Partnership",
 ];
 
+type Status = "idle" | "submitting" | "success" | "error";
+
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  // Honeypot: real users never fill this in
+  const [company, setCompany] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    alert("Thank you! We'll get back to you soon.");
-    setName("");
-    setEmail("");
-    setSubject("");
-    setMessage("");
+    setStatus("submitting");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message, company }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+        setCompany("");
+        return;
+      }
+
+      let msg = "Something went wrong. Please try again.";
+      if (res.status === 429) {
+        msg = "Too many submissions. Please wait a few minutes and try again.";
+      } else {
+        try {
+          const data = await res.json();
+          if (data?.error) msg = data.error;
+        } catch {
+          /* keep default */
+        }
+      }
+      setErrorMsg(msg);
+      setStatus("error");
+    } catch {
+      setErrorMsg("Network error. Please check your connection and try again.");
+      setStatus("error");
+    }
   }
 
   return (
@@ -121,6 +159,7 @@ export default function ContactForm() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    disabled={status === "submitting"}
                   />
                 </div>
                 <div className="space-y-2">
@@ -132,13 +171,19 @@ export default function ContactForm() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={status === "submitting"}
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="contact-subject">Subject</Label>
-                <Select value={subject} onValueChange={setSubject} required>
+                <Select
+                  value={subject}
+                  onValueChange={setSubject}
+                  required
+                  disabled={status === "submitting"}
+                >
                   <SelectTrigger className="w-full" id="contact-subject">
                     <SelectValue placeholder="Select a subject" />
                   </SelectTrigger>
@@ -161,12 +206,57 @@ export default function ContactForm() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   required
+                  maxLength={5000}
+                  disabled={status === "submitting"}
+                />
+                <p className="text-xs text-muted-foreground text-right">
+                  {message.length}/5000
+                </p>
+              </div>
+
+              {/* Honeypot — visually hidden, ignored by real users, filled by bots */}
+              <div aria-hidden="true" className="hidden">
+                <Label htmlFor="contact-company">Company (leave empty)</Label>
+                <Input
+                  id="contact-company"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
                 />
               </div>
 
-              <Button type="submit" className="w-full sm:w-auto">
-                <Send className="mr-2 h-4 w-4" />
-                Send Message
+              {status === "success" && (
+                <div className="flex items-start gap-2 rounded-lg border border-green-500/40 bg-green-500/5 p-3 text-sm text-green-700 dark:text-green-400">
+                  <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
+                  <span>Thank you! Your message has been sent. We&apos;ll get back to you within 24-48 hours.</span>
+                </div>
+              )}
+
+              {status === "error" && (
+                <div className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
+                  <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full sm:w-auto"
+                disabled={status === "submitting"}
+              >
+                {status === "submitting" ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending…
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    Send Message
+                  </>
+                )}
               </Button>
 
               <p className="text-xs text-muted-foreground">

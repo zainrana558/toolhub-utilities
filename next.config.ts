@@ -21,10 +21,12 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Build fails fast on type errors instead of silently shipping them.
+  // If errors appear after this change, fix them — don't re-enable this flag.
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
   // Force trailing slashes for cleaner URLs
   trailingSlash: false,
   // Redirect www to non-www (handles at edge, but add as fallback)

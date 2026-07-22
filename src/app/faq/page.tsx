@@ -53,7 +53,7 @@ const faqData = {
       {
         question: "How many tools does ToolVerse have?",
         answer:
-          "21 tools across 4 categories: Text Tools (Word Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer), Math & Finance (BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Number Base Converter), Developer Tools (Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Text Diff Checker), and Converters (Unit Converter, Image Compressor, PDF Compressor).",
+          "20 tools across 4 categories: Text Tools (Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer, Text Diff Checker), Math Calculators (BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter), Developer Tools (Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Number Base Converter), and Image Tools (Image Compressor, PDF Compressor).",
       },
     ],
   },
@@ -85,12 +85,12 @@ const faqData = {
       {
         question: "What tools are available?",
         answer:
-          "ToolVerse offers 21 tools across 4 categories:\n\nText Tools: Word Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer.\n\nMath & Finance: BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Number Base Converter.\n\nDeveloper Tools: Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Text Diff Checker.\n\nConverters: Unit Converter, Image Compressor, PDF Compressor.",
+          "ToolVerse offers 20 tools across 4 categories:\n\nText Tools: Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer, Text Diff Checker.\n\nMath Calculators: BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter.\n\nDeveloper Tools: Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Number Base Converter.\n\nImage Tools: Image Compressor, PDF Compressor.",
       },
       {
         question: "Can I use tools on my phone?",
         answer:
-          "Yes, fully responsive. All 21 tools are designed to work on any device — smartphones, tablets, laptops, and desktops. The interface adapts to your screen size for the best experience. Mobile users can also add ToolVerse to their home screen for quick access.",
+          "Yes, fully responsive. All 20 tools are designed to work on any device — smartphones, tablets, laptops, and desktops. The interface adapts to your screen size for the best experience. Mobile users can also add ToolVerse to their home screen for quick access.",
       },
       {
         question: "Do tools work offline?",

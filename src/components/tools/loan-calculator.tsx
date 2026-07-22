@@ -107,7 +107,7 @@ export function LoanCalculator() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
-                <div className="relative w-32 h-32 rounded-full" style={{ background: `conic-gradient(hsl(var(--primary)) 0% ${((result.principal || parseFloat(principal)) / result.totalPayment * 100).toFixed(1)}%, hsl(var(--destructive)) ${((result.principal || parseFloat(principal)) / result.totalPayment * 100).toFixed(1)}% 100%)` }}>
+                <div className="relative w-32 h-32 rounded-full" style={{ background: `conic-gradient(hsl(var(--primary)) 0% ${(parseFloat(principal) / result.totalPayment * 100).toFixed(1)}%, hsl(var(--destructive)) ${(parseFloat(principal) / result.totalPayment * 100).toFixed(1)}% 100%)` }}>
                   <div className="absolute inset-4 bg-card rounded-full flex items-center justify-center">
                     <span className="text-xs font-medium">{((result.totalInterest / result.totalPayment) * 100).toFixed(1)}% interest</span>
                   </div>

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,11 +21,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "ToolVerse - 21 Free Online Tools | No Sign-Up",
+    default: "ToolVerse - 20 Free Online Tools | No Sign-Up",
     template: "%s | ToolVerse",
   },
   description:
-    "21 free online tools: word counter, character counter, password generator, BMI calculator, image compressor, QR code generator, PDF compressor, unit converter, JSON formatter and more. No sign-up, 100% private.",
+    "20 free online tools: word counter, character counter, password generator, BMI calculator, image compressor, QR code generator, PDF compressor, unit converter, JSON formatter and more. No sign-up, 100% private.",
   keywords: [
     "free online tools", "word counter", "password generator", "BMI calculator",
     "percentage calculator", "age calculator", "loan calculator", "unit converter",
@@ -122,7 +124,7 @@ const orgJsonLd = {
   name: "ToolVerse",
   url: BASE_URL,
   logo: `${BASE_URL}/logo.svg`,
-  description: "Free online tools that work instantly in your browser. 20+ utilities across text, math, developer tools, and converters. No sign-up required.",
+  description: "Free online tools that work instantly in your browser. 20 utilities across text, math, developer tools, and image tools. No sign-up required.",
   foundingDate: "2025",
   founder: {
     "@type": "Person",
@@ -191,6 +193,15 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ThemeProvider>
+        {/* Google AdSense library — loaded once globally only when configured. */}
+        {ADSENSE_CLIENT && (
+          <Script
+            id="adsbygoogle-lib"
+            strategy="afterInteractive"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        )}
       </body>
     </html>
   );

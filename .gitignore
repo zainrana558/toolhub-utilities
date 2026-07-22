@@ -39,11 +39,13 @@ next-env.d.ts
 
 # Database
 *.db
-prisma/
 
 # Work logs & screenshots
 worklog.md
 download/
+
+# Local upload scratch folder
+upload/
 
 # Examples
 examples/

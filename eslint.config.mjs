@@ -19,6 +19,11 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     // React rules
     "react-hooks/exhaustive-deps": "off",
     "react-hooks/purity": "off",
+    // React 19's set-state-in-effect rule has false positives on standard
+    // patterns: mount-time initialization, media-query hooks, the "mounted"
+    // flag for hydration safety, and shadcn/ui library code. Re-enable when
+    // the underlying patterns are refactored to useSyncExternalStore.
+    "react-hooks/set-state-in-effect": "off",
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
     "react/prop-types": "off",

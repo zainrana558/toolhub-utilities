@@ -46,7 +46,7 @@ export default async function BlogPostPage({
 
   if (!post) return notFound();
 
-  const faqEntities = [];
+  const faqEntities: { "@type": string; name: string; acceptedAnswer: { "@type": string; text: string } }[] = [];
   // Extract Q&A pairs from content for FAQ schema
   const h2Matches = post.content.matchAll(/<h2>([^<]+)<\/h2>\s*<p>([^<]+)<\/p>/g);
   for (const match of h2Matches) {

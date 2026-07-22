@@ -277,7 +277,7 @@
   background: var(--muted);
 }
 .prose-custom tr:nth-child(even) {
-  background: var(--muted / 30%);
+  background: color-mix(in oklch, var(--muted) 30%, transparent);
 }
 .prose-custom hr {
   border: none;
