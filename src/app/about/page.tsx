@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About ToolVerse - Who We Are & Why We Built This",
     description:
-      "Learn about ToolVerse, a free collection of 20 browser-based tools built by developers for everyone.",
+      "Learn about ToolVerse, a free collection of 21 browser-based tools built by developers for everyone.",
     url: `${BASE_URL}/about`,
   },
   alternates: {
@@ -27,7 +27,7 @@ const aboutJsonLd = {
   "@type": "AboutPage",
   name: "About ToolVerse",
   description:
-    "ToolVerse is a free collection of 20 browser-based utility tools. Built by developers who believe online tools should be fast, private, and accessible to everyone.",
+    "ToolVerse is a free collection of 21 browser-based utility tools. Built by developers who believe online tools should be fast, private, and accessible to everyone.",
   url: `${BASE_URL}/about`,
   mainEntity: {
     "@type": "Organization",
@@ -73,7 +73,7 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              ToolVerse provides <strong className="text-foreground">20 free online tools</strong> across
+              ToolVerse provides <strong className="text-foreground">21 free online tools</strong> across
               four categories: text tools, math calculators, developer
               utilities, and file converters. Our tools are used by over
               <strong className="text-foreground"> 50,000 people every month</strong> — from

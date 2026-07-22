@@ -153,6 +153,7 @@ export default async function BlogPostPage({
                     "number-base-converter": "Number Base Converter",
                     "text-diff-checker": "Text Diff Checker",
                     "pdf-compressor": "PDF Compressor",
+                    "file-converter": "File Converter",
                   };
                   return (
                     <a

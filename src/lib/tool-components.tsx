@@ -106,6 +106,10 @@ const PdfCompressor = dynamic(
   () => import("@/components/tools/pdf-compressor").then((m) => ({ default: m.PdfCompressor })),
   { ssr: false },
 );
+const FileConverter = dynamic(
+  () => import("@/components/tools/file-converter").then((m) => ({ default: m.FileConverter })),
+  { ssr: false },
+);
 
 export const toolComponents: Record<string, ComponentType> = {
   "word-counter": WordCounter,
@@ -129,6 +133,7 @@ export const toolComponents: Record<string, ComponentType> = {
   "number-base-converter": NumberBaseConverter,
   "text-diff-checker": TextDiffChecker,
   "pdf-compressor": PdfCompressor,
+  "file-converter": FileConverter,
 };
 
 /** Convenience helper: returns the component for a tool id (or undefined). */

@@ -21,11 +21,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "ToolVerse - 20 Free Online Tools | No Sign-Up",
+    default: "ToolVerse - 21 Free Online Tools | No Sign-Up",
     template: "%s | ToolVerse",
   },
   description:
-    "20 free online tools: word counter, character counter, password generator, BMI calculator, image compressor, QR code generator, PDF compressor, unit converter, JSON formatter and more. No sign-up, 100% private.",
+    "21 free online tools: word counter, character counter, password generator, BMI calculator, image compressor, QR code generator, PDF compressor, file converter, unit converter, JSON formatter and more. No sign-up, 100% private.",
   keywords: [
     "free online tools", "word counter", "password generator", "BMI calculator",
     "percentage calculator", "age calculator", "loan calculator", "unit converter",
@@ -42,15 +42,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "ToolVerse",
-    title: "ToolVerse - 20 Free Online Tools | No Sign-Up",
-    description: "20 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor and more. No sign-up, 100% private.",
+    title: "ToolVerse - 21 Free Online Tools | No Sign-Up",
+    description: "21 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor, file converter and more. No sign-up, 100% private.",
     url: BASE_URL,
-    images: [{ url: `${BASE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 20 Free Online Tools" }],
+    images: [{ url: `${BASE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 21 Free Online Tools" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ToolVerse - 20 Free Online Tools | No Sign-Up",
-    description: "20 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor and more. No sign-up, 100% private.",
+    title: "ToolVerse - 21 Free Online Tools | No Sign-Up",
+    description: "21 free online tools: word counter, password generator, image compressor, QR code generator, PDF compressor, file converter and more. No sign-up, 100% private.",
     site: "@toolverse",
     images: [`${BASE_URL}/og-default.png`],
   },
@@ -124,7 +124,7 @@ const orgJsonLd = {
   name: "ToolVerse",
   url: BASE_URL,
   logo: `${BASE_URL}/logo.svg`,
-  description: "Free online tools that work instantly in your browser. 20 utilities across text, math, developer tools, and image tools. No sign-up required.",
+  description: "Free online tools that work instantly in your browser. 21 utilities across text, math, developer tools, and image tools. No sign-up required.",
   foundingDate: "2025",
   founder: {
     "@type": "Person",

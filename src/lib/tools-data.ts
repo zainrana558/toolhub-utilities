@@ -20,6 +20,7 @@ import {
   Diff,
   FileDown,
   TextCursorInput,
+  FileCog,
 } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 
@@ -553,5 +554,30 @@ export const tools: ToolDef[] = [
     ],
     features: ["3 Compression Levels (Low/Medium/High)", "File Size Comparison", "No Upload Required", "Text & Layout Preserved", "Instant Download", "100% Private Processing"],
     examples: { input: "document.pdf (5.2 MB)", output: { "Compressed Size": "1.8 MB", Reduction: "65%", Level: "Medium" } },
+  },
+  {
+    id: "file-converter",
+    name: "File Converter",
+    shortName: "File Convert",
+    description: "Convert PDF, Word (DOCX), Markdown, TXT, and HTML files between each other instantly.",
+    longDescription: "Convert files between PDF, Word (DOCX), Markdown, plain text, and HTML with one click. Upload a PDF and extract its text into a Word document, turn Markdown into a styled PDF, convert HTML to Markdown for a README, and dozens of other combinations. All processing happens on the server using purpose-built libraries (pdf-lib, mammoth, docx, marked) and the converted file is sent straight back to your browser \u2014 nothing is stored.",
+    category: "image",
+    icon: FileCog,
+    keywords: ["file converter", "pdf to word", "docx to pdf", "markdown to pdf", "html to pdf", "txt to pdf", "pdf to text", "docx to html", "convert files online", "document converter"],
+    metaTitle: "Free File Converter \u2013 PDF, Word, Markdown, HTML, TXT",
+    metaDescription: "Convert between PDF, DOCX, Markdown, HTML, and TXT instantly. PDF to Word, Word to PDF, Markdown to PDF and more. Free online File Converter. No sign-up.",
+    benefitHeading: "Convert Between PDF, Word, Markdown, HTML & TXT",
+    primaryKeyword: "file converter",
+    howToUse: ["Upload a PDF, DOCX, Markdown, TXT, or HTML file (up to 15 MB).", "Pick the target format from the dropdown \u2014 only compatible outputs are shown.", "Click 'Convert' and wait for the server to process your file.", "Download the converted file to your device."],
+    faq: [
+      { question: "What is the File Converter?", answer: "The File Converter is a free online tool that converts documents between PDF, Word (DOCX), Markdown, plain text, and HTML formats. You can extract text from a PDF into a Word document, turn Markdown into a styled PDF, convert an HTML page into Markdown, and dozens of other combinations \u2014 all from one place." },
+      { question: "Which conversions are supported?", answer: "PDF can be converted to TXT, HTML, and Markdown (extracting the text). Word (DOCX) can be converted to TXT, HTML, Markdown, and PDF. Markdown can be converted to HTML, PDF, TXT, and DOCX. Plain text can be converted to HTML, PDF, Markdown, and DOCX. HTML can be converted to TXT, PDF, Markdown, and DOCX \u2014 17 conversion paths in total." },
+      { question: "Is the conversion done in my browser or on a server?", answer: "Conversions are performed on the server using purpose-built libraries: pdf-lib for PDF generation, mammoth for DOCX parsing, the docx package for DOCX generation, and marked for Markdown rendering. These libraries are too heavy to ship to the browser, so server-side processing keeps your initial page load fast. Your file is processed in memory and immediately discarded \u2014 it is never written to disk or stored." },
+      { question: "What is the maximum file size?", answer: "The maximum input file size is 15 MB. This limit protects the server from abuse and ensures conversion completes within a reasonable time. If you need to convert larger files, consider splitting them first or using a desktop converter." },
+      { question: "Does PDF to Word preserve formatting?", answer: "PDF is fundamentally a layout format, not a structured document format, so converting PDF to DOCX produces a Word document containing the extracted plain text without original fonts, colors, or images. For a faithful PDF \u2192 Word conversion including layout, a commercial OCR-based tool is required. The File Converter is best for extracting readable text from PDFs into an editable Word document." },
+      { question: "Is my file stored or shared?", answer: "No. Your file is uploaded to the server only for the duration of the conversion, processed in memory, and then permanently discarded. The converted output is streamed straight back to your browser as a download. No file contents are written to disk, logged, or shared with any third party." },
+    ],
+    features: ["17 Conversion Paths", "PDF \u2194 Word \u2194 Markdown \u2194 HTML \u2194 TXT", "Server-side Processing", "15 MB Max File Size", "Instant Download", "Files Never Stored"],
+    examples: { input: "report.docx (1.2 MB)", output: { "Output": "report-converted.pdf", "Size": "320 KB", "Format": "PDF" } },
   },
 ];
