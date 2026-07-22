@@ -392,4 +392,94 @@ export const blogPosts: BlogPost[] = [
 
 <p>Calculate any percentage instantly with our <a href="/percentage-calculator">free Percentage Calculator</a> — it handles percentage of, percentage change, and percentage difference. For financial calculations involving percentages (like loan interest), use our <a href="/loan-calculator">Loan Calculator</a>. For health-related percentage calculations, check the <a href="/bmi-calculator">BMI Calculator</a> and <a href="/unit-converter">Unit Converter</a>.</p>`,
   },
+  {
+    slug: "how-to-convert-pdf-to-word",
+    title: "How to Convert PDF to Word (and Back) Without Losing Formatting",
+    description: "A practical guide to converting between PDF and DOCX. Understand why perfect conversion is hard, what to expect, and how to use a free online File Converter to get the best results.",
+    date: "2026-07-20",
+    author: "Zain Rana",
+    category: "Productivity",
+    tools: ["file-converter", "pdf-compressor", "markdown-previewer"],
+    content: `<p>PDF and Word (DOCX) are the two most widely used document formats in the world, and they're built for fundamentally different purposes. PDF is a fixed-layout format designed to look identical on every screen and printer. Word is a structured, editable format designed for revision. Converting between them is one of the most common — and most frustrating — document tasks.</p>
+
+<h2>Why PDF to Word Is Hard</h2>
+<p>A PDF file stores a document as a series of pages with absolutely positioned text runs, vector paths, and embedded images. It does not store paragraphs, headings, tables, or styles as logical structures — only their visual appearance. A DOCX file, by contrast, stores a logical document tree: paragraphs, runs of text, styles, sections. To convert PDF to DOCX, you have to reverse-engineer the logical structure from visual positions. Two text runs on the same horizontal line might be a single paragraph, two columns, a table cell, or a footnote — and the PDF doesn't tell you which.</p>
+
+<h2>What Realistic Conversion Looks Like</h2>
+<p>Honest expectation-setting: free, automated PDF to Word conversion produces a Word document containing the extracted plain text — fonts, colors, and images may be lost or simplified, and complex layouts (multi-column, tables, sidebars) typically flatten into sequential paragraphs. Premium tools that cost money use OCR and layout heuristics to do better, but even they struggle with anything beyond simple documents. For most use cases — extracting content from a PDF so you can edit and repurpose it — text extraction into a Word document is more than enough.</p>
+
+<h2>Going the Other Way: Word to PDF</h2>
+<p>Word to PDF is much easier because the logical structure already exists. The converter renders the structured DOCX content (paragraphs, headings, lists) into a paginated PDF with consistent typography. Our File Converter does this by parsing DOCX content via the <code>mammoth</code> library, extracting the plain text, and re-rendering it as a clean A4 PDF using <code>pdf-lib</code>. The result is a readable PDF — perfect for sharing a document that you don't want edited.</p>
+
+<h2>When to Use Each Format</h2>
+<p>Use <strong>PDF</strong> when you need a document to look identical everywhere — contracts, invoices, printable forms, final reports. Use <strong>DOCX</strong> when you need to edit, comment, or collaborate — drafts, working documents, anything that will be revised. Use <strong>Markdown</strong> for technical documentation, README files, and content that lives in a Git repository. Use <strong>HTML</strong> when the document will be displayed on a web page. The right format depends on where the document will be consumed.</p>
+
+<h2>Practical Workflow Tips</h2>
+<p>When extracting text from a PDF into Word, expect to spend a few minutes re-applying formatting. Use Word's styles (Heading 1, Heading 2, Normal) rather than manually formatting text — this preserves structure for future conversions and accessibility tools. If you're going PDF → DOCX → PDF (round-tripping), check the final PDF carefully; complex layouts rarely survive a round trip cleanly. For scanned PDFs (image-only), no text-based converter will work — you need OCR software first.</p>
+
+<p>Try our free <a href="/file-converter">File Converter</a> to convert between PDF, Word, Markdown, HTML, and TXT instantly. If your PDF is too large to convert, compress it first with the <a href="/pdf-compressor">PDF Compressor</a>. For previewing Markdown before converting it, use the <a href="/markdown-previewer">Markdown Previewer</a>.</p>`,
+  },
+  {
+    slug: "markdown-vs-html-vs-docx",
+    title: "Markdown vs HTML vs DOCX: Which Document Format Should You Use?",
+    description: "A practical comparison of Markdown, HTML, and DOCX. Learn the strengths, weaknesses, and ideal use cases for each format — and how to convert between them.",
+    date: "2026-07-18",
+    author: "Zain Rana",
+    category: "Productivity",
+    tools: ["file-converter", "markdown-previewer", "word-counter"],
+    content: `<p>Markdown, HTML, and DOCX are the three document formats you'll encounter most often in modern work. Each was designed for a different context, and choosing the wrong one leads to friction — version-control headaches, formatting loss, or content that doesn't render where it needs to. Understanding the tradeoffs helps you pick the right format up front and convert cleanly when you need to.</p>
+
+<h2>Markdown: The Developer's Default</h2>
+<p>Markdown is a plain-text format with lightweight syntax for headings, bold, italic, lists, links, code blocks, and images. It was created in 2004 by John Gruber as a way to write structured content that reads naturally as plain text and converts cleanly to HTML. Markdown's superpower is <strong>diffability</strong> — because every line is plain text, Git and other version-control systems can show exactly what changed. That's why Markdown is the standard for README files, documentation sites (Docusaurus, MkDocs, Hugo), GitHub issues, Notion pages, and Reddit comments.</p>
+<p>Markdown's weakness is expressiveness. There's no native way to do tables with merged cells, complex layouts, footnotes (without extensions), or precise typography. Images are referenced by URL, not embedded. If your document needs precise visual control, Markdown alone isn't enough — you need to convert it to HTML or PDF.</p>
+
+<h2>HTML: The Web's Lingua Franca</h2>
+<p>HTML is the structural language of the web. Every page you've ever visited is HTML (often generated by a framework like React or Vue, but HTML underneath). HTML gives you full control over structure, semantics, and (with CSS) appearance. It supports tables, forms, interactive elements, embedded media, accessibility attributes, and metadata. For content that lives on the web, HTML is the only correct choice.</p>
+<p>HTML's weakness is human-readability. Writing HTML by hand is verbose — a simple heading requires <code>&lt;h2&gt;Title&lt;/h2&gt;</code> instead of <code>## Title</code>. Reviewing HTML diffs in version control is noisy. And while HTML renders perfectly in a browser, it's awkward to share as a file or print.</p>
+
+<h2>DOCX: The Office Standard</h2>
+<p>DOCX is the Microsoft Word format, standardized as part of Office Open XML since 2007. It's a ZIP archive containing XML files that describe a structured document — paragraphs, runs, styles, sections, tables, images, footnotes, tracked changes, and comments. DOCX is the format of choice for legal documents, business reports, academic papers, and any workflow that involves non-technical collaborators reviewing and editing.</p>
+<p>DOCX's strength is its rich feature set: tracked changes, comments, complex formatting, mail merge, references. Its weakness is version control — the underlying XML is verbose and changes show up as noisy diffs. DOCX files are also binary-ish (they're ZIP archives), so tools like <code>grep</code> and <code>diff</code> don't work directly on them.</p>
+
+<h2>Choosing the Right Format</h2>
+<ul>
+<li><strong>Documentation that lives in a repo</strong> — Markdown. End of story.</li>
+<li><strong>Content for a website</strong> — HTML (possibly generated from Markdown via a static site generator).</li>
+<li><strong>Documents for non-technical collaborators</strong> — DOCX.</li>
+<li><strong>Legal or formal documents</strong> — DOCX (editable) or PDF (final).</li>
+<li><strong>Email-friendly reports</strong> — PDF (renders identically everywhere).</li>
+<li><strong>Notes and personal knowledge bases</strong> — Markdown (Obsidian, Logseq, Notion all support it).</li>
+</ul>
+
+<h2>Converting Between Formats</h2>
+<p>The conversion paths that work cleanly: Markdown → HTML (render with any Markdown parser), HTML → plain text (strip tags), plain text → Markdown (already compatible), Markdown → PDF (render to HTML then to PDF), DOCX → HTML (use a library like mammoth), DOCX → plain text (also mammoth). The hard path is PDF → anything, because PDF is a fixed-layout format without logical structure — see our <a href="/blog/how-to-convert-pdf-to-word">PDF to Word guide</a> for details.</p>
+
+<p>Convert between all three formats (plus TXT and PDF) with our free <a href="/file-converter">File Converter</a>. To preview Markdown before converting, use the <a href="/markdown-previewer">Markdown Previewer</a>. To check word count across formats, use the <a href="/word-counter">Word Counter</a>.</p>`,
+  },
+  {
+    slug: "extract-text-from-pdf",
+    title: "How to Extract Text from a PDF: Tools, Methods, and Limitations",
+    description: "Learn how PDF text extraction works, why some PDFs extract cleanly and others don't, and how to use a free online File Converter to pull text out of any PDF.",
+    date: "2026-07-15",
+    author: "Zain Rana",
+    category: "Productivity",
+    tools: ["file-converter", "pdf-compressor", "text-diff-checker"],
+    content: `<p>PDF is the world's most popular document format for sharing final, read-only documents — contracts, invoices, research papers, government forms, ebooks. But extracting the text out of a PDF (so you can search it, edit it, quote it, or feed it to another tool) is one of those tasks that sounds trivial and is actually full of edge cases. Here's what's really happening under the hood.</p>
+
+<h2>How PDF Stores Text</h2>
+<p>Despite looking like a document, a PDF internally is closer to a vector drawing. Each visible character is a glyph positioned at exact X/Y coordinates on a page, drawn using a specific font. The PDF doesn't store "this is paragraph 3 of section 2" — it stores "draw glyph ID 0x42 from font F1 at coordinates (72.4, 540.1) using size 11." This is why a PDF looks identical on every device: it's a precise visual rendering, not a logical document. Text extraction means reconstructing logical text (words, lines, paragraphs, reading order) from these positioned glyphs.</p>
+
+<h2>Three Categories of PDF</h2>
+<p><strong>Digital PDFs</strong> are generated directly from a word processor, spreadsheet, or other software. The text is stored as real characters with a real font — extraction is straightforward and produces clean text. Most research papers, invoices, and modern ebooks fall in this category.</p>
+<p><strong>Scanned PDFs</strong> are created by a scanner or camera: each page is a photograph embedded in a PDF. There's no text data at all — only images. No text-based extraction tool can help; you need OCR (optical character recognition) software like Tesseract, Adobe Acrobat, or ABBYY FineReader.</p>
+<p><strong>Hybrid PDFs</strong> contain both: a scanned image plus an invisible OCR text layer. The visible page is the image, but a hidden text layer lets you search and select. Extraction works on the OCR layer, but the quality depends on how good the original OCR was.</p>
+
+<h2>Why Extraction Sometimes Goes Wrong</h2>
+<p>Even on digital PDFs, extraction can produce surprising results. <strong>Custom font encoding</strong>: some PDFs use font subsets with custom character mappings; if the mapping is missing or wrong, extracted text shows up as gibberish. <strong>Reading order</strong>: PDFs with multi-column layouts often extract in the wrong order (left column line 1, right column line 1, left column line 2...) because the extractor follows Y coordinate rather than logical flow. <strong>Ligatures and combining characters</strong>: "fi" ligatures and accented characters sometimes extract as their component parts or wrong Unicode codepoints. <strong>Embedded images of text</strong>: text in image form (screenshots, signatures) is invisible to text extraction.</p>
+
+<h2>Practical Extraction Workflow</h2>
+<p>Start by uploading your PDF to a converter that uses the pdf.js engine (like ours) — it handles most digital PDFs cleanly. If the extracted text looks scrambled, try a different tool (pdftotext, Adobe, or browser built-in). If the extracted text is empty or random characters, you're probably dealing with a scanned PDF and need OCR. After extraction, clean up the text — remove page numbers, headers, footers, and fix broken paragraphs. For comparing two versions of an extracted document, use a diff tool to spot where text was added or removed.</p>
+
+<p>Extract text from any PDF (digital or hybrid) with our free <a href="/file-converter">File Converter</a> — convert PDF to TXT, HTML, or Markdown in seconds. If your PDF is too large, compress it first with the <a href="/pdf-compressor">PDF Compressor</a>. For comparing two versions of extracted text, use the <a href="/text-diff-checker">Text Diff Checker</a>.</p>`,
+  },
 ];

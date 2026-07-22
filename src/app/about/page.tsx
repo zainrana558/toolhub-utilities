@@ -201,10 +201,138 @@ export default function AboutPage() {
               <div>
                 <h3 className="font-semibold mb-2 text-primary">Image Tools</h3>
                 <p className="text-sm text-muted-foreground">
-                  Image Compressor, PDF Compressor
+                  Image Compressor, PDF Compressor, File Converter
                 </p>
               </div>
             </div>
+          </section>
+
+          {/* History & Timeline */}
+          <section className="mb-12">
+            <h2 className="text-2xl font-semibold mb-4">How ToolVerse Started</h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              ToolVerse began in early 2025 as a personal scratchpad of utility
+              scripts. The original need was mundane: a quick way to count words
+              in a draft, generate a strong password for a new account, and
+              compress an image for an email attachment. Existing tools required
+              sign-ups, showed full-screen ads, or quietly uploaded files to
+              servers with unclear retention policies. So we built our own.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              The initial release in March 2025 had six tools. By June we had
+              added calculators, color and QR utilities, and the JSON formatter.
+              The PDF Compressor launched in late 2025 as our first tool that
+              operates on a binary file format entirely in the browser. The
+              File Converter, which performs server-side conversion between
+              PDF, Word, Markdown, HTML, and plain text, joined in mid-2026 as
+              tool #21 and our first tool that requires server-side processing.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              Every tool we add solves a problem we personally hit. We never
+              build tools to pad the count or chase search traffic. If we
+              wouldn&apos;t use it ourselves, it doesn&apos;t ship.
+            </p>
+          </section>
+
+          {/* Tech Stack */}
+          <section className="mb-12">
+            <h2 className="text-2xl font-semibold mb-4">Built With</h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              ToolVerse runs on a modern, fully-typed TypeScript stack. The
+              frontend is <strong className="text-foreground">Next.js 16</strong> with
+              the App Router and React 19, styled with{" "}
+              <strong className="text-foreground">Tailwind CSS v4</strong> and{" "}
+              <strong className="text-foreground">shadcn/ui</strong> components. State
+              management is handled by{" "}
+              <strong className="text-foreground">Zustand</strong>, and forms by{" "}
+              <strong className="text-foreground">React Hook Form</strong> with Zod schemas.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              Most tools process data entirely in the browser using Web APIs:
+              the Password Generator uses{" "}
+              <strong className="text-foreground">Web Crypto</strong> for
+              cryptographically secure randomness, the Image Compressor uses the
+              Canvas API, the PDF Compressor uses{" "}
+              <strong className="text-foreground">pdf-lib</strong> for structural
+              optimization, and the Hash Generator uses the SubtleCrypto
+              interface. The File Converter is the exception — it uses
+              server-side libraries ({""}
+              <strong className="text-foreground">mammoth</strong>,{" "}
+              <strong className="text-foreground">docx</strong>,{" "}
+              <strong className="text-foreground">pdf-parse</strong>, and{" "}
+              <strong className="text-foreground">marked</strong>) because those
+              libraries are too heavy to ship to the browser.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              The entire codebase is open-source on{" "}
+              <a
+                href="https://github.com/zainrana558/toolhub-utilities"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                GitHub
+              </a>{" "}
+              and deploys to Vercel as a standalone Node server. Pages are
+              statically prerendered where possible, with dynamic server routes
+              only for the contact form and file conversion endpoints.
+            </p>
+          </section>
+
+          {/* Roadmap */}
+          <section className="mb-12">
+            <h2 className="text-2xl font-semibold mb-4">What&apos;s Next</h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              We add tools when we identify a genuine need that isn&apos;t
+              well-served by existing free options. Here&apos;s what&apos;s on the
+              shortlist for the next few releases:
+            </p>
+            <ul className="space-y-3 text-muted-foreground">
+              <li className="flex gap-3">
+                <span className="text-primary font-bold shrink-0">Q3 2026</span>
+                <span>
+                  <strong className="text-foreground">Color Palette Generator</strong> —
+                  generate accessible 5-color palettes from a single seed color,
+                  with WCAG contrast ratios and exportable CSS/Tailwind config.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-primary font-bold shrink-0">Q3 2026</span>
+                <span>
+                  <strong className="text-foreground">CSV Viewer &amp; Inspector</strong> —
+                  paste or upload a CSV, get a sortable, filterable table view
+                  with column statistics and quick visualizations.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-primary font-bold shrink-0">Q4 2026</span>
+                <span>
+                  <strong className="text-foreground">OCR for scanned PDFs</strong> —
+                  extend the File Converter to handle scanned PDFs by running
+                  Tesseract.js in the browser, no server round-trip required.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-primary font-bold shrink-0">Q4 2026</span>
+                <span>
+                  <strong className="text-foreground">Regex Tester</strong> — live regex
+                  evaluation with capture groups, flags, and a library of common
+                  patterns (emails, URLs, phone numbers, IP addresses).
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-primary font-bold shrink-0">2027</span>
+                <span>
+                  <strong className="text-foreground">Theme &amp; locale expansion</strong> —
+                  add Spanish, French, and German translations; introduce a
+                  high-contrast accessibility theme.
+                </span>
+              </li>
+            </ul>
+            <p className="text-muted-foreground leading-relaxed mt-4">
+              Have a tool you&apos;d like to see? Open an issue on GitHub or email
+              us — every suggestion gets read.
+            </p>
           </section>
 
           {/* Contact */}
