@@ -10,8 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, ThumbsUp, Share2, Link2, Copy, Check, ChevronRight, Home } from "lucide-react";
 import { motion } from "framer-motion";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 const stagger = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
@@ -38,7 +37,7 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
   useEffect(() => {
     if (!tool) return;
 
-    const toolUrl = `${BASE_URL}/#tool-${tool.id}`;
+    const toolUrl = `${SITE_URL}/#tool-${tool.id}`;
     const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
 
     const webPageSchema = {
@@ -50,8 +49,8 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
       breadcrumb: {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-          { "@type": "ListItem", position: 2, name: categoryLabel, item: `${BASE_URL}/#${tool.category}-tools` },
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: categoryLabel, item: `${SITE_URL}/#${tool.category}-tools` },
           { "@type": "ListItem", position: 3, name: tool.name, item: toolUrl },
         ],
       },
@@ -131,7 +130,7 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
 
   const relatedTools = tools.filter((t) => t.category === tool.category && t.id !== tool.id).slice(0, 3);
   const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
-  const toolUrl = `${BASE_URL}/#tool-${tool.id}`;
+  const toolUrl = `${SITE_URL}/#tool-${tool.id}`;
   const embedCode = `<a href="${toolUrl}" title="${tool.name} - Free Online Tool">${tool.name}</a> - Free online ${tool.name.toLowerCase()} by ToolVerse`;
 
   const copyLink = async () => {

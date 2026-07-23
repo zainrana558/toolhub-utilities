@@ -4,9 +4,7 @@ import { Wrench, BookOpen, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { blogPosts } from "@/lib/blog-data";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Blog - ToolVerse Guides, Tips & Tutorials",
@@ -34,7 +32,7 @@ export const metadata: Metadata = {
     title: "Blog - ToolVerse Guides, Tips & Tutorials",
     description:
       "In-depth guides on password security, JSON formatting, image compression, color formats, Markdown, QR codes, loan interest, BMI, and more.",
-    url: `${BASE_URL}/blog`,
+    url: `${SITE_URL}/blog`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -50,16 +48,16 @@ const blogPageJsonLd = {
   "@type": "WebPage",
   name: "ToolVerse Blog",
   description: "In-depth guides, tutorials, and tips for ToolVerse free online tools.",
-  url: `${BASE_URL}/blog`,
-  isPartOf: { "@type": "WebSite", name: "ToolVerse", url: BASE_URL },
+  url: `${SITE_URL}/blog`,
+  isPartOf: { "@type": "WebSite", name: "ToolVerse", url: SITE_URL },
 };
 
 const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "Blog", item: `${BASE_URL}/blog` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
   ],
 };
 

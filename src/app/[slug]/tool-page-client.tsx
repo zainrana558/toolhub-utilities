@@ -14,14 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ThumbsUp, Share2, Link2, Copy, Check, ChevronRight, Home, Wrench } from "lucide-react";
+import { SITE_URL } from "@/lib/site-config";
 
 // Lazy-load below-the-fold ad slots
 const AdSlot = dynamic(() => import("@/components/ad-slot").then((m) => ({ default: m.AdSlot })), {
   ssr: false,
   loading: () => <div className="w-full h-[90px]" />,
 });
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
 
 const stagger = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
@@ -56,7 +55,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
     .filter((t): t is (typeof tools)[number] => t !== undefined)
     .slice(0, 4);
   const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
-  const toolUrl = `${BASE_URL}/${tool.id}`;
+  const toolUrl = `${SITE_URL}/${tool.id}`;
   const embedCode = `<a href="${toolUrl}" title="${tool.name} - Free Online Tool">${tool.name}</a> - Free online ${tool.name.toLowerCase()} by ToolVerse`;
 
   const copyLink = async () => {

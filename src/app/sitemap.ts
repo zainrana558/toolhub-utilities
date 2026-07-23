@@ -1,9 +1,7 @@
 import type { MetadataRoute } from "next";
 import { tools, toolCategories } from "@/lib/tools-data";
 import { blogPosts } from "@/lib/blog-data";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 // Priority map based on tool category importance
 const categoryPriority: Record<string, number> = {
@@ -17,55 +15,55 @@ const categoryPriority: Record<string, number> = {
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: BASE_URL,
+      url: SITE_URL,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1.0,
     },
     {
-      url: `${BASE_URL}/about`,
+      url: `${SITE_URL}/about`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
-      url: `${BASE_URL}/blog`,
+      url: `${SITE_URL}/blog`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
-      url: `${BASE_URL}/tutorials`,
+      url: `${SITE_URL}/tutorials`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.6,
     },
     {
-      url: `${BASE_URL}/api-docs`,
+      url: `${SITE_URL}/api-docs`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     {
-      url: `${BASE_URL}/faq`,
+      url: `${SITE_URL}/faq`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
-      url: `${BASE_URL}/contact`,
+      url: `${SITE_URL}/contact`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.4,
     },
     {
-      url: `${BASE_URL}/privacy`,
+      url: `${SITE_URL}/privacy`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.3,
     },
     {
-      url: `${BASE_URL}/terms`,
+      url: `${SITE_URL}/terms`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.3,
@@ -74,7 +72,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Tool pages
   const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
-    url: `${BASE_URL}/${tool.id}`,
+    url: `${SITE_URL}/${tool.id}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: categoryPriority[tool.category] || 0.8,
@@ -82,7 +80,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Blog pages
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${BASE_URL}/blog/${post.slug}`,
+    url: `${SITE_URL}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const,
     priority: 0.7,

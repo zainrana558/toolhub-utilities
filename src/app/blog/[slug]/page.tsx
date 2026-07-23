@@ -1,7 +1,6 @@
 import { blogPosts } from "@/lib/blog-data";
 import { notFound } from "next/navigation";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -18,7 +17,7 @@ export async function generateMetadata({
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) return { title: "Post Not Found | ToolVerse" };
 
-  const url = `${BASE_URL}/blog/${post.slug}`;
+  const url = `${SITE_URL}/blog/${post.slug}`;
   return {
     title: post.title,
     description: post.description,
@@ -78,16 +77,16 @@ export default async function BlogPostPage({
     author: {
       "@type": "Person",
       name: post.author,
-      url: `${BASE_URL}/about`,
+      url: `${SITE_URL}/about`,
     },
     publisher: {
       "@type": "Organization",
       name: "ToolVerse",
-      url: BASE_URL,
+      url: SITE_URL,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${BASE_URL}/blog/${post.slug}`,
+      "@id": `${SITE_URL}/blog/${post.slug}`,
     },
   };
 
@@ -95,9 +94,9 @@ export default async function BlogPostPage({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "Blog", item: `${BASE_URL}/blog` },
-      { "@type": "ListItem", position: 3, name: post.title, item: `${BASE_URL}/blog/${post.slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${SITE_URL}/blog/${post.slug}` },
     ],
   };
 

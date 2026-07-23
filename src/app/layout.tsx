@@ -5,7 +5,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
 const geistSans = Geist({
@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
     template: "%s | ToolVerse",
@@ -45,15 +45,15 @@ export const metadata: Metadata = {
     siteName: "ToolVerse",
     title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
     description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
-    url: BASE_URL,
-    images: [{ url: `${BASE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 32 Free Online Tools" }],
+    url: SITE_URL,
+    images: [{ url: `${SITE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 32 Free Online Tools" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
     description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
     site: "@toolverse",
-    images: [`${BASE_URL}/og-default.png`],
+    images: [`${SITE_URL}/og-default.png`],
   },
   alternates: {
     canonical: "/",
@@ -70,10 +70,10 @@ const websiteJsonLd = {
   "@type": "WebSite",
   name: "ToolVerse",
   description: "Free online tools that work instantly in your browser. No sign-up required.",
-  url: BASE_URL,
+  url: SITE_URL,
   potentialAction: {
     "@type": "SearchAction",
-    target: `${BASE_URL}/?q={search_term_string}`,
+    target: `${SITE_URL}/?q={search_term_string}`,
     "query-input": "required name=search_term_string",
   },
 };
@@ -123,9 +123,9 @@ const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "ToolVerse",
-  url: BASE_URL,
-  logo: `${BASE_URL}/logo.svg`,
-  description: "Free online tools that work instantly in your browser. 21 utilities across text, math, developer tools, and image tools. No sign-up required.",
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.svg`,
+  description: "Free online tools that work instantly in your browser. 32 utilities across text, math, developer tools, PDF, and image tools. No sign-up required.",
   foundingDate: "2025",
   founder: {
     "@type": "Person",
@@ -138,7 +138,7 @@ const orgJsonLd = {
   ],
   contactPoint: {
     "@type": "ContactPoint",
-    email: "hello@toolverse.com",
+    email: "toolshubbb@gmail.com",
     contactType: "customer support",
   },
 };
@@ -148,7 +148,7 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Zain Rana",
-  url: BASE_URL,
+  url: SITE_URL,
   jobTitle: "Full-Stack Developer & Founder",
   worksFor: {
     "@type": "Organization",

@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Wrench, HelpCircle, Shield, FileCog } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "FAQ - Frequently Asked Questions About ToolVerse",
@@ -28,7 +26,7 @@ export const metadata: Metadata = {
     title: "FAQ - Frequently Asked Questions About ToolVerse",
     description:
       "Answers to common questions about ToolVerse free online tools. Learn about privacy, features, supported formats, and how our tools work.",
-    url: `${BASE_URL}/faq`,
+    url: `${SITE_URL}/faq`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -169,11 +167,11 @@ const webPageJsonLd = {
   name: "Frequently Asked Questions - ToolVerse",
   description:
     "Answers to common questions about ToolVerse free online tools.",
-  url: `${BASE_URL}/faq`,
+  url: `${SITE_URL}/faq`,
   isPartOf: {
     "@type": "WebSite",
     name: "ToolVerse",
-    url: BASE_URL,
+    url: SITE_URL,
   },
 };
 
@@ -181,8 +179,8 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "FAQ", item: `${BASE_URL}/faq` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "FAQ", item: `${SITE_URL}/faq` },
   ],
 };
 

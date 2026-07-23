@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Privacy Policy - ToolVerse",
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Privacy Policy - ToolVerse",
     description: "ToolVerse privacy policy. We don't collect any data — all tools run in your browser.",
-    url: `${BASE_URL}/privacy`,
+    url: `${SITE_URL}/privacy`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -33,16 +32,16 @@ const privacyJsonLd = {
   "@type": "WebPage",
   "name": "Privacy Policy - ToolVerse",
   "description": "ToolVerse privacy policy. We don't collect, store, or transmit any data.",
-  "url": `${BASE_URL}/privacy`,
-  "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": BASE_URL },
+  "url": `${SITE_URL}/privacy`,
+  "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": SITE_URL },
 };
 
 const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "Privacy Policy", item: `${BASE_URL}/privacy` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Privacy Policy", item: `${SITE_URL}/privacy` },
   ],
 };
 

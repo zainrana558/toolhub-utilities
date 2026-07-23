@@ -371,7 +371,7 @@ export const tools: ToolDef[] = [
       { question: "Does the QR code generator work offline?", answer: "Yes. Once the page has loaded, the QR code generator works completely offline. The QR code rendering library is loaded with the page, so no internet connection is needed to generate or download QR codes." },
     ],
     features: ["Text/URL Encoding", "Custom Size (100-1000px)", "Custom Foreground Color", "Custom Background Color", "Download as PNG", "Copy to Clipboard"],
-    examples: { input: "https://toolhub-utilities.vercel.app", output: { Size: "300×300px", Format: "PNG", Scannable: "Yes" } },
+    examples: { input: "https://toolhub-utilities-seven.vercel.app", output: { Size: "300×300px", Format: "PNG", Scannable: "Yes" } },
   },
   {
     id: "base64-encoder",

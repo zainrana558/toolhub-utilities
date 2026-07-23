@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Terms of Service - ToolVerse",
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Terms of Service - ToolVerse",
     description: "Terms of service for ToolVerse free online tools.",
-    url: `${BASE_URL}/terms`,
+    url: `${SITE_URL}/terms`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -33,16 +32,16 @@ const termsJsonLd = {
   "@type": "WebPage",
   "name": "Terms of Service - ToolVerse",
   "description": "Terms of service for ToolVerse free online tools.",
-  "url": `${BASE_URL}/terms`,
-  "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": BASE_URL },
+  "url": `${SITE_URL}/terms`,
+  "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": SITE_URL },
 };
 
 const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "Terms of Service", item: `${BASE_URL}/terms` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Terms of Service", item: `${SITE_URL}/terms` },
   ],
 };
 

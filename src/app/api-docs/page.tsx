@@ -10,9 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "API - ToolVerse Developer API Reference",
@@ -37,7 +35,7 @@ export const metadata: Metadata = {
     title: "API - ToolVerse Developer API Reference",
     description:
       "ToolVerse API reference and documentation. Integrate our free online tools into your applications with simple API endpoints.",
-    url: `${BASE_URL}/api-docs`,
+    url: `${SITE_URL}/api-docs`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -56,11 +54,11 @@ const apiJsonLd = {
   name: "ToolVerse Developer API",
   description:
     "ToolVerse API reference and documentation. Integrate our free online tools into your applications with simple API endpoints.",
-  url: `${BASE_URL}/api-docs`,
+  url: `${SITE_URL}/api-docs`,
   isPartOf: {
     "@type": "WebSite",
     name: "ToolVerse",
-    url: BASE_URL,
+    url: SITE_URL,
   },
 };
 
@@ -68,8 +66,8 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "API Docs", item: `${BASE_URL}/api-docs` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "API Docs", item: `${SITE_URL}/api-docs` },
   ],
 };
 

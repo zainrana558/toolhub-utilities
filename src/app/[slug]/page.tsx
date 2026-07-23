@@ -1,7 +1,6 @@
 import { tools, toolCategories } from "@/lib/tools-data";
 import { ToolPageClient } from "./tool-page-client";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export async function generateStaticParams() {
   return tools.map((tool) => ({
@@ -21,7 +20,7 @@ export async function generateMetadata({
     return { title: "Tool Not Found | ToolVerse" };
   }
 
-  const toolUrl = `${BASE_URL}/${tool.id}`;
+  const toolUrl = `${SITE_URL}/${tool.id}`;
 
   return {
     title: tool.metaTitle,
@@ -35,13 +34,13 @@ export async function generateMetadata({
       siteName: "ToolVerse",
       title: tool.metaTitle,
       description: tool.metaDescription,
-      images: [{ url: `${BASE_URL}/og-${tool.id}.png`, width: 1200, height: 630, alt: tool.metaTitle }],
+      images: [{ url: `${SITE_URL}/og-${tool.id}.png`, width: 1200, height: 630, alt: tool.metaTitle }],
     },
     twitter: {
       card: "summary_large_image" as const,
       title: tool.metaTitle,
       description: tool.metaDescription,
-      images: [`${BASE_URL}/og-${tool.id}.png`],
+      images: [`${SITE_URL}/og-${tool.id}.png`],
     },
     alternates: {
       canonical: `/${tool.id}`,
@@ -93,7 +92,7 @@ export default async function ToolPage({
     );
   }
 
-  const toolUrl = `${BASE_URL}/${tool.id}`;
+  const toolUrl = `${SITE_URL}/${tool.id}`;
   const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
   const toolType = getToolType(tool.category, tool.id);
 
@@ -144,8 +143,8 @@ export default async function ToolPage({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: categoryLabel, item: `${BASE_URL}/#${tool.category}-tools` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: categoryLabel, item: `${SITE_URL}/#${tool.category}-tools` },
       { "@type": "ListItem", position: 3, name: tool.name, item: toolUrl },
     ],
   };

@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Wrench } from "lucide-react";
 import ContactForm from "@/components/contact-form";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Contact Us - ToolVerse",
@@ -27,7 +25,7 @@ export const metadata: Metadata = {
     title: "Contact Us - ToolVerse",
     description:
       "Get in touch with the ToolVerse team. Report bugs, suggest new tools, or ask questions about our free online utilities.",
-    url: `${BASE_URL}/contact`,
+    url: `${SITE_URL}/contact`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -46,11 +44,11 @@ const contactJsonLd = {
   name: "Contact ToolVerse",
   description:
     "Get in touch with the ToolVerse team. Report bugs, suggest new tools, or ask questions about our free online utilities.",
-  url: `${BASE_URL}/contact`,
+  url: `${SITE_URL}/contact`,
   isPartOf: {
     "@type": "WebSite",
     name: "ToolVerse",
-    url: BASE_URL,
+    url: SITE_URL,
   },
 };
 
@@ -58,8 +56,8 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "Contact", item: `${BASE_URL}/contact` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Contact", item: `${SITE_URL}/contact` },
   ],
 };
 

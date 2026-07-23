@@ -4,9 +4,7 @@ import { Wrench, GraduationCap, Clock, BookOpen } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toolCategories } from "@/lib/tools-data";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Tutorials - Learn How to Use ToolVerse Tools",
@@ -31,7 +29,7 @@ export const metadata: Metadata = {
     title: "Tutorials - Learn How to Use ToolVerse Tools",
     description:
       "Step-by-step tutorials for all ToolVerse tools. Learn how to use our free online utilities for text, math, development, and file conversion.",
-    url: `${BASE_URL}/tutorials`,
+    url: `${SITE_URL}/tutorials`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -50,11 +48,11 @@ const tutorialsJsonLd = {
   name: "ToolVerse Tutorials",
   description:
     "Step-by-step tutorials for all ToolVerse tools. Learn how to use our free online utilities for text, math, development, and file conversion.",
-  url: `${BASE_URL}/tutorials`,
+  url: `${SITE_URL}/tutorials`,
   isPartOf: {
     "@type": "WebSite",
     name: "ToolVerse",
-    url: BASE_URL,
+    url: SITE_URL,
   },
 };
 
@@ -62,8 +60,8 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "Tutorials", item: `${BASE_URL}/tutorials` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Tutorials", item: `${SITE_URL}/tutorials` },
   ],
 };
 

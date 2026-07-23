@@ -95,10 +95,10 @@ export default function ContactForm() {
             </CardHeader>
             <CardContent>
               <a
-                href="mailto:hello@toolverse.com"
+                href="mailto:toolshubbb@gmail.com"
                 className="text-sm text-primary hover:underline break-all"
               >
-                hello@toolverse.com
+                toolshubbb@gmail.com
               </a>
             </CardContent>
           </Card>

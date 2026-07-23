@@ -6,8 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
@@ -33,15 +32,15 @@ export const metadata: Metadata = {
     siteName: "ToolVerse",
     title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
     description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
-    url: BASE_URL,
-    images: [{ url: `${BASE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 32 Free Online Tools" }],
+    url: SITE_URL,
+    images: [{ url: `${SITE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 32 Free Online Tools" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
     description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
     site: "@toolverse",
-    images: [`${BASE_URL}/og-default.png`],
+    images: [`${SITE_URL}/og-default.png`],
   },
   alternates: {
     canonical: "/",
@@ -59,7 +58,7 @@ const itemListJsonLd = {
     "@type": "ListItem",
     position: catIndex + 1,
     name: cat.name,
-    url: `${BASE_URL}/#${cat.id}-tools`,
+    url: `${SITE_URL}/#${cat.id}-tools`,
   })),
 };
 
@@ -271,7 +270,7 @@ export default function HomePage() {
                 <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
                 <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
                 <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
-                <Link href="mailto:hello@toolverse.com" className="hover:text-foreground transition-colors">Contact</Link>
+                <Link href="mailto:toolshubbb@gmail.com" className="hover:text-foreground transition-colors">Contact</Link>
               </div>
             </div>
           </div>

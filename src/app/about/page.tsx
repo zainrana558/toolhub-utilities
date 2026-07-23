@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "About ToolVerse - Who We Are & Why We Built This",
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
     title: "About ToolVerse - Who We Are & Why We Built This",
     description:
       "Learn about ToolVerse, a free collection of 32 browser-based tools built by developers for everyone.",
-    url: `${BASE_URL}/about`,
+    url: `${SITE_URL}/about`,
     siteName: "ToolVerse",
   },
   twitter: {
@@ -39,11 +38,11 @@ const aboutJsonLd = {
   name: "About ToolVerse",
   description:
     "ToolVerse is a free collection of 32 browser-based utility tools. Built by developers who believe online tools should be fast, private, and accessible to everyone.",
-  url: `${BASE_URL}/about`,
+  url: `${SITE_URL}/about`,
   mainEntity: {
     "@type": "Organization",
     name: "ToolVerse",
-    url: BASE_URL,
+    url: SITE_URL,
     description:
       "Free online tools that work instantly in your browser. No sign-up, no data collection.",
   },
@@ -53,8 +52,8 @@ const breadcrumbJsonLd = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-    { "@type": "ListItem", position: 2, name: "About", item: `${BASE_URL}/about` },
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "About", item: `${SITE_URL}/about` },
   ],
 };
 
@@ -367,10 +366,10 @@ export default function AboutPage() {
               Have a suggestion for a new tool? Found a bug? Want to
               collaborate? We would love to hear from you. Reach out at{" "}
               <Link
-                href="mailto:hello@toolverse.com"
+                href="mailto:toolshubbb@gmail.com"
                 className="text-primary hover:underline"
               >
-                hello@toolverse.com
+                toolshubbb@gmail.com
               </Link>{" "}
               or open an issue on our{" "}
               <a
