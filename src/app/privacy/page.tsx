@@ -6,12 +6,25 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.
 export const metadata: Metadata = {
   title: "Privacy Policy - ToolVerse",
   description: "ToolVerse privacy policy. We don't collect, store, or transmit any data you process through our tools. Everything runs in your browser.",
-  robots: { index: true, follow: true },
-  alternates: { canonical: `${BASE_URL}/privacy` },
+  keywords: [
+    "toolverse privacy policy",
+    "privacy policy",
+    "browser tools privacy",
+    "no data collection tools",
+    "client-side tools privacy",
+  ],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 } },
+  alternates: { canonical: "/privacy" },
   openGraph: {
     title: "Privacy Policy - ToolVerse",
     description: "ToolVerse privacy policy. We don't collect any data — all tools run in your browser.",
     url: `${BASE_URL}/privacy`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy - ToolVerse",
+    description: "ToolVerse privacy policy. We don't collect any data — all tools run in your browser.",
   },
 };
 
@@ -24,12 +37,25 @@ const privacyJsonLd = {
   "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": BASE_URL },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Privacy Policy", item: `${BASE_URL}/privacy` },
+  ],
+};
+
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(privacyJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <nav className="mb-8 text-sm text-muted-foreground">

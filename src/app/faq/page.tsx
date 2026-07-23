@@ -19,11 +19,22 @@ export const metadata: Metadata = {
     "offline tools",
     "browser-based tools faq",
   ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     title: "FAQ - Frequently Asked Questions About ToolVerse",
     description:
       "Answers to common questions about ToolVerse free online tools. Learn about privacy, features, supported formats, and how our tools work.",
     url: `${BASE_URL}/faq`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FAQ - Frequently Asked Questions About ToolVerse",
+    description: "Answers to common questions about ToolVerse free online tools. Learn about privacy, features, supported formats, and how our tools work.",
   },
   alternates: {
     canonical: "/faq",
@@ -38,7 +49,7 @@ const faqData = {
       {
         question: "What is ToolVerse?",
         answer:
-          "ToolVerse is a free collection of 21 online tools covering text analysis, math and finance, developer utilities, and file conversion. Every tool runs entirely in your browser — no data is ever sent to a server, and no account is required.",
+          "ToolVerse is a free collection of 32 online tools covering text analysis, math and finance, developer utilities, image tools, and PDF tools. Every tool runs entirely in your browser — no data is ever sent to a server, and no account is required.",
       },
       {
         question: "Are all tools really free?",
@@ -53,7 +64,7 @@ const faqData = {
       {
         question: "How many tools does ToolVerse have?",
         answer:
-          "21 tools across 4 categories: Text Tools (Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer, Text Diff Checker), Math Calculators (BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter), Developer Tools (Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Number Base Converter), and Image Tools (Image Compressor, PDF Compressor, File Converter).",
+          "32 tools across 5 categories: Text Tools (Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer, Text Diff Checker), Math Calculators (BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter), Developer Tools (Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Number Base Converter), Image Tools (Image Compressor), and PDF Tools (PDF Compressor, Merge PDF, Split PDF, Rotate PDF, Watermark PDF, PDF to JPG, JPG to PDF, PDF to Word, Word to PDF, PDF to Text, File Converter, PDF Page Numbering).",
       },
     ],
   },
@@ -85,12 +96,12 @@ const faqData = {
       {
         question: "What tools are available?",
         answer:
-          "ToolVerse offers 21 tools across 4 categories:\n\nText Tools: Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer, Text Diff Checker.\n\nMath Calculators: BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter.\n\nDeveloper Tools: Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Number Base Converter.\n\nImage Tools: Image Compressor, PDF Compressor, File Converter.",
+          "ToolVerse offers 32 tools across 5 categories:\n\nText Tools: Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer, Text Diff Checker.\n\nMath Calculators: BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter.\n\nDeveloper Tools: Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Number Base Converter.\n\nImage Tools: Image Compressor.\n\nPDF Tools: PDF Compressor, Merge PDF, Split PDF, Rotate PDF, Watermark PDF, PDF to JPG, JPG to PDF, PDF to Word, Word to PDF, PDF to Text, File Converter, PDF Page Numbering.",
       },
       {
         question: "Can I use tools on my phone?",
         answer:
-          "Yes, fully responsive. All 21 tools are designed to work on any device — smartphones, tablets, laptops, and desktops. The interface adapts to your screen size for the best experience. Mobile users can also add ToolVerse to their home screen for quick access.",
+          "Yes, fully responsive. All 32 tools are designed to work on any device — smartphones, tablets, laptops, and desktops. The interface adapts to your screen size for the best experience. Mobile users can also add ToolVerse to their home screen for quick access.",
       },
       {
         question: "Do tools work offline?",
@@ -166,6 +177,15 @@ const webPageJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "FAQ", item: `${BASE_URL}/faq` },
+  ],
+};
+
 export default function FaqPage() {
   return (
     <>
@@ -176,6 +196,10 @@ export default function FaqPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="min-h-screen bg-background text-foreground">
         <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">

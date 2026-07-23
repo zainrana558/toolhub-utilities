@@ -12,18 +12,62 @@ export const metadata: Metadata = {
   title: "Blog - ToolVerse Guides, Tips & Tutorials",
   description:
     "In-depth guides on password security, JSON formatting, image compression, color formats, Markdown, QR codes, loan interest, BMI, and more.",
+  keywords: [
+    "toolverse blog",
+    "online tools guides",
+    "password security guide",
+    "json formatting tips",
+    "image compression tutorial",
+    "color picker guide",
+    "markdown tutorial",
+    "qr code guide",
+    "loan calculator guide",
+    "bmi calculator tutorial",
+    "free tools blog",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     title: "Blog - ToolVerse Guides, Tips & Tutorials",
     description:
       "In-depth guides on password security, JSON formatting, image compression, color formats, Markdown, QR codes, loan interest, BMI, and more.",
     url: `${BASE_URL}/blog`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog - ToolVerse Guides, Tips & Tutorials",
+    description: "In-depth guides on password security, JSON formatting, image compression, color formats, Markdown, QR codes, loan interest, BMI, and more.",
   },
   alternates: { canonical: "/blog" },
+};
+
+const blogPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "ToolVerse Blog",
+  description: "In-depth guides, tutorials, and tips for ToolVerse free online tools.",
+  url: `${BASE_URL}/blog`,
+  isPartOf: { "@type": "WebSite", name: "ToolVerse", url: BASE_URL },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${BASE_URL}/blog` },
+  ],
 };
 
 export default function BlogPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPageJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <div className="min-h-screen bg-background text-foreground">
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
           {/* Header */}

@@ -28,11 +28,22 @@ export const metadata: Metadata = {
     "free api endpoints",
     "rest api tools",
   ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     title: "API - ToolVerse Developer API Reference",
     description:
       "ToolVerse API reference and documentation. Integrate our free online tools into your applications with simple API endpoints.",
     url: `${BASE_URL}/api-docs`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "API - ToolVerse Developer API Reference",
+    description: "ToolVerse API reference and documentation. Integrate our free online tools into your applications with simple API endpoints.",
   },
   alternates: {
     canonical: "/api-docs",
@@ -51,6 +62,15 @@ const apiJsonLd = {
     name: "ToolVerse",
     url: BASE_URL,
   },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "API Docs", item: `${BASE_URL}/api-docs` },
+  ],
 };
 
 const endpoints = [
@@ -82,6 +102,10 @@ export default function ApiPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(apiJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="min-h-screen bg-background text-foreground">
         <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">

@@ -27,7 +27,7 @@ export async function generateMetadata({
     title: tool.metaTitle,
     description: tool.metaDescription,
     keywords: tool.keywords,
-    authors: [{ name: "ToolVerse" }],
+    authors: [{ name: "Zain Rana" }],
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -97,11 +97,8 @@ export default async function ToolPage({
   const categoryLabel = toolCategories.find((c) => c.id === tool.category)?.name || tool.category;
   const toolType = getToolType(tool.category, tool.id);
 
-  // Related tools for internal linking in structured data
-  const relatedTools = tools.filter((t) => t.category === tool.category && t.id !== tool.id).slice(0, 3);
-
-  // ── Schema 1: WebApplication (all tools + calculators) ──
-  const webAppSchema = (toolType === "converter") ? null : {
+  // ── Schema 1: WebApplication (non-converters) ──
+  const webAppSchema = toolType === "converter" ? null : {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: tool.metaTitle,
@@ -118,7 +115,7 @@ export default async function ToolPage({
     },
   };
 
-  // ── Schema 2: SoftwareApplication (all) ──
+  // ── Schema 2: SoftwareApplication (NO fake AggregateRating) ──
   const softwareAppSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -129,17 +126,9 @@ export default async function ToolPage({
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: tool.longDescription,
     featureList: tool.features.join(", "),
-    screenshot: toolUrl,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      ratingCount: "1250",
-      bestRating: "5",
-      worstRating: "1",
-    },
   };
 
-  // ── Schema 3: FAQPage (all) ──
+  // ── Schema 3: FAQPage ──
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -150,49 +139,18 @@ export default async function ToolPage({
     })),
   };
 
-  // ── Schema 4: BreadcrumbList (all) ──
+  // ── Schema 4: BreadcrumbList ──
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "All Tools", item: `${BASE_URL}/#all-tools` },
-      { "@type": "ListItem", position: 3, name: categoryLabel, item: `${BASE_URL}/#${tool.category}-tools` },
-      { "@type": "ListItem", position: 4, name: tool.name, item: toolUrl },
+      { "@type": "ListItem", position: 2, name: categoryLabel, item: `${BASE_URL}/#${tool.category}-tools` },
+      { "@type": "ListItem", position: 3, name: tool.name, item: toolUrl },
     ],
   };
 
-  // ── Schema 5: Organization (all) ──
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "ToolVerse",
-    url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
-    description: "Free online tools for text, math, development, and image processing. 100% private — all tools run in your browser.",
-    foundingDate: "2025",
-    founder: {
-      "@type": "Person",
-      name: "Zain Rana",
-      url: `${BASE_URL}/about`,
-    },
-    sameAs: [],
-  };
-
-  // ── Schema 6: SearchAction (tools only) ──
-  const searchActionSchema = (toolType === "tool") ? {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "ToolVerse",
-    url: BASE_URL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${BASE_URL}/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-  } : null;
-
-  // ── Schema 7: HowTo (all) ──
+  // ── Schema 5: HowTo ──
   const howToSchema = {
     "@context": "https://schema.org",
     "@type": "HowTo",
@@ -205,13 +163,15 @@ export default async function ToolPage({
     })),
   };
 
+  // NOTE: Organization schema removed — it's already in layout.tsx globally.
+  // Duplicate Organization schemas cause GSC warnings.
+  // NOTE: SearchAction schema removed — it's already in layout.tsx globally.
+
   const schemas = [
     webAppSchema,
     softwareAppSchema,
     faqSchema,
     breadcrumbSchema,
-    organizationSchema,
-    searchActionSchema,
     howToSchema,
   ].filter(Boolean);
 

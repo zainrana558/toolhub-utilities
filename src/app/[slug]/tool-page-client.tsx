@@ -37,7 +37,6 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
   const ToolComponent = toolComponents[toolId];
   const [linkCopied, setLinkCopied] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   if (!tool || !ToolComponent) {
     return (
@@ -280,46 +279,27 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                 </p>
               </motion.article>
 
-              {/* FAQ — Change A: added id="faq-heading" */}
+              {/* FAQ — uses <details> so Google can read all answers */}
               {tool.faq.length > 0 && (
                 <motion.section className="border-t pt-8" variants={fadeUp}>
                   <h2 className="text-xl font-semibold mb-4" id="faq-heading">Frequently Asked Questions</h2>
                   <div className="space-y-3">
                     {tool.faq.map((item, i) => (
-                      <motion.div
+                      <motion.details
                         key={i}
-                        className="border rounded-lg overflow-hidden"
+                        className="border rounded-lg group"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 + i * 0.06 }}
                       >
-                        <button
-                          onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                          className="w-full text-left p-4 flex justify-between items-center hover:bg-muted/50 transition-colors"
-                        >
-                          <span className="font-medium text-sm pr-4">{item.question}</span>
-                          <motion.span
-                            className="text-muted-foreground text-lg leading-none shrink-0"
-                            animate={{ rotate: openFaq === i ? 180 : 0 }}
-                            transition={{ duration: 0.25 }}
-                          >
-                            +
-                          </motion.span>
-                        </button>
-                        <motion.div
-                          initial={false}
-                          animate={{
-                            height: openFaq === i ? "auto" : 0,
-                            opacity: openFaq === i ? 1 : 0,
-                          }}
-                          transition={{ duration: 0.3, ease: "easeInOut" }}
-                          className="overflow-hidden"
-                        >
-                          <div className="px-4 pb-4 text-sm text-muted-foreground">
-                            {item.answer}
-                          </div>
-                        </motion.div>
-                      </motion.div>
+                        <summary className="p-4 cursor-pointer font-medium text-sm hover:bg-muted/50 transition-colors list-none flex justify-between items-center">
+                          <span>{item.question}</span>
+                          <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg leading-none" aria-hidden="true">+</span>
+                        </summary>
+                        <div className="px-4 pb-4 text-sm text-muted-foreground">
+                          {item.answer}
+                        </div>
+                      </motion.details>
                     ))}
                   </div>
                 </motion.section>

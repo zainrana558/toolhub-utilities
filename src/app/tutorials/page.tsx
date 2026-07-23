@@ -22,11 +22,22 @@ export const metadata: Metadata = {
     "online tools tutorial",
     "step by step guide",
   ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     title: "Tutorials - Learn How to Use ToolVerse Tools",
     description:
       "Step-by-step tutorials for all ToolVerse tools. Learn how to use our free online utilities for text, math, development, and file conversion.",
     url: `${BASE_URL}/tutorials`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tutorials - Learn How to Use ToolVerse Tools",
+    description: "Step-by-step tutorials for all ToolVerse tools. Learn how to use our free online utilities for text, math, development, and file conversion.",
   },
   alternates: {
     canonical: "/tutorials",
@@ -45,6 +56,15 @@ const tutorialsJsonLd = {
     name: "ToolVerse",
     url: BASE_URL,
   },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Tutorials", item: `${BASE_URL}/tutorials` },
+  ],
 };
 
 interface Tutorial {
@@ -181,6 +201,10 @@ export default function TutorialsPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(tutorialsJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="min-h-screen bg-background text-foreground">
         <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">

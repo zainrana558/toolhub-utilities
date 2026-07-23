@@ -2,26 +2,26 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://toolhub-utilities.vercel.app/sitemaps/pages.xml</loc>
-    <lastmod>2026-07-16</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://toolhub-utilities.vercel.app/sitemaps/tools-text.xml</loc>
-    <lastmod>2026-07-16</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://toolhub-utilities.vercel.app/sitemaps/tools-math.xml</loc>
-    <lastmod>2026-07-16</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://toolhub-utilities.vercel.app/sitemaps/tools-dev.xml</loc>
-    <lastmod>2026-07-16</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://toolhub-utilities.vercel.app/sitemaps/tools-image.xml</loc>
-    <lastmod>2026-07-16</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://toolhub-utilities.vercel.app/sitemaps/tools-pdf.xml</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-07-23</lastmod>
   </sitemap>
 </sitemapindex>

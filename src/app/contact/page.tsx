@@ -18,11 +18,22 @@ export const metadata: Metadata = {
     "toolverse email",
     "feedback",
   ],
+ robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     title: "Contact Us - ToolVerse",
     description:
       "Get in touch with the ToolVerse team. Report bugs, suggest new tools, or ask questions about our free online utilities.",
     url: `${BASE_URL}/contact`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us - ToolVerse",
+    description: "Get in touch with the ToolVerse team. Report bugs, suggest new tools, or ask questions about our free online utilities.",
   },
   alternates: {
     canonical: "/contact",
@@ -43,12 +54,25 @@ const contactJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Contact", item: `${BASE_URL}/contact` },
+  ],
+};
+
 export default function ContactPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="min-h-screen bg-background text-foreground">
         <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">

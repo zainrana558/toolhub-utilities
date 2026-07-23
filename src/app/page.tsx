@@ -1,230 +1,282 @@
-"use client";
-
-import { useEffect } from "react";
-import { useToolStore } from "@/store/tool-store";
-import { ToolGrid } from "@/components/tool-grid";
-import { ToolView } from "@/components/tool-view";
-import { tools } from "@/lib/tools-data";
-import { Wrench } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { AdSlot } from "@/components/ad-slot";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { motion, AnimatePresence } from "framer-motion";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { Wrench } from "lucide-react";
+import { tools, toolCategories } from "@/lib/tools-data";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme-toggle";
 
-const pageVariants = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -12 },
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.vercel.app";
+
+export const metadata: Metadata = {
+  title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
+  description:
+    "32 free online tools: word counter, password generator, BMI calculator, image compressor, QR code generator, PDF tools, JSON formatter, and more. No sign-up, no data collection. All tools run in your browser.",
+  keywords: [
+    "free online tools", "word counter", "password generator", "BMI calculator",
+    "percentage calculator", "age calculator", "loan calculator", "unit converter",
+    "case converter", "color picker", "JSON formatter", "online utilities",
+    "free web tools", "browser tools", "no signup tools", "PDF tools",
+    "image compressor", "QR code generator", "hash generator", "text diff checker",
+    "base64 encoder", "URL encoder", "markdown previewer", "file converter",
+  ],
+  authors: [{ name: "ToolVerse" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "ToolVerse",
+    title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
+    description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
+    url: BASE_URL,
+    images: [{ url: `${BASE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 32 Free Online Tools" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
+    description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
+    site: "@toolverse",
+    images: [`${BASE_URL}/og-default.png`],
+  },
+  alternates: {
+    canonical: "/",
+  },
 };
 
-export default function Home() {
-  const { activeToolId, setActiveTool } = useToolStore();
+// ItemList structured data — helps Google show site links in search results
+const itemListJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Free Online Tools by ToolVerse",
+  description: "A comprehensive collection of 32 free online tools across text, math, developer, image, and PDF categories. No sign-up required.",
+  numberOfItems: tools.length,
+  itemListElement: toolCategories.map((cat, catIndex) => ({
+    "@type": "ListItem",
+    position: catIndex + 1,
+    name: cat.name,
+    url: `${BASE_URL}/#${cat.id}-tools`,
+  })),
+};
 
-  // Listen for custom tool-change events from related tools
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const toolId = (e as CustomEvent).detail;
-      if (toolId) setActiveTool(toolId);
-    };
-    window.addEventListener("tool-change", handler);
-    return () => window.removeEventListener("tool-change", handler);
-  }, [setActiveTool]);
+const categorizedTools = toolCategories.map((cat) => ({
+  ...cat,
+  tools: tools.filter((t) => t.category === cat.id),
+}));
 
-  // Update document title, meta, and URL hash when tool changes
-  useEffect(() => {
-    if (activeToolId) {
-      const tool = tools.find((t) => t.id === activeToolId);
-      if (tool) {
-        document.title = tool.metaTitle;
-        window.history.replaceState(null, "", `#tool-${tool.id}`);
-      }
-    } else {
-      document.title = "ToolVerse - Free Online Tools | Word Counter, Password Generator, BMI Calculator & More";
-      window.history.replaceState(null, "", "/");
-    }
-  }, [activeToolId]);
-
-  // Read hash on mount to restore tool from URL
-  useEffect(() => {
-    const hash = window.location.hash.replace("#tool-", "");
-    if (hash && tools.find((t) => t.id === hash)) {
-      setActiveTool(hash);
-    }
-  }, []);
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
-            <motion.button
-              onClick={() => { setActiveTool(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              aria-label="ToolVerse - Home"
-            >
-              <motion.div
-                animate={{ rotate: activeToolId ? 360 : 0 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
+      <div className="min-h-screen flex flex-col">
+        {/* Header */}
+        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-14">
+              <Link
+                href="/"
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                aria-label="ToolVerse - Home"
               >
                 <Wrench className="h-5 w-5 text-primary" />
-              </motion.div>
-              <span className="font-bold text-lg">ToolVerse</span>
-            </motion.button>
+                <span className="font-bold text-lg">ToolVerse</span>
+              </Link>
 
-            {activeToolId && (
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 md:hidden"
-              >
-                <button
-                  onClick={() => { setActiveTool(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                  className="text-sm text-primary hover:underline"
-                >
-                  All Tools
-                </button>
-              </motion.div>
-            )}
-
-            <div className="flex items-center gap-3">
               <nav className="hidden md:flex items-center gap-4 text-sm">
-                <button
-                  onClick={() => { setActiveTool(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                  className={`transition-colors ${!activeToolId ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
-                >
+                <Link href="/" className="text-primary font-medium">
                   All Tools
-                </button>
+                </Link>
                 {tools.slice(0, 5).map((tool) => (
-                  <button
+                  <Link
                     key={tool.id}
-                    onClick={() => {
-                      setActiveTool(tool.id);
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className={`transition-colors ${activeToolId === tool.id ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
+                    href={`/${tool.id}`}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {tool.shortName}
-                  </button>
+                  </Link>
                 ))}
               </nav>
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </motion.header>
-
-      {/* Main content */}
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-          <div className="max-w-6xl mx-auto">
-            <AnimatePresence mode="wait">
-              {activeToolId ? (
-                <motion.div
-                  key={activeToolId}
-                  variants={pageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  <ToolView toolId={activeToolId} onBack={() => setActiveTool(null)} />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="tool-grid"
-                  variants={pageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  <ToolGrid onToolClick={(id) => {
-                    setActiveTool(id);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <motion.footer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="border-t mt-auto"
-      >
-        <AdSlot variant="horizontal" className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Wrench className="h-5 w-5 text-primary" />
-                <span className="font-bold">ToolVerse</span>
+              <div className="flex items-center gap-3">
+                <ThemeToggle />
               </div>
-              <p className="text-sm text-muted-foreground">
-                Free online tools that work instantly in your browser. No sign-up, no data collection — just useful utilities for everyone.
-              </p>
             </div>
+          </div>
+        </header>
 
-            <div>
-              <h3 className="font-semibold text-sm mb-3">Popular Tools</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {tools.slice(0, 5).map((tool) => (
-                  <li key={tool.id}>
-                    <Link href={`/${tool.id}`} className="hover:text-foreground transition-colors">
-                      {tool.name}
-                    </Link>
-                  </li>
+        {/* Main content — fully server-rendered for Googlebot */}
+        <main className="flex-1">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+            <div className="max-w-6xl mx-auto">
+              {/* Hero Section */}
+              <section className="text-center space-y-4 py-4 md:py-8">
+                <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
+                  Free Online Tools
+                </h1>
+                <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+                  Fast, free, and privacy-focused online tools. No sign-up, no data collection — just useful utilities that work instantly in your browser.
+                </p>
+                <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary/60 via-primary to-primary/60" aria-hidden="true" />
+              </section>
+
+              {/* Tool Categories */}
+              <div className="space-y-10">
+                {categorizedTools.map((category) => (
+                  <section key={category.id} id={`${category.id}-tools`}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <h2 className="text-xl md:text-2xl font-semibold">{category.name}</h2>
+                      <Badge variant="secondary" className="text-xs">
+                        {category.tools.length} tools
+                      </Badge>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {category.tools.map((tool) => {
+                        const Icon = tool.icon;
+                        return (
+                          <Link key={tool.id} href={`/${tool.id}`}>
+                            <Card className="cursor-pointer hover:shadow-lg hover:border-primary/30 transition-all duration-200 group h-full overflow-hidden">
+                              <CardContent className="p-5 relative">
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-primary/5 via-transparent to-primary/5" aria-hidden="true" />
+                                <div className="relative flex items-start gap-4">
+                                  <div className="p-2.5 rounded-lg bg-primary/10 text-primary shrink-0 group-hover:bg-primary/20 transition-colors">
+                                    <Icon className="h-5 w-5" aria-hidden="true" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">
+                                      {tool.name}
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                      {tool.description}
+                                    </p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </section>
                 ))}
-              </ul>
-            </div>
+              </div>
 
-            <div>
-              <h3 className="font-semibold text-sm mb-3">Resources</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="/blog" className="hover:text-foreground transition-colors">Blog</Link></li>
-                <li><Link href="/tutorials" className="hover:text-foreground transition-colors">Tutorials</Link></li>
-                <li><Link href="/faq" className="hover:text-foreground transition-colors">FAQ</Link></li>
-                <li><Link href="/api-docs" className="hover:text-foreground transition-colors">API Docs</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-sm mb-3">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="/about" className="hover:text-foreground transition-colors">About</Link></li>
-                <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
-                <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
-              </ul>
+              {/* FAQ Section — fully visible for Googlebot using <details> */}
+              <section className="space-y-6 py-8" aria-labelledby="homepage-faq-heading">
+                <h2 id="homepage-faq-heading" className="text-2xl font-semibold text-center">
+                  Frequently Asked Questions
+                </h2>
+                <div className="max-w-3xl mx-auto space-y-4">
+                  <details className="border rounded-lg group">
+                    <summary className="p-4 cursor-pointer font-medium text-sm hover:bg-muted/50 transition-colors list-none flex justify-between items-center">
+                      Are these tools free to use?
+                      <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg leading-none" aria-hidden="true">+</span>
+                    </summary>
+                    <div className="px-4 pb-4 text-sm text-muted-foreground">
+                      Yes, all tools on this website are completely free to use with no registration, sign-up, or hidden fees. You can use them as many times as you want without any limitations.
+                    </div>
+                  </details>
+                  <details className="border rounded-lg group">
+                    <summary className="p-4 cursor-pointer font-medium text-sm hover:bg-muted/50 transition-colors list-none flex justify-between items-center">
+                      Is my data safe and private?
+                      <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg leading-none" aria-hidden="true">+</span>
+                    </summary>
+                    <div className="px-4 pb-4 text-sm text-muted-foreground">
+                      Absolutely. All tools run entirely in your browser — no data is sent to any server. Your text, passwords, calculations, and files never leave your device. We don&apos;t track, store, or collect any of the data you process through our tools.
+                    </div>
+                  </details>
+                  <details className="border rounded-lg group">
+                    <summary className="p-4 cursor-pointer font-medium text-sm hover:bg-muted/50 transition-colors list-none flex justify-between items-center">
+                      Do I need to create an account?
+                      <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg leading-none" aria-hidden="true">+</span>
+                    </summary>
+                    <div className="px-4 pb-4 text-sm text-muted-foreground">
+                      No. There is no account creation, sign-up, or login required. Simply visit the tool you need and start using it immediately.
+                    </div>
+                  </details>
+                  <details className="border rounded-lg group">
+                    <summary className="p-4 cursor-pointer font-medium text-sm hover:bg-muted/50 transition-colors list-none flex justify-between items-center">
+                      Can I use these tools on my phone?
+                      <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg leading-none" aria-hidden="true">+</span>
+                    </summary>
+                    <div className="px-4 pb-4 text-sm text-muted-foreground">
+                      Yes! All tools are fully responsive and work on any device — smartphones, tablets, laptops, and desktops. The interface adapts to your screen size for the best experience.
+                    </div>
+                  </details>
+                </div>
+              </section>
             </div>
           </div>
+        </main>
 
-          <Separator className="my-6" />
+        {/* Footer */}
+        <footer className="border-t mt-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Wrench className="h-5 w-5 text-primary" />
+                  <span className="font-bold">ToolVerse</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Free online tools that work instantly in your browser. No sign-up, no data collection — just useful utilities for everyone.
+                </p>
+              </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-            <p>Copyright 2025 ToolVerse. All rights reserved. All tools run locally in your browser.</p>
-            <div className="flex items-center gap-4">
-              <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
-              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
-              <Link href="mailto:hello@toolverse.com" className="hover:text-foreground transition-colors">Contact</Link>
+              <div>
+                <h3 className="font-semibold text-sm mb-3">Popular Tools</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {tools.slice(0, 5).map((tool) => (
+                    <li key={tool.id}>
+                      <Link href={`/${tool.id}`} className="hover:text-foreground transition-colors">
+                        {tool.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-sm mb-3">Resources</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><Link href="/blog" className="hover:text-foreground transition-colors">Blog</Link></li>
+                  <li><Link href="/tutorials" className="hover:text-foreground transition-colors">Tutorials</Link></li>
+                  <li><Link href="/faq" className="hover:text-foreground transition-colors">FAQ</Link></li>
+                  <li><Link href="/api-docs" className="hover:text-foreground transition-colors">API Docs</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-sm mb-3">Company</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><Link href="/about" className="hover:text-foreground transition-colors">About</Link></li>
+                  <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
+                  <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
+                  <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
+                </ul>
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+              <p>Copyright 2025 ToolVerse. All rights reserved. All tools run locally in your browser.</p>
+              <div className="flex items-center gap-4">
+                <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
+                <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+                <Link href="mailto:hello@toolverse.com" className="hover:text-foreground transition-colors">Contact</Link>
+              </div>
             </div>
           </div>
-        </div>
-      </motion.footer>
-    </div>
+        </footer>
+      </div>
+    </>
   );
 }

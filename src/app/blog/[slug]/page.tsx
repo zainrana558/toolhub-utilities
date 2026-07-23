@@ -22,13 +22,24 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.description,
+    keywords: [`${post.category.toLowerCase()} guide`, "toolverse blog", "free online tools", ...post.tools.map((t) => `${t.replace(/-/g, ' ')} tool`)],
     authors: [{ name: post.author }],
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+    },
     openGraph: {
       type: "article",
       publishedTime: post.date,
       authors: [post.author],
       url,
       siteName: "ToolVerse",
+      title: post.title,
+      description: post.description,
+    },
+    twitter: {
+      card: "summary_large_image",
       title: post.title,
       description: post.description,
     },
@@ -80,6 +91,16 @@ export default async function BlogPostPage({
     },
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${BASE_URL}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${BASE_URL}/blog/${post.slug}` },
+    ],
+  };
+
   const faqSchema = faqEntities.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -92,6 +113,7 @@ export default async function BlogPostPage({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <div className="min-h-screen bg-background">
         <header className="border-b">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">

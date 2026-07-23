@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Page Not Found",
+  title: "Page Not Found - ToolVerse",
+  description: "The page you're looking for doesn't exist. Browse our 32 free online tools instead.",
   robots: { index: false, follow: false },
 };
 

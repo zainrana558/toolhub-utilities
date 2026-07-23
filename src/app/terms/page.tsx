@@ -5,13 +5,26 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.
 
 export const metadata: Metadata = {
   title: "Terms of Service - ToolVerse",
-  description: "Terms of service for ToolVerse free online tools. Read the terms for using our 21 browser-based utilities.",
-  robots: { index: true, follow: true },
-  alternates: { canonical: `${BASE_URL}/terms` },
+  description: "Terms of service for ToolVerse free online tools. Read the terms for using our 32 browser-based utilities.",
+  keywords: [
+    "toolverse terms of service",
+    "terms of service",
+    "free tools terms",
+    "browser tools terms",
+    "usage terms",
+  ],
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 } },
+  alternates: { canonical: "/terms" },
   openGraph: {
     title: "Terms of Service - ToolVerse",
     description: "Terms of service for ToolVerse free online tools.",
     url: `${BASE_URL}/terms`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms of Service - ToolVerse",
+    description: "Terms of service for ToolVerse free online tools.",
   },
 };
 
@@ -24,12 +37,25 @@ const termsJsonLd = {
   "isPartOf": { "@type": "WebSite", "name": "ToolVerse", "url": BASE_URL },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Terms of Service", item: `${BASE_URL}/terms` },
+  ],
+};
+
 export default function TermsOfService() {
   return (
     <div className="min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(termsJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <nav className="mb-8 text-sm text-muted-foreground">

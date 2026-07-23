@@ -6,16 +6,27 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://toolhub-utilities.
 export const metadata: Metadata = {
   title: "About ToolVerse - Who We Are & Why We Built This",
   description:
-    "Learn about ToolVerse, a free collection of 21+ browser-based tools built by developers for everyone. No sign-up, no data collection, 100% private.",
+    "Learn about ToolVerse, a free collection of 32 browser-based tools built by developers for everyone. No sign-up, no data collection, 100% private.",
   keywords: [
     "about toolverse", "free online tools", "browser-based tools",
     "privacy-first tools", "no signup tools", "toolverse team",
   ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
+  },
   openGraph: {
     title: "About ToolVerse - Who We Are & Why We Built This",
     description:
-      "Learn about ToolVerse, a free collection of 21 browser-based tools built by developers for everyone.",
+      "Learn about ToolVerse, a free collection of 32 browser-based tools built by developers for everyone.",
     url: `${BASE_URL}/about`,
+    siteName: "ToolVerse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About ToolVerse - Who We Are & Why We Built This",
+    description: "Learn about ToolVerse — 32 free browser-based tools built by developers for everyone.",
   },
   alternates: {
     canonical: "/about",
@@ -27,7 +38,7 @@ const aboutJsonLd = {
   "@type": "AboutPage",
   name: "About ToolVerse",
   description:
-    "ToolVerse is a free collection of 21 browser-based utility tools. Built by developers who believe online tools should be fast, private, and accessible to everyone.",
+    "ToolVerse is a free collection of 32 browser-based utility tools. Built by developers who believe online tools should be fast, private, and accessible to everyone.",
   url: `${BASE_URL}/about`,
   mainEntity: {
     "@type": "Organization",
@@ -38,22 +49,31 @@ const aboutJsonLd = {
   },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "About", item: `${BASE_URL}/about` },
+  ],
+};
+
 export default function AboutPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <div className="min-h-screen bg-background text-foreground">
         <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
-          <nav className="mb-8 text-sm text-muted-foreground">
-            <Link href="/" className="hover:text-foreground transition-colors">
-              Home
+          {/* Breadcrumb with semantic microdata */}
+          <nav className="mb-8 text-sm text-muted-foreground" aria-label="Breadcrumb" itemScope itemType="https://schema.org/BreadcrumbList">
+            <Link href="/" className="hover:text-foreground transition-colors" itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <span itemProp="name">Home</span>
             </Link>
-            <span className="mx-2">/</span>
-            <span className="text-foreground font-medium">About</span>
+            <span className="mx-2" aria-hidden="true">/</span>
+            <span className="text-foreground font-medium" itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <span itemProp="name">About</span>
+            </span>
           </nav>
 
           {/* Header */}
@@ -73,15 +93,15 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              ToolVerse provides <strong className="text-foreground">21 free online tools</strong> across
-              four categories: text tools, math calculators, developer
-              utilities, and file converters. Our tools are used by over
+              ToolVerse provides <strong className="text-foreground">32 free online tools</strong> across
+              five categories: text tools, math calculators, developer
+              utilities, image tools, and PDF tools. Our tools are used by over
               <strong className="text-foreground"> 50,000 people every month</strong> — from
               students working on assignments to developers debugging APIs to
               writers counting words for their latest article.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Every tool is designed with three principles in mind:{" "}
+              Every tool is designed with three principles in mind: {" "}
               <strong className="text-foreground">speed</strong> (instant results, no loading
               spinners), <strong className="text-foreground">privacy</strong> (zero server-side processing,
               zero data collection), and{" "}
@@ -169,8 +189,8 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Our Tools</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              We currently offer <strong className="text-foreground">21 free tools</strong> across
-              four categories. Each tool is self-contained, works on any
+              We currently offer <strong className="text-foreground">32 free tools</strong> across
+              five categories. Each tool is self-contained, works on any
               device, and requires no installation.
             </p>
             <div className="space-y-6">
@@ -179,7 +199,7 @@ export default function AboutPage() {
                   Text Tools
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer
+                  Word Counter, Character Counter, Case Converter, Lorem Ipsum Generator, Markdown Previewer, Text Diff Checker
                 </p>
               </div>
               <div>
@@ -187,7 +207,7 @@ export default function AboutPage() {
                   Math Calculators
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter, Number Base Converter
+                  BMI Calculator, Percentage Calculator, Age Calculator, Loan Calculator, Unit Converter
                 </p>
               </div>
               <div>
@@ -195,13 +215,19 @@ export default function AboutPage() {
                   Developer Tools
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Text Diff Checker
+                  Password Generator, JSON Formatter, Color Picker, QR Code Generator, Base64 Encoder/Decoder, URL Encoder/Decoder, Hash Generator, Number Base Converter
                 </p>
               </div>
               <div>
                 <h3 className="font-semibold mb-2 text-primary">Image Tools</h3>
                 <p className="text-sm text-muted-foreground">
-                  Image Compressor, PDF Compressor, File Converter
+                  Image Compressor
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2 text-primary">PDF Tools</h3>
+                <p className="text-sm text-muted-foreground">
+                  PDF Compressor, Merge PDF, Split PDF, Rotate PDF, Watermark PDF, PDF to JPG, JPG to PDF, PDF to Word, Word to PDF, PDF to Text, File Converter, PDF Page Numbering
                 </p>
               </div>
             </div>
@@ -222,10 +248,9 @@ export default function AboutPage() {
               The initial release in March 2025 had six tools. By June we had
               added calculators, color and QR utilities, and the JSON formatter.
               The PDF Compressor launched in late 2025 as our first tool that
-              operates on a binary file format entirely in the browser. The
-              File Converter, which performs server-side conversion between
-              PDF, Word, Markdown, HTML, and plain text, joined in mid-2026 as
-              tool #21 and our first tool that requires server-side processing.
+              operates on a binary file format entirely in the browser. A full
+              suite of PDF tools (merge, split, rotate, watermark, convert)
+              joined in mid-2026, bringing the total to 32 tools.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Every tool we add solves a problem we personally hit. We never
