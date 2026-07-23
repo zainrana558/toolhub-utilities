@@ -72,6 +72,11 @@ export function JpgToPdf() {
       setError(msg);
       setStatus("error");
     },
+    onFiles: () => {
+      setStatus("loaded");
+      setError(null);
+      setResult(null);
+    },
   });
 
   const totalBytes = upload.files.reduce((sum, f) => sum + f.size, 0);

@@ -268,11 +268,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const buf = await file.arrayBuffer();
-    const arrayBuffer = buf.slice(0);
+    const arrayBuf = await file.arrayBuffer();
+    // mammoth v1 expects { buffer: Buffer } — passing arrayBuffer throws
+    // "Could not find file in options". Wrap the bytes in a Node Buffer.
+    const buffer = Buffer.from(arrayBuf);
 
     // Use mammoth to get HTML (preserves headings, lists, bold/italic structure)
-    const result = await mammoth.convertToHtml({ arrayBuffer });
+    const result = await mammoth.convertToHtml({ buffer });
     const html = result.value;
 
     const lines = htmlToLines(html);

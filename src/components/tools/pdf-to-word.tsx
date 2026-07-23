@@ -54,6 +54,11 @@ export function PdfToWord() {
       setError(msg);
       setStatus("error");
     },
+    onFiles: () => {
+      setStatus("loaded");
+      setError(null);
+      setResult(null);
+    },
   });
 
   const handleConvert = useCallback(async () => {

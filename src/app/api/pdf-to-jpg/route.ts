@@ -174,6 +174,19 @@ async function renderPdfToJpegs(
   quality: number,
 ): Promise<Uint8Array[]> {
   const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const path = await import("node:path");
+
+  // Point pdfjs to its bundled worker file. Without this, Next.js / Turbopack
+  // tries to resolve `pdf.worker.mjs` from a non-existent chunk path and fails
+  // with "Setting up fake worker failed".
+  pdfjs.GlobalWorkerOptions.workerSrc = path.join(
+    process.cwd(),
+    "node_modules",
+    "pdfjs-dist",
+    "legacy",
+    "build",
+    "pdf.worker.mjs",
+  );
 
   const data = pdfBytes as unknown as ArrayBuffer;
   const doc = await pdfjs.getDocument({

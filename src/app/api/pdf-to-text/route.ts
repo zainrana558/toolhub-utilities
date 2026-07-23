@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import path from "node:path";
 
 /**
  * PDF → Text (TXT) API
@@ -59,14 +60,52 @@ function getClientIp(req: Request): string {
 }
 
 async function extractPdfText(bytes: Uint8Array): Promise<string> {
+  // Use pdfjs-dist directly for text extraction. Same engine as pdf-to-jpg,
+  // which is already proven to work server-side under Turbopack.
   try {
-    const { PDFParse } = await import("pdf-parse");
-    const parser = new PDFParse(bytes as Buffer);
-    const data = await parser.getText();
-    if (data && typeof data.text === "string" && data.text.trim().length > 0) {
-      return data.text;
+    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    pdfjs.GlobalWorkerOptions.workerSrc = path.join(
+      process.cwd(),
+      "node_modules",
+      "pdfjs-dist",
+      "legacy",
+      "build",
+      "pdf.worker.mjs",
+    );
+
+    const doc = await pdfjs.getDocument({
+      data: bytes as unknown as ArrayBuffer,
+      isEvalSupported: false,
+      useSystemFonts: true,
+    }).promise;
+
+    const out: string[] = [];
+    const count = Math.min(doc.numPages, 200);
+    for (let i = 1; i <= count; i++) {
+      const page = await doc.getPage(i);
+      const content = await page.getTextContent();
+      const lines = new Map<number, string[]>();
+      for (const item of content.items) {
+        if (!("str" in item) || typeof item.str !== "string") continue;
+        const ty = item.transform[5];
+        const key = Math.round(ty);
+        if (!lines.has(key)) lines.set(key, []);
+        lines.get(key)!.push(item.str);
+      }
+      const sortedKeys = Array.from(lines.keys()).sort((a, b) => b - a);
+      for (const k of sortedKeys) {
+        const parts = lines.get(k)!;
+        const line = parts.join(" ").replace(/\s+/g, " ").trim();
+        if (line) out.push(line);
+      }
+      out.push(""); // page break
+      page.cleanup();
     }
-  } catch {
+    await doc.destroy();
+    const text = out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    if (text) return text;
+  } catch (e) {
+    console.error("[pdf-to-text] pdfjs text extraction failed:", e instanceof Error ? e.message : e);
     // fall through
   }
   return scanPdfText(bytes);

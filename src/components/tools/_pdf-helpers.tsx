@@ -44,6 +44,8 @@ interface UseFileUploadOptions {
   maxFiles?: number;
   onError?: (msg: string) => void;
   validate?: (file: File) => string | null; // returns error message or null
+  /** Fired after a batch of files has been accepted & stored. */
+  onFiles?: (accepted: UploadedFile[]) => void;
 }
 
 export function useFileUpload(opts: UseFileUploadOptions) {
@@ -83,6 +85,7 @@ export function useFileUpload(opts: UseFileUploadOptions) {
       } else {
         setFiles(accepted.slice(0, 1));
       }
+      opts.onFiles?.(accepted);
     },
     [opts],
   );
