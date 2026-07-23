@@ -140,6 +140,27 @@ export async function POST(req: Request) {
   const pageSize = ((form.get("pageSize") as string) || "fit").toLowerCase(); // "fit" | "a4" | "letter"
   const margin = parseInt((form.get("margin") as string) || "0", 10);
 
+  // Validate numeric inputs — NaN (e.g. from margin="abc") would propagate
+  // into drawImage dimensions and either throw or produce a corrupt page.
+  if (!Number.isFinite(margin) || margin < 0 || margin > 200) {
+    return NextResponse.json(
+      { ok: false, error: "Margin must be a number between 0 and 200 (points)." },
+      { status: 400 },
+    );
+  }
+  if (orientation !== "auto" && orientation !== "portrait" && orientation !== "landscape") {
+    return NextResponse.json(
+      { ok: false, error: "Orientation must be 'auto', 'portrait', or 'landscape'." },
+      { status: 400 },
+    );
+  }
+  if (pageSize !== "fit" && pageSize !== "a4" && pageSize !== "letter") {
+    return NextResponse.json(
+      { ok: false, error: "Page size must be 'fit', 'a4', or 'letter'." },
+      { status: 400 },
+    );
+  }
+
   try {
     const doc = await PDFDocument.create();
     doc.setProducer("ToolHub JPG to PDF");

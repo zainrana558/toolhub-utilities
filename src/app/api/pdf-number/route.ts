@@ -142,6 +142,14 @@ export async function POST(req: Request) {
   if (!Number.isFinite(startAt) || startAt < 0 || startAt > 9999) {
     return NextResponse.json({ ok: false, error: "Start page must be between 0 and 9999." }, { status: 400 });
   }
+  // Validate margin — without this, NaN (e.g. from margin="abc") produces
+  // NaN x/y coordinates in page.drawText, throwing or corrupting the PDF.
+  if (!Number.isFinite(margin) || margin < 0 || margin > 200) {
+    return NextResponse.json(
+      { ok: false, error: "Margin must be a number between 0 and 200 (points)." },
+      { status: 400 },
+    );
+  }
   if (!format.includes("{n")) {
     return NextResponse.json(
       { ok: false, error: "Format string must contain '{n}', '{n+total}', or similar." },

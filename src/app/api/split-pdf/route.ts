@@ -93,6 +93,17 @@ function mergeUint8(a: Uint8Array, b: Uint8Array): Uint8Array {
   return m;
 }
 
+/** Strip path separators, drive letters, `..` segments, and control chars. */
+function sanitizeFileName(name: string): string {
+  const leaf = name.split(/[/\\]/).pop() || "";
+  const cleaned = leaf
+    .replace(/^\.+/, "")
+    .replace(/[<>:"/\\|?*\x00-\x1f]/g, "")
+    .trim();
+  if (!cleaned || /^\.+$/.test(cleaned)) return "";
+  return cleaned;
+}
+
 function buildZip(entries: { name: string; data: Uint8Array }[]): Uint8Array {
   const localParts: Uint8Array[] = [];
   const centralParts: Uint8Array[] = [];
@@ -194,6 +205,12 @@ export async function POST(req: Request) {
       { status: 413 },
     );
   }
+  if (mode !== "every" && mode !== "range" && mode !== "extract") {
+    return NextResponse.json(
+      { ok: false, error: "Mode must be 'every', 'range', or 'extract'." },
+      { status: 400 },
+    );
+  }
 
   try {
     const buf = await file.arrayBuffer();
@@ -206,7 +223,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const baseName = file.name.replace(/\.pdf$/i, "");
+    // Sanitize the base name — strip path separators and `..` so a
+    // maliciously-named upload cannot produce ZIP entries that escape the
+    // destination directory on extraction (ZIP path traversal).
+    const rawBase = file.name.replace(/\.pdf$/i, "");
+    const baseName = sanitizeFileName(rawBase) || "pdf";
 
     if (mode === "every") {
       // One PDF per page → ZIP

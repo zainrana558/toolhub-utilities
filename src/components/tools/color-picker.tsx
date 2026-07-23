@@ -86,7 +86,12 @@ export function ColorPicker() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const complementary = rgbToHex(255 - rgb.r, 255 - rgb.g, 255 - rgb.b);
+  // True complementary color = hue + 180° in HSL space. Previously the code
+  // used RGB inversion (255 - r/g/b) which is incorrect — e.g. yellow
+  // (#FFFF00) inverted to cyan (#00FFFF) instead of the correct blue (#0000FF).
+  const complementaryHsl = { h: (hsl.h + 180) % 360, s: hsl.s, l: hsl.l };
+  const complementaryRgb = hslToRgb(complementaryHsl.h, complementaryHsl.s, complementaryHsl.l);
+  const complementary = rgbToHex(complementaryRgb.r, complementaryRgb.g, complementaryRgb.b);
   const lighterRgb = hslToRgb(hsl.h, hsl.s, Math.min(95, hsl.l + 20));
   const darkerRgb = hslToRgb(hsl.h, hsl.s, Math.max(5, hsl.l - 20));
 

@@ -97,7 +97,11 @@ export async function POST(req: Request) {
   }
 
   const file = form.get("file");
-  const text = ((form.get("text") as string) || "WATERMARK").trim();
+  // Note: only fall back to "WATERMARK" when the field is ABSENT (null).
+  // If the client explicitly sends an empty string, we want to reject it
+  // (the `if (!text)` check below) rather than silently substitute a default.
+  const rawText = form.get("text");
+  const text = (rawText == null ? "WATERMARK" : String(rawText)).trim();
   const fontSize = parseFloat((form.get("fontSize") as string) || "60");
   const opacity = parseFloat((form.get("opacity") as string) || "0.2");
   const colorHex = ((form.get("color") as string) || "#888888").trim();
@@ -133,6 +137,16 @@ export async function POST(req: Request) {
   if (!Number.isFinite(opacity) || opacity < 0 || opacity > 1) {
     return NextResponse.json({ ok: false, error: "Opacity must be between 0 and 1." }, { status: 400 });
   }
+  // Validate rotation — without this, NaN (e.g. from rotation="abc") propagates
+  // through Math.cos/Math.sin and produces NaN coordinates, corrupting the PDF.
+  if (!Number.isFinite(rotation)) {
+    return NextResponse.json(
+      { ok: false, error: "Rotation must be a finite number (degrees)." },
+      { status: 400 },
+    );
+  }
+  // Normalize to [0, 360) so huge values don't lose precision in trig.
+  const rotationDeg = ((rotation % 360) + 360) % 360;
 
   try {
     const buf = await file.arrayBuffer();
@@ -153,8 +167,8 @@ export async function POST(req: Request) {
       const textWidth = font.widthOfTextAtSize(text, fontSize);
 
       // Center the text diagonally
-      const x = (width - textWidth * Math.cos((rotation * Math.PI) / 180)) / 2;
-      const y = (height - fontSize * Math.sin((rotation * Math.PI) / 180)) / 2;
+      const x = (width - textWidth * Math.cos((rotationDeg * Math.PI) / 180)) / 2;
+      const y = (height - fontSize * Math.sin((rotationDeg * Math.PI) / 180)) / 2;
 
       page.drawText(text, {
         x,
@@ -163,7 +177,7 @@ export async function POST(req: Request) {
         font,
         color: rgb(color.r, color.g, color.b),
         opacity,
-        rotate: degrees(rotation),
+        rotate: degrees(rotationDeg),
       });
     }
 

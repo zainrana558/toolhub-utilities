@@ -20,15 +20,21 @@ export function BMICalculator() {
     let bmi = 0;
     if (unit === "metric") {
       const w = parseFloat(weight);
-      const h = parseFloat(height) / 100;
-      if (!w || !h) return;
+      const hCm = parseFloat(height);
+      // Reject empty / NaN / non-positive inputs — previously `parseFloat("-70")`
+      // returned -70 (truthy), passing the `!w` guard and producing nonsense BMI.
+      if (!Number.isFinite(w) || !Number.isFinite(hCm) || w <= 0 || hCm <= 0) return;
+      const h = hCm / 100;
       bmi = w / (h * h);
     } else {
       const w = parseFloat(weight);
       const f = parseFloat(feet);
-      const i = parseFloat(inches) || 0;
-      if (!w || !f) return;
-      const totalInches = f * 12 + i;
+      const i = parseFloat(inches);
+      if (!Number.isFinite(w) || !Number.isFinite(f) || w <= 0 || f < 0) return;
+      // Inches can be 0 — only reject NaN. Negative inches make no sense.
+      const inchesVal = Number.isFinite(i) && i >= 0 ? i : 0;
+      const totalInches = f * 12 + inchesVal;
+      if (totalInches <= 0) return;
       bmi = (w * 703) / (totalInches * totalInches);
     }
 

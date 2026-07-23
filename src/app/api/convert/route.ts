@@ -3,11 +3,11 @@ import {
   PDFDocument,
   StandardFonts,
   rgb,
-  PDFFont,
   PDFPage,
 } from "pdf-lib";
 import mammoth from "mammoth";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
+import path from "node:path";
 import { marked } from "marked";
 
 /**
@@ -188,24 +188,62 @@ function htmlToMarkdown(html: string): string {
 // ---------------------------------------------------------------------------
 
 async function extractPdfText(bytes: Uint8Array): Promise<string> {
+  // Use pdfjs-dist directly for text extraction. Same engine as pdf-to-jpg
+  // and pdf-to-text, which are already proven to work server-side.
   try {
-    const { PDFParse } = await import("pdf-parse");
-    const parser = new PDFParse(bytes as Buffer);
-    const data = await parser.getText();
-    if (data && typeof data.text === "string" && data.text.trim().length > 0) {
-      return data.text;
+    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    pdfjs.GlobalWorkerOptions.workerSrc = path.join(
+      process.cwd(),
+      "node_modules",
+      "pdfjs-dist",
+      "legacy",
+      "build",
+      "pdf.worker.mjs",
+    );
+
+    const doc = await pdfjs.getDocument({
+      data: bytes as unknown as ArrayBuffer,
+      isEvalSupported: false,
+      useSystemFonts: true,
+    }).promise;
+
+    const out: string[] = [];
+    const count = Math.min(doc.numPages, 200);
+    for (let i = 1; i <= count; i++) {
+      const page = await doc.getPage(i);
+      const content = await page.getTextContent();
+      const lines = new Map<number, string[]>();
+      for (const item of content.items) {
+        if (!("str" in item) || typeof item.str !== "string") continue;
+        const ty = item.transform[5];
+        const key = Math.round(ty);
+        if (!lines.has(key)) lines.set(key, []);
+        lines.get(key)!.push(item.str);
+      }
+      const sortedKeys = Array.from(lines.keys()).sort((a, b) => b - a);
+      for (const k of sortedKeys) {
+        const parts = lines.get(k)!;
+        const line = parts.join(" ").replace(/\s+/g, " ").trim();
+        if (line) out.push(line);
+      }
+      out.push(""); // page break
+      page.cleanup();
     }
-  } catch {
-    // fall through to manual scan
+    await doc.destroy();
+    const text = out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    if (text) return text;
+  } catch (e) {
+    console.error("[convert] pdfjs text extraction failed:", e instanceof Error ? e.message : e);
   }
   return scanPdfText(bytes);
 }
 
 function scanPdfText(bytes: Uint8Array): string {
   // Decode as latin1 to preserve byte-for-byte values, then scan for
-  // text-showing operators: (...) Tj, [(...) ...] TJ
-  let s = "";
-  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  // text-showing operators: (...) Tj, [(...) ...] TJ.
+  // Build the string with TextDecoder (latin1) in one shot — the previous
+  // char-by-char concat was O(n²) on 15 MB PDFs.
+  const s = new TextDecoder("latin1").decode(bytes);
   const out: string[] = [];
   const tjRe = /\(((?:[^()\\]|\\.)*)\)\s*Tj/g;
   const tjArrRe = /\[([^\]]*)\]\s*TJ/g;
@@ -248,10 +286,14 @@ function decodePdfString(raw: string): string {
 // HTML → simple PDF (text-only)
 // ---------------------------------------------------------------------------
 
-async function textToPdf(text: string, font: PDFFont): Promise<Uint8Array> {
+async function textToPdf(text: string): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   doc.setProducer("ToolVerse File Converter");
   doc.setCreator("ToolVerse File Converter");
+
+  // Embed the font ON the same doc that we will save — previously the font
+  // was embedded on an outer throwaway doc, producing an empty/corrupt PDF.
+  const font = await doc.embedFont(StandardFonts.Helvetica);
 
   const margin = 50;
   const pageWidth = 595.28; // A4 portrait in points
@@ -388,7 +430,10 @@ async function convert(
         text = await extractPdfText(inputBytes);
         break;
       case "docx": {
-        const res = await mammoth.extractRawText({ arrayBuffer: inputBytes.slice().buffer });
+        // mammoth v1 in Node expects { buffer: Buffer } — { arrayBuffer }
+        // throws "Could not find file in options".
+        const buffer = Buffer.from(inputBytes);
+        const res = await mammoth.extractRawText({ buffer });
         text = res.value;
         break;
       }
@@ -477,9 +522,12 @@ ${h}
     }
     case "pdf": {
       const t = await getText();
-      const doc = await PDFDocument.create();
-      const font = await doc.embedFont(StandardFonts.Helvetica);
-      const pdfBytes = await textToPdf(t, font);
+      if (!t.trim()) {
+        // Can't build a PDF from empty text — throw so the POST handler
+        // returns a 422 rather than emitting an empty/corrupt PDF.
+        throw new Error("No text could be extracted from the input to build a PDF.");
+      }
+      const pdfBytes = await textToPdf(t);
       return {
         bytes: pdfBytes,
         mime: MIME.pdf,

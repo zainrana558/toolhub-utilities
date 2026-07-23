@@ -429,8 +429,10 @@ export function PdfCompressor() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Drop zone */}
-          {status === "idle" && (
+          {/* Drop zone — also render on the recoverable error state where
+              acceptFile rejected the file (status="error" but fileState=null),
+              otherwise the user is stuck with no UI and no way to retry. */}
+          {(status === "idle" || (status === "error" && !fileState)) && (
             <div
               role="button"
               tabIndex={0}
@@ -465,6 +467,19 @@ export function PdfCompressor() {
                 className="hidden"
                 onChange={onFileChange}
               />
+            </div>
+          )}
+
+          {/* Recoverable error message — shown when acceptFile rejected the
+              file (e.g. wrong type / too large) so the drop zone above is
+              still visible. Without this block the user sees no feedback. */}
+          {status === "error" && error && !fileState && (
+            <div className="flex items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-destructive">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+              <div className="space-y-1">
+                <p className="font-medium">Could not load file</p>
+                <p className="text-sm opacity-80">{error}</p>
+              </div>
             </div>
           )}
 

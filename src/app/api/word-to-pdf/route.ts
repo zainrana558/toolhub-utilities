@@ -132,10 +132,16 @@ function strip(html: string): string {
 // Lines → PDF
 // ---------------------------------------------------------------------------
 
-async function linesToPdf(lines: Line[], font: PDFFont): Promise<Uint8Array> {
+async function linesToPdf(lines: Line[]): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   doc.setProducer("ToolHub Word to PDF");
   doc.setCreator("ToolHub Word to PDF");
+
+  // Embed BOTH regular and bold Helvetica so we can render headings in bold.
+  // (Previously `bold` was computed but never actually used because only one
+  // font was embedded and it was the regular variant.)
+  const fontRegular = await doc.embedFont(StandardFonts.Helvetica);
+  const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
 
   const pageWidth = 595.28; // A4
   const pageHeight = 841.89;
@@ -179,6 +185,7 @@ async function linesToPdf(lines: Line[], font: PDFFont): Promise<Uint8Array> {
         fontSize = 11;
         colorRgb = { r: 0.1, g: 0.1, b: 0.1 };
     }
+    const font = bold ? fontBold : fontRegular;
 
     const wrapped = wrapText(line.text, font, fontSize, maxWidth);
     const lineH = line.level === 0 ? lineHeight : fontSize * 1.4;
@@ -285,9 +292,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const doc = await PDFDocument.create();
-    const font = await doc.embedFont(StandardFonts.Helvetica);
-    const pdfBytes = await linesToPdf(lines, font);
+    const pdfBytes = await linesToPdf(lines);
 
     const baseName = file.name.replace(/\.docx$/i, "");
 

@@ -306,7 +306,11 @@ export function LoremIpsumGenerator() {
             </span>
           </CardTitle>
           <div className="flex items-center gap-2">
-            {generated.segments.length > 1 && (
+            {/* Always show "Copy All" — previously this was gated on
+                segments.length > 1, which meant the "words" mode (exactly
+                1 segment) had NO copy button at all and the user couldn't
+                copy the generated text. */}
+            {generated.segments.length >= 1 && (
               <Button
                 variant="outline"
                 size="sm"

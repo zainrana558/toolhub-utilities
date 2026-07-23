@@ -25,6 +25,7 @@ import {
   X,
   ArrowRight,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 
 type OutputFormat = "image/jpeg" | "image/png" | "image/webp";
@@ -60,23 +61,52 @@ export function ImageCompressor() {
     useState<CompressedResult | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Refs that mirror the latest object URLs so the unmount cleanup (which
+  // otherwise captures stale state due to empty deps) can revoke them.
+  const originalUrlRef = useRef<string>("");
+  const compressedUrlRef = useRef<string>("");
+  // Token to cancel in-flight compressions when the user changes file or
+  // settings mid-render. Without this, a stale render can overwrite newer
+  // results OR hang the isCompressing spinner if the source URL was revoked.
+  const compressTokenRef = useRef<number>(0);
 
-  // Cleanup object URLs on unmount
+  // Keep refs in sync with state via effect — assigning refs during render
+  // is forbidden by react-hooks/refs.
+  useEffect(() => {
+    originalUrlRef.current = originalUrl;
+  }, [originalUrl]);
+  useEffect(() => {
+    compressedUrlRef.current = compressedResult?.url ?? "";
+  }, [compressedResult]);
+
+  // Cleanup object URLs on unmount — use refs (not stale closures) so we
+  // always revoke the most recent URLs.
   useEffect(() => {
     return () => {
-      if (originalUrl) URL.revokeObjectURL(originalUrl);
-      if (compressedResult?.url) URL.revokeObjectURL(compressedResult.url);
+      if (originalUrlRef.current) URL.revokeObjectURL(originalUrlRef.current);
+      if (compressedUrlRef.current) URL.revokeObjectURL(compressedUrlRef.current);
     };
   }, []);
 
   const handleFileSelect = useCallback((file: File) => {
     // Validate it's an image
-    if (!file.type.startsWith("image/")) return;
+    if (!file.type.startsWith("image/")) {
+      setError(`"${file.name}" is not an image file.`);
+      return;
+    }
+    // Cap at 25 MB to avoid crashing the tab on huge uploads.
+    if (file.size > 25 * 1024 * 1024) {
+      setError(`"${file.name}" is too large. Max 25 MB.`);
+      return;
+    }
 
-    // Revoke previous URL
+    setError(null);
+
+    // Revoke previous URLs
     setOriginalUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return "";
@@ -90,10 +120,20 @@ export function ImageCompressor() {
     const url = URL.createObjectURL(file);
     setOriginalUrl(url);
 
-    // Get dimensions
+    // Get dimensions — also handle onerror so corrupt images don't leave
+    // the UI in an indeterminate state where the Compress button silently
+    // does nothing.
     const img = new Image();
     img.onload = () => {
       setOriginalDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+    };
+    img.onerror = () => {
+      setError(`Could not load "${file.name}" — the file may be corrupt or not a real image.`);
+      setOriginalFile(null);
+      setOriginalUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return "";
+      });
     };
     img.src = url;
   }, []);
@@ -145,23 +185,35 @@ export function ImageCompressor() {
   const compressImage = useCallback(async () => {
     if (!originalFile || !originalDimensions || !canvasRef.current) return;
 
+    // Each compression gets a unique token. If the user uploads a new file
+    // while we're mid-render, the newer call bumps the token; when this
+    // render resolves we check and discard the stale result.
+    const myToken = ++compressTokenRef.current;
     setIsCompressing(true);
+    setError(null);
 
     try {
       const img = new Image();
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
-        img.onerror = reject;
+        img.onerror = () => reject(new Error("Failed to load the image. It may be corrupt."));
         img.src = originalUrl;
       });
+
+      // Bail if a newer compression has started.
+      if (compressTokenRef.current !== myToken) return;
 
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Cannot get canvas context");
 
-      // Calculate new dimensions maintaining aspect ratio
-      const maxW = parseInt(maxWidth) || Infinity;
-      const maxH = parseInt(maxHeight) || Infinity;
+      // Calculate new dimensions maintaining aspect ratio.
+      // Treat 0 / NaN / negative max as "no constraint" — previously
+      // parseInt("0") || Infinity silently converted 0 to Infinity.
+      const parsedW = parseInt(maxWidth, 10);
+      const parsedH = parseInt(maxHeight, 10);
+      const maxW = Number.isFinite(parsedW) && parsedW > 0 ? parsedW : Infinity;
+      const maxH = Number.isFinite(parsedH) && parsedH > 0 ? parsedH : Infinity;
       let { naturalWidth: w, naturalHeight: h } = img;
 
       if (w > maxW) {
@@ -197,6 +249,12 @@ export function ImageCompressor() {
         );
       });
 
+      // Bail again — the await above may have taken a while.
+      if (compressTokenRef.current !== myToken) {
+        URL.revokeObjectURL(URL.createObjectURL(blob)); // discard
+        return;
+      }
+
       const url = URL.createObjectURL(blob);
 
       setCompressedResult((prev) => {
@@ -210,9 +268,14 @@ export function ImageCompressor() {
         };
       });
     } catch (err) {
-      console.error("Compression failed:", err);
+      // Don't show the error if a newer compression has taken over.
+      if (compressTokenRef.current !== myToken) return;
+      const msg = err instanceof Error ? err.message : "Compression failed unexpectedly.";
+      setError(msg);
     } finally {
-      setIsCompressing(false);
+      if (compressTokenRef.current === myToken) {
+        setIsCompressing(false);
+      }
     }
   }, [
     originalFile,
@@ -429,6 +492,18 @@ export function ImageCompressor() {
                 </>
               )}
             </Button>
+
+            {/* Error message — previously errors were only console.logged
+                and the user had no idea why the Compress button did nothing. */}
+            {error && (
+              <div className="flex items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-destructive">
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+                <div className="space-y-1">
+                  <p className="font-medium">Compression failed</p>
+                  <p className="text-sm opacity-80">{error}</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

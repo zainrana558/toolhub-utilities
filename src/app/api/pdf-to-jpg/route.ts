@@ -167,6 +167,23 @@ function buildZip(entries: { name: string; data: Uint8Array }[]): Uint8Array {
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Strip path separators, drive letters, `..` segments, and control chars. */
+function sanitizeFileName(name: string): string {
+  // Take only the trailing path component (handles both / and \)
+  const leaf = name.split(/[/\\]/).pop() || "";
+  // Reject pure dots/dotfiles, strip anything that's not a printable ASCII
+  // or common Unicode letter/digit/space/dash/underscore/dot.
+  const cleaned = leaf
+    .replace(/^\.+/, "") // leading dots
+    .replace(/[<>:"/\\|?*\x00-\x1f]/g, "") // forbidden chars
+    .trim();
+  // If the result is empty or only dots, fall back to a generic name.
+  if (!cleaned || /^\.+$/.test(cleaned)) return "";
+  return cleaned;
+}
 
 async function renderPdfToJpegs(
   pdfBytes: Uint8Array,
@@ -195,33 +212,38 @@ async function renderPdfToJpegs(
     useSystemFonts: true,
   }).promise;
 
-  const pages: Uint8Array[] = [];
-  const count = Math.min(doc.numPages, MAX_PAGES);
+  try {
+    const pages: Uint8Array[] = [];
+    const count = Math.min(doc.numPages, MAX_PAGES);
 
-  const { createCanvas } = await import("canvas");
+    const { createCanvas } = await import("canvas");
 
-  for (let i = 1; i <= count; i++) {
-    const page = await doc.getPage(i);
-    const viewport = page.getViewport({ scale });
-    const canvas = createCanvas(viewport.width, viewport.height);
-    const ctx = canvas.getContext("2d");
+    for (let i = 1; i <= count; i++) {
+      const page = await doc.getPage(i);
+      const viewport = page.getViewport({ scale });
+      const canvas = createCanvas(viewport.width, viewport.height);
+      const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    await page.render({
-      canvasContext: ctx as unknown as CanvasRenderingContext2D,
-      viewport,
-    } as Parameters<typeof page.render>[0]).promise;
+      await page.render({
+        canvasContext: ctx as unknown as CanvasRenderingContext2D,
+        viewport,
+      } as Parameters<typeof page.render>[0]).promise;
 
-    const jpegBuf = canvas.toBuffer("image/jpeg", { quality });
-    pages.push(new Uint8Array(jpegBuf));
+      const jpegBuf = canvas.toBuffer("image/jpeg", { quality });
+      pages.push(new Uint8Array(jpegBuf));
 
-    page.cleanup();
+      page.cleanup();
+    }
+
+    return pages;
+  } finally {
+    // Always release the pdfjs document — without this, large PDFs leak
+    // worker threads and memory on every request.
+    await doc.destroy();
   }
-
-  await doc.destroy();
-  return pages;
 }
 
 // ---------------------------------------------------------------------------
@@ -255,6 +277,21 @@ export async function POST(req: Request) {
   const scale = parseFloat((form.get("scale") as string) || "1.5");
   const quality = parseFloat((form.get("quality") as string) || "0.85");
 
+  // Validate scale and quality up front — without bounds a malicious client
+  // can request scale=100 and force the server to allocate a ~20 GB canvas.
+  if (!Number.isFinite(scale) || scale < 0.1 || scale > 4) {
+    return NextResponse.json(
+      { ok: false, error: "Scale must be a number between 0.1 and 4." },
+      { status: 400 },
+    );
+  }
+  if (!Number.isFinite(quality) || quality < 0.1 || quality > 1) {
+    return NextResponse.json(
+      { ok: false, error: "Quality must be a number between 0.1 and 1." },
+      { status: 400 },
+    );
+  }
+
   if (!file || !(file instanceof File)) {
     return NextResponse.json({ ok: false, error: "Missing 'file' field." }, { status: 400 });
   }
@@ -278,7 +315,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "No pages rendered." }, { status: 500 });
     }
 
-    const baseName = file.name.replace(/\.pdf$/i, "");
+    // Sanitize the base name — strip path separators and `..` segments so a
+    // maliciously-named upload like `../../etc/cron.d/evil.pdf` cannot produce
+    // ZIP entries that escape the destination directory on extraction
+    // (CVE-class ZIP path traversal).
+    const rawBase = file.name.replace(/\.pdf$/i, "");
+    const baseName = sanitizeFileName(rawBase) || "pdf";
 
     if (jpegs.length === 1) {
       return new NextResponse(jpegs[0] as Uint8Array<ArrayBuffer>, {

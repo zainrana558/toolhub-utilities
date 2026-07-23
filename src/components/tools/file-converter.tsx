@@ -199,13 +199,17 @@ export function FileConverter() {
     setError(null);
     setResult(null);
 
+    // Declare timer outside the try block so the catch path can clear it —
+    // previously a network/CORS throw skipped `clearInterval`, leaking the
+    // interval and forcing setProgress on a possibly-reset component forever.
+    let timer: ReturnType<typeof setInterval> | null = null;
     try {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("target", target);
 
       // Fake progress while the request is in-flight, so the UI feels alive.
-      const timer = setInterval(() => {
+      timer = setInterval(() => {
         setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
       }, 400);
 
@@ -214,7 +218,7 @@ export function FileConverter() {
         body: fd,
       });
 
-      clearInterval(timer);
+      if (timer) { clearInterval(timer); timer = null; }
       setProgress(100);
 
       if (!res.ok) {
@@ -234,6 +238,7 @@ export function FileConverter() {
       setResult({ blob, fileName: downloadName, size: blob.size });
       setStatus("done");
     } catch (err) {
+      if (timer) clearInterval(timer);
       const msg =
         err instanceof Error ? err.message : "Conversion failed unexpectedly.";
       setError(msg);
@@ -280,8 +285,10 @@ export function FileConverter() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Drop zone */}
-          {status === "idle" && (
+          {/* Drop zone — also render on the recoverable error state where
+              acceptFile rejected the file (status="error" but file=null),
+              otherwise the user is stuck with no UI and no way to retry. */}
+          {(status === "idle" || (status === "error" && !file)) && (
             <div
               role="button"
               tabIndex={0}
@@ -316,6 +323,19 @@ export function FileConverter() {
                 className="hidden"
                 onChange={onFileChange}
               />
+            </div>
+          )}
+
+          {/* Recoverable error message — shown when acceptFile rejected the
+              file (e.g. wrong type / too large) so the drop zone above is
+              still visible. Without this block the user sees no feedback. */}
+          {status === "error" && error && !file && (
+            <div className="flex items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-destructive">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+              <div className="space-y-1">
+                <p className="font-medium">Could not load file</p>
+                <p className="text-sm opacity-80">{error}</p>
+              </div>
             </div>
           )}
 

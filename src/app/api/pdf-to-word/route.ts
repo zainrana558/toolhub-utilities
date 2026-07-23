@@ -65,6 +65,7 @@ function getClientIp(req: Request): string {
 async function extractPdfText(bytes: Uint8Array): Promise<string> {
   // Use pdfjs-dist directly for text extraction. Same engine as pdf-to-jpg,
   // which is already proven to work server-side under Turbopack.
+  let doc: { destroy: () => Promise<void>; numPages: number; getPage: (n: number) => Promise<any> } | null = null;
   try {
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
     pdfjs.GlobalWorkerOptions.workerSrc = path.join(
@@ -76,7 +77,7 @@ async function extractPdfText(bytes: Uint8Array): Promise<string> {
       "pdf.worker.mjs",
     );
 
-    const doc = await pdfjs.getDocument({
+    doc = await pdfjs.getDocument({
       data: bytes as unknown as ArrayBuffer,
       isEvalSupported: false,
       useSystemFonts: true,
@@ -105,18 +106,21 @@ async function extractPdfText(bytes: Uint8Array): Promise<string> {
       out.push(""); // page break
       page.cleanup();
     }
-    await doc.destroy();
     const text = out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
     if (text) return text;
   } catch (e) {
     console.error("[pdf-to-word] pdfjs text extraction failed:", e instanceof Error ? e.message : e);
+  } finally {
+    if (doc) {
+      try { await doc.destroy(); } catch { /* already tearing down */ }
+    }
   }
   return scanPdfText(bytes);
 }
 
 function scanPdfText(bytes: Uint8Array): string {
-  let s = "";
-  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  // Decode as latin1 in one shot — the previous char-by-char concat was O(n²).
+  const s = new TextDecoder("latin1").decode(bytes);
   const out: string[] = [];
   const tjRe = /\(((?:[^()\\]|\\.)*)\)\s*Tj/g;
   const tjArrRe = /\[([^\]]*)\]\s*TJ/g;

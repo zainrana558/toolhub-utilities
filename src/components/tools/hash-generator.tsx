@@ -37,20 +37,37 @@ export function HashGenerator() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInitialMount = useRef(true);
+  // Sequence number to guard against the race where:
+  //   1. user types "abc" → debounce fires computeAllHashes("abc")
+  //   2. user types "abcd" before "abc" resolves → debounce fires computeAllHashes("abcd")
+  //   3. "abc" resolves LAST (e.g. GC pause) and overwrites the correct "abcd" results
+  const computeSeqRef = useRef(0);
 
-  const computeAllHashes = useCallback(async (text: string) => {
+  const computeAllHashes = useCallback(async (text: string, seq: number) => {
     if (!text) {
-      setResults([]);
+      if (computeSeqRef.current === seq) setResults([]);
       return;
     }
 
-    const hashPromises = ALGORITHMS.map(async ({ algorithm, color }) => {
-      const hash = await computeHash(text, algorithm);
-      return { algorithm, hash, color } as HashResult;
-    });
+    try {
+      const hashPromises = ALGORITHMS.map(async ({ algorithm, color }) => {
+        const hash = await computeHash(text, algorithm);
+        return { algorithm, hash, color } as HashResult;
+      });
 
-    const hashResults = await Promise.all(hashPromises);
-    setResults(hashResults);
+      const hashResults = await Promise.all(hashPromises);
+      // Only commit if no newer compute has started since we began.
+      if (computeSeqRef.current === seq) {
+        setResults(hashResults);
+      }
+    } catch (e) {
+      // crypto.subtle is unavailable in non-secure contexts — surface the
+      // error rather than silently leaving the user with stale/empty results.
+      console.error("[hash-generator] compute failed:", e);
+      if (computeSeqRef.current === seq) {
+        setResults([]);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -63,8 +80,9 @@ export function HashGenerator() {
       clearTimeout(debounceRef.current);
     }
 
+    const mySeq = ++computeSeqRef.current;
     debounceRef.current = setTimeout(() => {
-      computeAllHashes(input);
+      computeAllHashes(input, mySeq);
     }, 300);
 
     return () => {

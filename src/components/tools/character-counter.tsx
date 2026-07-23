@@ -88,7 +88,7 @@ export function CharacterCounter() {
 
   const stats = useMemo(() => computeStats(text), [text]);
 
-  const handleCopy = useCallback(() => {
+  const handleCopy = useCallback(async () => {
     if (!text.trim()) return;
     const lines = [
       "Character Counter — Analysis Results",
@@ -110,9 +110,30 @@ export function CharacterCounter() {
         (c) => `  "${c.char}" — ${c.count} (${c.percent}%)`
       ),
     ];
-    navigator.clipboard.writeText(lines.join("\n"));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    // Await the clipboard write and surface failures — previously the call
+    // was fire-and-forget, so "Copied!" flashed even when the write rejected
+    // (e.g. clipboard denied, non-secure context).
+    try {
+      await navigator.clipboard.writeText(lines.join("\n"));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for non-secure contexts / older browsers.
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = lines.join("\n");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        // Last resort — give up silently; the button simply doesn't toggle.
+      }
+    }
   }, [text, stats]);
 
   const handleClear = useCallback(() => {

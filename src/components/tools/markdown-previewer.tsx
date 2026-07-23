@@ -13,6 +13,67 @@ marked.setOptions({
   gfm: true,
 });
 
+// ── Minimal HTML sanitizer ─────────────────────────────────────────────
+// marked v4+ no longer sanitizes HTML, so a raw input like
+// `<img src=x onerror=alert(1)>` or `<script>...</script>` would be rendered
+// as-is via dangerouslySetInnerHTML, allowing stored/reflected XSS.
+// We strip <script>/<style>/<iframe>/<object>/<embed>, all on* event handler
+// attributes, javascript: URLs, and data: URLs on anchors/images.
+const FORBIDDEN_TAGS = new Set([
+  "script", "style", "iframe", "object", "embed", "form",
+  "input", "button", "textarea", "select", "option",
+]);
+
+function sanitizeHtml(html: string): string {
+  if (typeof window === "undefined") return html; // SSR — skip
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  cleanNode(doc.body);
+  return doc.body.innerHTML;
+}
+
+function cleanNode(node: Node): void {
+  // Walk in reverse so mutation during iteration is safe.
+  const children = Array.from(node.childNodes);
+  for (const child of children) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      const el = child as Element;
+      const tag = el.tagName.toLowerCase();
+      if (FORBIDDEN_TAGS.has(tag)) {
+        // Replace forbidden tag with its children (don't render the tag itself
+        // but keep any nested text content). For <script>/<style> we drop the
+        // children too because their text is active code/CSS.
+        if (tag === "script" || tag === "style") {
+          el.remove();
+        } else {
+          const parent = el.parentNode;
+          if (parent) {
+            while (el.firstChild) parent.insertBefore(el.firstChild, el);
+            parent.removeChild(el);
+          }
+        }
+        continue;
+      }
+      // Strip event-handler attributes and dangerous URLs.
+      for (const attr of Array.from(el.attributes)) {
+        const name = attr.name.toLowerCase();
+        const value = attr.value.trim().toLowerCase();
+        if (name.startsWith("on")) {
+          el.removeAttribute(attr.name);
+          continue;
+        }
+        if ((name === "href" || name === "src" || name === "xlink:href") &&
+            (value.startsWith("javascript:") || value.startsWith("data:text/html") || value.startsWith("vbscript:"))) {
+          el.removeAttribute(attr.name);
+        }
+      }
+      cleanNode(el);
+    } else if (child.nodeType === Node.COMMENT_NODE) {
+      // Comments can hide IE conditional-comment payloads — drop them.
+      child.parentNode?.removeChild(child);
+    }
+  }
+}
+
 // ── Default sample markdown ────────────────────────────────────────────
 const DEFAULT_MARKDOWN = `# Markdown Previewer
 
@@ -85,7 +146,11 @@ export function MarkdownPreviewer() {
   // ── Convert markdown → HTML ─────────────────────────────────────────
   const htmlOutput = useMemo(() => {
     const raw = marked.parse(markdown);
-    return typeof raw === "string" ? raw : "";
+    const str = typeof raw === "string" ? raw : "";
+    // Sanitize BEFORE injecting via dangerouslySetInnerHTML — marked v4+
+    // does not sanitize, so without this step a malicious input like
+    // `<img src=x onerror=alert(1)>` would execute in the user's browser.
+    return sanitizeHtml(str);
   }, [markdown]);
 
   return (

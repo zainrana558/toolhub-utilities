@@ -12,7 +12,7 @@ export function LoanCalculator() {
   const [rate, setRate] = useState("");
   const [years, setYears] = useState("");
   const [result, setResult] = useState<{
-    monthly: number; totalPayment: number; totalInterest: number;
+    principal: number; monthly: number; totalPayment: number; totalInterest: number;
     schedule: { month: number; payment: number; principal: number; interest: number; balance: number }[];
   } | null>(null);
 
@@ -20,10 +20,17 @@ export function LoanCalculator() {
     const P = parseFloat(principal);
     const annualRate = parseFloat(rate) / 100;
     const n = parseFloat(years) * 12;
-    if (!P || !annualRate || !n || P <= 0 || annualRate <= 0 || n <= 0) return;
+    // Validate inputs — note that 0% interest (annualRate === 0) is a valid
+    // promotional financing scenario and must be supported. Previously the
+    // `!annualRate` guard rejected it, and even if it had passed, the
+    // formula would have divided by zero.
+    if (!Number.isFinite(P) || !Number.isFinite(annualRate) || !Number.isFinite(n)) return;
+    if (P <= 0 || annualRate < 0 || n <= 0) return;
 
     const r = annualRate / 12;
-    const monthly = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    // Handle 0% interest separately — the standard amortization formula
+    // has a (Math.pow(1+r,n) - 1) denominator that becomes 0 when r=0.
+    const monthly = r === 0 ? P / n : (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     const totalPayment = monthly * n;
     const totalInterest = totalPayment - P;
 
@@ -42,7 +49,7 @@ export function LoanCalculator() {
       });
     }
 
-    setResult({ monthly, totalPayment, totalInterest, schedule });
+    setResult({ principal: P, monthly, totalPayment, totalInterest, schedule });
   };
 
   const reset = () => {
@@ -107,7 +114,7 @@ export function LoanCalculator() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
-                <div className="relative w-32 h-32 rounded-full" style={{ background: `conic-gradient(hsl(var(--primary)) 0% ${(parseFloat(principal) / result.totalPayment * 100).toFixed(1)}%, hsl(var(--destructive)) ${(parseFloat(principal) / result.totalPayment * 100).toFixed(1)}% 100%)` }}>
+                <div className="relative w-32 h-32 rounded-full" style={{ background: `conic-gradient(hsl(var(--primary)) 0% ${(result.principal / result.totalPayment * 100).toFixed(1)}%, hsl(var(--destructive)) ${(result.principal / result.totalPayment * 100).toFixed(1)}% 100%)` }}>
                   <div className="absolute inset-4 bg-card rounded-full flex items-center justify-center">
                     <span className="text-xs font-medium">{((result.totalInterest / result.totalPayment) * 100).toFixed(1)}% interest</span>
                   </div>
@@ -115,7 +122,7 @@ export function LoanCalculator() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-primary" />
-                    <span className="text-sm">Principal: ${parseFloat(principal).toLocaleString()}</span>
+                    <span className="text-sm">Principal: ${result.principal.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-destructive" />
