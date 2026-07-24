@@ -1,6 +1,7 @@
 import { tools, toolCategories } from "@/lib/tools-data";
 import { ToolPageClient } from "./tool-page-client";
 import { SITE_URL } from "@/lib/site-config";
+import { getMetaTitle, getMetaDescription, getEnhancedFaq } from "@/lib/tool-seo";
 
 export async function generateStaticParams() {
   return tools.map((tool) => ({
@@ -23,8 +24,8 @@ export async function generateMetadata({
   const toolUrl = `${SITE_URL}/${tool.id}`;
 
   return {
-    title: tool.metaTitle,
-    description: tool.metaDescription,
+    title: getMetaTitle(tool),
+    description: getMetaDescription(tool),
     keywords: tool.keywords,
     authors: [{ name: "Zain Rana" }],
     openGraph: {
@@ -32,14 +33,14 @@ export async function generateMetadata({
       locale: "en_US",
       url: toolUrl,
       siteName: "ToolVerse",
-      title: tool.metaTitle,
-      description: tool.metaDescription,
-      images: [{ url: `${SITE_URL}/api/og?slug=${encodeURIComponent(tool.id)}`, width: 1200, height: 630, alt: tool.metaTitle }],
+      title: getMetaTitle(tool),
+      description: getMetaDescription(tool),
+      images: [{ url: `${SITE_URL}/api/og?slug=${encodeURIComponent(tool.id)}`, width: 1200, height: 630, alt: getMetaTitle(tool) }],
     },
     twitter: {
       card: "summary_large_image" as const,
-      title: tool.metaTitle,
-      description: tool.metaDescription,
+      title: getMetaTitle(tool),
+      description: getMetaDescription(tool),
       images: [`${SITE_URL}/api/og?slug=${encodeURIComponent(tool.id)}`],
     },
     alternates: {
@@ -100,8 +101,8 @@ export default async function ToolPage({
   const webAppSchema = toolType === "converter" ? null : {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: tool.metaTitle,
-    description: tool.metaDescription,
+    name: getMetaTitle(tool),
+    description: getMetaDescription(tool),
     url: toolUrl,
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any",
@@ -127,11 +128,12 @@ export default async function ToolPage({
     featureList: tool.features.join(", "),
   };
 
-  // ── Schema 3: FAQPage ──
+  // ── Schema 3: FAQPage (uses enhanced FAQ to match what's rendered) ──
+  const enhancedFaq = getEnhancedFaq(tool);
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: tool.faq.map((f) => ({
+    mainEntity: enhancedFaq.map((f) => ({
       "@type": "Question",
       name: f.question,
       acceptedAnswer: { "@type": "Answer", text: f.answer },

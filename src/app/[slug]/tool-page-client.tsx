@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tools, toolCategories } from "@/lib/tools-data";
 import { crossCategoryLinks } from "@/lib/cross-category-links";
 import { toolComponents } from "@/lib/tool-components";
+import { getH1, getIntroParagraph, getEnhancedFaq } from "@/lib/tool-seo";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -145,8 +146,8 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                     </motion.div>
                   </div>
                 </div>
-                <h1 className="text-2xl md:text-3xl font-bold">{tool.name}</h1>
-                <p className="text-muted-foreground text-base">{tool.description}</p>
+                <h1 className="text-2xl md:text-3xl font-bold">{getH1(tool)}</h1>
+                <p className="text-muted-foreground text-base leading-relaxed">{getIntroParagraph(tool)}</p>
               </motion.div>
 
               {/* ===== INTERACTIVE TOOL — IMMEDIATELY VISIBLE ===== */}
@@ -246,7 +247,7 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
 
               {/* SEO Content — condensed for below-the-fold */}
               <motion.article className="border-t pt-8 space-y-6" variants={fadeUp}>
-                <p className="text-xs text-muted-foreground">Last updated: <time dateTime="2026-07-16">July 16, 2026</time></p>
+                <p className="text-xs text-muted-foreground">Last updated: <time dateTime="2026-07-24">July 24, 2026</time></p>
 
                 <h3 className="text-lg font-semibold">
                   Why Use {tool.name} Instead of Alternatives?
@@ -282,11 +283,14 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
               </motion.article>
 
               {/* FAQ — uses <details> so Google can read all answers */}
-              {tool.faq.length > 0 && (
+              {(() => {
+                const enhancedFaq = getEnhancedFaq(tool);
+                if (enhancedFaq.length === 0) return null;
+                return (
                 <motion.section className="border-t pt-8" variants={fadeUp}>
                   <h2 className="text-xl font-semibold mb-4" id="faq-heading">Frequently Asked Questions</h2>
                   <div className="space-y-3">
-                    {tool.faq.map((item, i) => (
+                    {enhancedFaq.map((item, i) => (
                       <motion.details
                         key={i}
                         className="border rounded-lg group"
@@ -305,7 +309,8 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
                     ))}
                   </div>
                 </motion.section>
-              )}
+                );
+              })()}
 
               {/* E-E-A-T: Author Info — Change G */}
               <motion.aside className="border-t pt-8" variants={fadeUp}>
