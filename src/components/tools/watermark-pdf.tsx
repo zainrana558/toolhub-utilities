@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { PDFDocument, StandardFonts, rgb, degrees } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -26,8 +27,16 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import {
+  MAX_CLIENT_BYTES,
+  MAX_PAGES,
+  hexToRgb,
+  fileToBytes,
+  yieldToMain,
+} from "./_pdf-client";
 
-const MAX_BYTES = 25 * 1024 * 1024;
+const MAX_BYTES = MAX_CLIENT_BYTES;
+const MAX_TEXT_LEN = 200;
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -74,42 +83,68 @@ export function WatermarkPdf() {
       setStatus("error");
       return;
     }
+    if (text.length > MAX_TEXT_LEN) {
+      setError(`Watermark text too long. Max ${MAX_TEXT_LEN} chars.`);
+      setStatus("error");
+      return;
+    }
+    const fontSizeNum = parseFloat(fontSize);
+    if (!Number.isFinite(fontSizeNum) || fontSizeNum < 6 || fontSizeNum > 400) {
+      setError("Font size must be between 6 and 400.");
+      setStatus("error");
+      return;
+    }
+    const opacityNum = parseFloat(opacity);
+    if (!Number.isFinite(opacityNum) || opacityNum < 0 || opacityNum > 1) {
+      setError("Opacity must be between 0 and 1.");
+      setStatus("error");
+      return;
+    }
+    const rotationNum = parseFloat(rotation);
+    if (!Number.isFinite(rotationNum)) {
+      setError("Rotation must be a finite number (degrees).");
+      setStatus("error");
+      return;
+    }
     setStatus("processing");
     setProgress(10);
     setError(null);
     setResult(null);
 
     try {
-      const fd = new FormData();
-      fd.append("file", upload.files[0].file);
-      fd.append("text", text);
-      fd.append("fontSize", fontSize);
-      fd.append("opacity", opacity);
-      fd.append("color", color);
-      fd.append("rotation", rotation);
-
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
-
-      const res = await fetch("/api/watermark-pdf", {
-        method: "POST",
-        body: fd,
+      const out = await yieldToMain(async () => {
+        const src = await fileToBytes(upload.files[0].file);
+        const doc = await PDFDocument.load(src, { ignoreEncryption: true });
+        if (doc.getPageCount() > MAX_PAGES) {
+          throw new Error(`Too many pages. Max ${MAX_PAGES}.`);
+        }
+        const font = await doc.embedFont(StandardFonts.HelveticaBold);
+        const c = hexToRgb(color, { r: 0.5, g: 0.5, b: 0.5 });
+        // Normalize rotation to [0, 360) so huge values don't lose precision in trig.
+        const rotationDeg = ((rotationNum % 360) + 360) % 360;
+        const pages = doc.getPages();
+        for (const page of pages) {
+          const { width, height } = page.getSize();
+          const textWidth = font.widthOfTextAtSize(text, fontSizeNum);
+          const x = (width - textWidth * Math.cos((rotationDeg * Math.PI) / 180)) / 2;
+          const y = (height - fontSizeNum * Math.sin((rotationDeg * Math.PI) / 180)) / 2;
+          page.drawText(text, {
+            x,
+            y,
+            size: fontSizeNum,
+            font,
+            color: rgb(c.r, c.g, c.b),
+            opacity: opacityNum,
+            rotate: degrees(rotationDeg),
+          });
+        }
+        const bytes = await doc.save();
+        setProgress(80);
+        return bytes;
       });
 
-      clearInterval(timer);
       setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Watermark failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
+      const blob = new Blob([out as BlobPart], { type: "application/pdf" });
       const baseName = upload.files[0].name.replace(/\.pdf$/i, "");
       setResult({
         blob,
@@ -161,7 +196,7 @@ export function WatermarkPdf() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle="PDF up to 50 MB, 200 pages max"
+              subtitle="PDF up to 50 MB, 200 pages max — processed entirely in your browser"
             />
           )}
 

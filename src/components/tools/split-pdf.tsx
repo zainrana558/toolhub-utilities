@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { PDFDocument } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -30,8 +31,17 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import {
+  MAX_CLIENT_BYTES,
+  MAX_PAGES,
+  parseRanges,
+  sanitizeFileName,
+  buildZip,
+  fileToBytes,
+  yieldToMain,
+} from "./_pdf-client";
 
-const MAX_BYTES = 25 * 1024 * 1024;
+const MAX_BYTES = MAX_CLIENT_BYTES;
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -83,48 +93,91 @@ export function SplitPdf() {
     setResult(null);
 
     try {
-      const fd = new FormData();
-      fd.append("file", upload.files[0].file);
-      fd.append("mode", mode);
-      if (mode === "range" || mode === "extract") fd.append("ranges", ranges);
+      const { bytes, fileName, contentType } = await yieldToMain(async () => {
+        const src = await fileToBytes(upload.files[0].file);
+        const doc = await PDFDocument.load(src, { ignoreEncryption: true });
+        const totalPages = doc.getPageCount();
+        if (totalPages > MAX_PAGES) {
+          throw new Error(`Too many pages. Max ${MAX_PAGES}.`);
+        }
+        const rawBase = upload.files[0].name.replace(/\.pdf$/i, "");
+        const baseName = sanitizeFileName(rawBase) || "pdf";
 
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
+        if (mode === "every") {
+          const entries: { name: string; data: Uint8Array }[] = [];
+          for (let i = 0; i < totalPages; i++) {
+            const out = await PDFDocument.create();
+            const [p] = await out.copyPages(doc, [i]);
+            out.addPage(p);
+            const bytes = await out.save();
+            entries.push({
+              name: `${baseName}-page-${String(i + 1).padStart(3, "0")}.pdf`,
+              data: bytes,
+            });
+            setProgress(10 + Math.round(((i + 1) / totalPages) * 80));
+          }
+          const zip = buildZip(entries);
+          return {
+            bytes: zip,
+            fileName: `${baseName}-split.zip`,
+            contentType: "application/zip",
+          };
+        }
 
-      const res = await fetch("/api/split-pdf", {
-        method: "POST",
-        body: fd,
+        if (mode === "range") {
+          const tokens = ranges.split(";").map((s) => s.trim()).filter(Boolean);
+          const entries: { name: string; data: Uint8Array }[] = [];
+          for (let ti = 0; ti < tokens.length; ti++) {
+            const token = tokens[ti];
+            const pageNumbers = parseRanges(token, totalPages);
+            const indices = pageNumbers.map((n) => n - 1);
+            const out = await PDFDocument.create();
+            const pages = await out.copyPages(doc, indices);
+            for (const p of pages) out.addPage(p);
+            const bytes = await out.save();
+            entries.push({
+              name: `${baseName}-part-${ti + 1}.pdf`,
+              data: bytes,
+            });
+            setProgress(10 + Math.round(((ti + 1) / tokens.length) * 80));
+          }
+          if (entries.length === 1) {
+            return {
+              bytes: entries[0].data,
+              fileName: entries[0].name,
+              contentType: "application/pdf",
+            };
+          }
+          const zip = buildZip(entries);
+          return {
+            bytes: zip,
+            fileName: `${baseName}-split.zip`,
+            contentType: "application/zip",
+          };
+        }
+
+        // mode === "extract"
+        const pageNumbers = parseRanges(ranges, totalPages);
+        const indices = pageNumbers.map((n) => n - 1);
+        const out = await PDFDocument.create();
+        const pages = await out.copyPages(doc, indices);
+        for (const p of pages) out.addPage(p);
+        const bytes = await out.save();
+        setProgress(90);
+        return {
+          bytes,
+          fileName: `${baseName}-extracted.pdf`,
+          contentType: "application/pdf",
+        };
       });
 
-      clearInterval(timer);
       setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Split failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
-      const baseName = upload.files[0].name.replace(/\.pdf$/i, "");
-      const isZip = blob.type === "application/zip";
-      let fileName: string;
-      if (isZip) {
-        fileName = `${baseName}-split.zip`;
-      } else if (mode === "extract") {
-        fileName = `${baseName}-extracted.pdf`;
-      } else {
-        fileName = `${baseName}-part-1.pdf`;
-      }
+      const blob = new Blob([bytes as BlobPart], { type: contentType });
       setResult({
         blob,
         fileName,
         size: blob.size,
-        contentType: blob.type,
+        contentType,
       });
       setStatus("done");
     } catch (err) {
@@ -160,7 +213,7 @@ export function SplitPdf() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle="PDF up to 50 MB, 200 pages max"
+              subtitle="PDF up to 50 MB, 200 pages max — processed entirely in your browser"
             />
           )}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { PDFDocument } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -34,6 +35,7 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import { normalizeImageToJpegBytes, yieldToMain } from "./_pdf-client";
 
 const MAX_FILES = 30;
 const MAX_FILE_BYTES = 50 * 1024 * 1024;
@@ -90,40 +92,74 @@ export function JpgToPdf() {
       setStatus("error");
       return;
     }
+    const marginNum = parseInt(margin, 10);
+    if (!Number.isFinite(marginNum) || marginNum < 0 || marginNum > 200) {
+      setError("Margin must be a number between 0 and 200 (points).");
+      setStatus("error");
+      return;
+    }
     setStatus("processing");
     setProgress(10);
     setError(null);
     setResult(null);
 
     try {
-      const fd = new FormData();
-      for (const f of upload.files) fd.append("files", f.file);
-      fd.append("pageSize", pageSize);
-      fd.append("orientation", orientation);
-      fd.append("margin", margin);
+      const out = await yieldToMain(async () => {
+        const doc = await PDFDocument.create();
+        doc.setProducer("ToolVerse JPG to PDF");
+        doc.setCreator("ToolVerse JPG to PDF");
 
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
+        // Process images sequentially — parallelizing would multiply peak
+        // heap by N (each createImageBitmap + canvas + JPEG encode holds
+        // the full decoded image in memory). Sequential keeps it bounded.
+        for (let i = 0; i < upload.files.length; i++) {
+          const f = upload.files[i];
+          // Normalize via canvas (handles EXIF rotation, flattens transparent
+          // PNGs onto white, re-encodes as JPG). Replaces sharp on the client.
+          const jpgBytes = await normalizeImageToJpegBytes(f.file, 0.85);
+          const img = await doc.embedJpg(jpgBytes);
+          const imgW = img.width;
+          const imgH = img.height;
 
-      const res = await fetch("/api/jpg-to-pdf", {
-        method: "POST",
-        body: fd,
+          let pageW: number;
+          let pageH: number;
+          if (pageSize === "a4") {
+            pageW = 595.28;
+            pageH = 841.89;
+          } else if (pageSize === "letter") {
+            pageW = 612;
+            pageH = 792;
+          } else {
+            pageW = imgW;
+            pageH = imgH;
+          }
+
+          if (orientation === "portrait" && pageW > pageH) {
+            [pageW, pageH] = [pageH, pageW];
+          } else if (orientation === "landscape" && pageH > pageW) {
+            [pageW, pageH] = [pageH, pageW];
+          }
+
+          const page = doc.addPage([pageW, pageH]);
+          const availW = pageW - marginNum * 2;
+          const availH = pageH - marginNum * 2;
+          const scale = Math.min(availW / imgW, availH / imgH, 1);
+          const drawW = imgW * scale;
+          const drawH = imgH * scale;
+          const x = (pageW - drawW) / 2;
+          const y = (pageH - drawH) / 2;
+          page.drawImage(img, { x, y, width: drawW, height: drawH });
+
+          setProgress(10 + Math.round(((i + 1) / upload.files.length) * 80));
+        }
+
+        const bytes = await doc.save();
+        setProgress(95);
+        return bytes;
       });
 
-      clearInterval(timer);
       setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Conversion failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
+      const blob = new Blob([out as BlobPart], { type: "application/pdf" });
       const fileName =
         upload.files.length === 1
           ? `${upload.files[0].name.replace(/\.[^.]+$/, "")}.pdf`
@@ -171,7 +207,7 @@ export function JpgToPdf() {
               title="Drop your images here or click to browse"
               subtitle={`JPG / PNG / WEBP / GIF — up to ${MAX_FILES} images, ${formatBytes(
                 MAX_FILE_BYTES,
-              )} each`}
+              )} each · processed entirely in your browser`}
             />
           )}
 
@@ -334,7 +370,9 @@ export function JpgToPdf() {
             Each image is auto-rotated based on EXIF metadata (so portrait
             photos appear correctly), flattened onto a white background (so
             transparent PNGs don&apos;t break), and re-encoded as JPG at 85%
-            quality to keep the final PDF size reasonable.
+            quality to keep the final PDF size reasonable. All of this happens
+            entirely in your browser using the Canvas API — no image data is
+            ever uploaded to a server.
           </p>
           <p>
             Images are added to the PDF in the order you upload them. To control

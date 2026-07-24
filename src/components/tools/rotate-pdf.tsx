@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { PDFDocument, degrees } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -30,8 +31,9 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import { MAX_CLIENT_BYTES, MAX_PAGES, fileToBytes, yieldToMain } from "./_pdf-client";
 
-const MAX_BYTES = 25 * 1024 * 1024;
+const MAX_BYTES = MAX_CLIENT_BYTES;
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -75,32 +77,28 @@ export function RotatePdf() {
     setResult(null);
 
     try {
-      const fd = new FormData();
-      fd.append("file", upload.files[0].file);
-      fd.append("angle", angle);
-
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
-
-      const res = await fetch("/api/rotate-pdf", {
-        method: "POST",
-        body: fd,
+      // Yield to the main thread so React can paint the "processing…" spinner
+      // before pdf-lib starts doing sync work on the main thread.
+      const out = await yieldToMain(async () => {
+        const src = await fileToBytes(upload.files[0].file);
+        const doc = await PDFDocument.load(src, { ignoreEncryption: true });
+        if (doc.getPageCount() > MAX_PAGES) {
+          throw new Error(`Too many pages. Max ${MAX_PAGES}.`);
+        }
+        const angleNum = parseInt(angle, 10);
+        for (const page of doc.getPages()) {
+          // Compose with any existing rotation on the page — a page already
+          // at 90° rotated by 90° more should end up at 180°.
+          const current = page.getRotation().angle;
+          page.setRotation(degrees((current + angleNum) % 360));
+        }
+        const bytes = await doc.save();
+        setProgress(80);
+        return bytes;
       });
 
-      clearInterval(timer);
       setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Rotation failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
+      const blob = new Blob([out as BlobPart], { type: "application/pdf" });
       const baseName = upload.files[0].name.replace(/\.pdf$/i, "");
       setResult({
         blob,
@@ -142,7 +140,7 @@ export function RotatePdf() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle="PDF up to 50 MB, 200 pages max"
+              subtitle="PDF up to 50 MB, 200 pages max — processed entirely in your browser"
             />
           )}
 

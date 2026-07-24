@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -33,8 +34,15 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import {
+  MAX_CLIENT_BYTES,
+  MAX_PAGES,
+  hexToRgb,
+  fileToBytes,
+  yieldToMain,
+} from "./_pdf-client";
 
-const MAX_BYTES = 25 * 1024 * 1024;
+const MAX_BYTES = MAX_CLIENT_BYTES;
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -94,43 +102,83 @@ export function PdfNumber() {
 
   const handleConvert = useCallback(async () => {
     if (upload.files.length === 0) return;
+    const fontSizeNum = parseFloat(fontSize);
+    const startAtNum = parseInt(startAt, 10);
+    const marginNum = parseFloat(margin);
+    if (!Number.isFinite(fontSizeNum) || fontSizeNum < 6 || fontSizeNum > 72) {
+      setError("Font size must be between 6 and 72.");
+      setStatus("error");
+      return;
+    }
+    if (!Number.isFinite(startAtNum) || startAtNum < 0 || startAtNum > 9999) {
+      setError("Start page must be between 0 and 9999.");
+      setStatus("error");
+      return;
+    }
+    if (!Number.isFinite(marginNum) || marginNum < 0 || marginNum > 200) {
+      setError("Margin must be a number between 0 and 200 (points).");
+      setStatus("error");
+      return;
+    }
+    if (!format.includes("{n")) {
+      setError("Format string must contain '{n}', '{n+total}', or similar.");
+      setStatus("error");
+      return;
+    }
     setStatus("processing");
     setProgress(10);
     setError(null);
     setResult(null);
 
     try {
-      const fd = new FormData();
-      fd.append("file", upload.files[0].file);
-      fd.append("position", position);
-      fd.append("format", format);
-      fd.append("fontSize", fontSize);
-      fd.append("color", color);
-      fd.append("startAt", startAt);
-      fd.append("margin", margin);
-
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
-
-      const res = await fetch("/api/pdf-number", {
-        method: "POST",
-        body: fd,
+      const out = await yieldToMain(async () => {
+        const src = await fileToBytes(upload.files[0].file);
+        const doc = await PDFDocument.load(src, { ignoreEncryption: true });
+        if (doc.getPageCount() > MAX_PAGES) {
+          throw new Error(`Too many pages. Max ${MAX_PAGES}.`);
+        }
+        const font = await doc.embedFont(StandardFonts.Helvetica);
+        const c = hexToRgb(color, { r: 0.2, g: 0.2, b: 0.2 });
+        const pages = doc.getPages();
+        const total = pages.length;
+        pages.forEach((page, idx) => {
+          const { width, height } = page.getSize();
+          const n = startAtNum + idx;
+          const label = format
+            .replace(/\{n\}/g, String(n))
+            .replace(/\{total\}/g, String(total))
+            .replace(/\{n\/total\}/g, `${n}/${total}`);
+          const textWidth = font.widthOfTextAtSize(label, fontSizeNum);
+          const textHeight = font.heightAtSize(fontSizeNum);
+          let x: number;
+          let y: number;
+          if (position.includes("left")) {
+            x = marginNum;
+          } else if (position.includes("right")) {
+            x = width - textWidth - marginNum;
+          } else {
+            x = (width - textWidth) / 2;
+          }
+          if (position.startsWith("top")) {
+            y = height - marginNum - textHeight;
+          } else {
+            y = marginNum;
+          }
+          page.drawText(label, {
+            x,
+            y,
+            size: fontSizeNum,
+            font,
+            color: rgb(c.r, c.g, c.b),
+          });
+        });
+        const bytes = await doc.save();
+        setProgress(90);
+        return bytes;
       });
 
-      clearInterval(timer);
       setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Numbering failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
+      const blob = new Blob([out as BlobPart], { type: "application/pdf" });
       const baseName = upload.files[0].name.replace(/\.pdf$/i, "");
       setResult({
         blob,
@@ -185,7 +233,7 @@ export function PdfNumber() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle="PDF up to 50 MB, 200 pages max"
+              subtitle="PDF up to 50 MB, 200 pages max — processed entirely in your browser"
             />
           )}
 

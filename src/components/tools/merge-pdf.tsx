@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { PDFDocument } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -27,6 +28,7 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import { fileToBytes, yieldToMain } from "./_pdf-client";
 
 const MAX_FILES = 20;
 const MAX_FILE_BYTES = 50 * 1024 * 1024;
@@ -95,31 +97,31 @@ export function MergePdf() {
     setResult(null);
 
     try {
-      const fd = new FormData();
-      for (const f of upload.files) fd.append("files", f.file);
+      const out = await yieldToMain(async () => {
+        const merged = await PDFDocument.create();
+        merged.setProducer("ToolVerse Merge PDF");
+        merged.setCreator("ToolVerse Merge PDF");
 
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
+        // Files are processed sequentially rather than in parallel — pdf-lib's
+        // copyPages holds the source doc in memory, so parallelizing N files
+        // would multiply peak heap usage by N. Sequential keeps it at ~2x the
+        // largest single file.
+        for (let i = 0; i < upload.files.length; i++) {
+          const f = upload.files[i];
+          const src = await fileToBytes(f.file);
+          const doc = await PDFDocument.load(src, { ignoreEncryption: true });
+          const pages = await merged.copyPages(doc, doc.getPageIndices());
+          for (const p of pages) merged.addPage(p);
+          setProgress(10 + Math.round(((i + 1) / upload.files.length) * 70));
+        }
 
-      const res = await fetch("/api/merge-pdf", {
-        method: "POST",
-        body: fd,
+        const bytes = await merged.save();
+        setProgress(95);
+        return bytes;
       });
 
-      clearInterval(timer);
       setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Merge failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
+      const blob = new Blob([out as BlobPart], { type: "application/pdf" });
       setResult({
         blob,
         fileName: "merged.pdf",
@@ -163,7 +165,7 @@ export function MergePdf() {
               title="Drop your PDFs here or click to browse"
               subtitle={`2 to ${MAX_FILES} PDFs — ${formatBytes(
                 MAX_FILE_BYTES,
-              )} each, ${formatBytes(MAX_TOTAL_BYTES)} total`}
+              )} each, ${formatBytes(MAX_TOTAL_BYTES)} total · processed entirely in your browser`}
             />
           )}
 
@@ -303,10 +305,11 @@ export function MergePdf() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground space-y-2">
           <p>
-            Each PDF is parsed server-side using pdf-lib, and the pages are
+            Each PDF is parsed in your browser using pdf-lib, and the pages are
             appended to a new output PDF in the order you provide them. All
             text, images, fonts, and links from the original PDFs are preserved
-            exactly — no watermarks, no re-encoding, no quality loss.
+            exactly — no watermarks, no re-encoding, no quality loss. Nothing
+            is uploaded to any server.
           </p>
           <p>
             Use the up/down arrows next to each file to reorder before merging.
