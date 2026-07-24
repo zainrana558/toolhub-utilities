@@ -26,7 +26,7 @@ import {
   type ConvertResult,
 } from "./_pdf-helpers";
 
-const MAX_BYTES = 15 * 1024 * 1024;
+const MAX_BYTES = 50 * 1024 * 1024;
 
 function validateDocx(file: File): string | null {
   const isDocx =

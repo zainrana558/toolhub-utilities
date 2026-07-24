@@ -7,17 +7,17 @@ import { NextResponse } from "next/server";
  * Returns a ZIP archive when multiple pages, or a single JPG when one page.
  *
  * Limits:
- *   - Max input size: 25 MB
+ *   - Max input size: 50 MB
  *   - Max pages: 50 (to bound render time)
  *   - In-memory rate limit: 15 requests / 10 min / IP
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
-const MAX_INPUT_BYTES = 25 * 1024 * 1024;
-const MAX_PAGES = 50;
+const MAX_INPUT_BYTES = 50 * 1024 * 1024;
+const MAX_PAGES = 100;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 15;
 

@@ -29,8 +29,8 @@ import {
 } from "./_pdf-helpers";
 
 const MAX_FILES = 20;
-const MAX_FILE_BYTES = 25 * 1024 * 1024;
-const MAX_TOTAL_BYTES = 100 * 1024 * 1024;
+const MAX_FILE_BYTES = 50 * 1024 * 1024;
+const MAX_TOTAL_BYTES = 250 * 1024 * 1024;
 
 function validatePdf(file: File): string | null {
   const isPdf =

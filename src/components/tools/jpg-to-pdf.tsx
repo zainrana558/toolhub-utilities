@@ -36,8 +36,8 @@ import {
 } from "./_pdf-helpers";
 
 const MAX_FILES = 30;
-const MAX_FILE_BYTES = 15 * 1024 * 1024;
-const MAX_TOTAL_BYTES = 100 * 1024 * 1024;
+const MAX_FILE_BYTES = 50 * 1024 * 1024;
+const MAX_TOTAL_BYTES = 250 * 1024 * 1024;
 
 function validateImage(file: File): string | null {
   const mt = file.type.toLowerCase();

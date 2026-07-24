@@ -16,15 +16,15 @@ import mammoth from "mammoth";
  * using pdf-lib. Headings get larger fonts; lists get bullet prefixes.
  *
  * Limits:
- *   - Max input size: 15 MB
+ *   - Max input size: 50 MB
  *   - In-memory rate limit: 15 requests / 10 min / IP
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
-const MAX_INPUT_BYTES = 15 * 1024 * 1024;
+const MAX_INPUT_BYTES = 50 * 1024 * 1024;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 15;
 

@@ -7,7 +7,7 @@ import { PDFDocument, StandardFonts, rgb, degrees } from "pdf-lib";
  * Adds a text watermark (diagonal, semi-transparent) across every page of the PDF.
  *
  * Limits:
- *   - Max input size: 25 MB
+ *   - Max input size: 50 MB
  *   - Max pages: 200
  *   - Watermark text length: 200 chars
  *   - In-memory rate limit: 20 requests / 10 min / IP
@@ -15,9 +15,9 @@ import { PDFDocument, StandardFonts, rgb, degrees } from "pdf-lib";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
-const MAX_INPUT_BYTES = 25 * 1024 * 1024;
+const MAX_INPUT_BYTES = 50 * 1024 * 1024;
 const MAX_PAGES = 200;
 const MAX_TEXT_LEN = 200;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;

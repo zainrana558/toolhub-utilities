@@ -149,7 +149,7 @@ export function PdfToJpg() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle="PDF up to 25 MB, 50 pages max"
+              subtitle="PDF up to 50 MB, 100 pages max"
             />
           )}
 

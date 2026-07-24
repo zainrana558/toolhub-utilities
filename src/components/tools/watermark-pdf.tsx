@@ -161,7 +161,7 @@ export function WatermarkPdf() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle="PDF up to 25 MB, 200 pages max"
+              subtitle="PDF up to 50 MB, 200 pages max"
             />
           )}
 

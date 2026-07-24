@@ -144,7 +144,7 @@ export function FileConverter() {
       return;
     }
     if (f.size > 15 * 1024 * 1024) {
-      setError("File is larger than 15 MB. Please choose a smaller file.");
+      setError("File is larger than 50 MB. Please choose a smaller file.");
       setStatus("error");
       setFile(null);
       setInputFmt(null);
@@ -313,7 +313,7 @@ export function FileConverter() {
               <div>
                 <p className="font-medium">Drop your file here or click to browse</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Supports .pdf, .docx, .md, .txt, .html (max 15 MB)
+                  Supports .pdf, .docx, .md, .txt, .html (max 50 MB)
                 </p>
               </div>
               <input
@@ -510,7 +510,7 @@ export function FileConverter() {
           </div>
           <p className="pt-1">
             Files are processed on the server and immediately discarded after
-            conversion &mdash; nothing is stored. Maximum file size: 15 MB.
+            conversion &mdash; nothing is stored. Maximum file size: 50 MB.
           </p>
         </CardContent>
       </Card>

@@ -11,18 +11,18 @@ import sharp from "sharp";
  *
  * Limits:
  *   - Max files: 30
- *   - Max per-file size: 15 MB
- *   - Max total size: 100 MB
+ *   - Max per-file size: 50 MB
+ *   - Max total size: 250 MB
  *   - In-memory rate limit: 15 requests / 10 min / IP
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const MAX_FILES = 30;
-const MAX_FILE_BYTES = 15 * 1024 * 1024;
-const MAX_TOTAL_BYTES = 100 * 1024 * 1024;
+const MAX_FILE_BYTES = 50 * 1024 * 1024;
+const MAX_TOTAL_BYTES = 250 * 1024 * 1024;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 15;
 

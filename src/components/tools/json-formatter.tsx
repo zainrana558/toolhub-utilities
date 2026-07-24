@@ -13,12 +13,12 @@ import { Copy, Check, Upload } from "lucide-react";
  *
  * `FileReader.readAsText` loads the entire file into a JS string, then we
  * store it in state and call `JSON.parse` which builds a second in-memory
- * object graph. Past ~5 MB of text the parse step alone blocks the main
- * thread for seconds on mid-range phones. 5 MB is far beyond any legitimate
+ * object graph. Past ~10 MB of text the parse step alone blocks the main
+ * thread for seconds on mid-range phones. 10 MB is far beyond any legitimate
  * hand-edited JSON document and rejects the "format my 80 MB NDJSON log"
  * footgun.
  */
-const MAX_JSON_BYTES = 5 * 1024 * 1024;
+const MAX_JSON_BYTES = 10 * 1024 * 1024;
 
 export function JSONFormatter() {
   const [input, setInput] = useState("");
@@ -75,7 +75,7 @@ export function JSONFormatter() {
     if (file.size > MAX_JSON_BYTES) {
       setError(
         `File is too large (${(file.size / (1024 * 1024)).toFixed(1)} MB). ` +
-          `The browser-based JSON formatter is capped at 5 MB — past that point ` +
+          `The browser-based JSON formatter is capped at 10 MB — past that point ` +
           `JSON.parse blocks the UI for seconds. For larger files, use a ` +
           `streaming JSON parser like jq or json-stream.`
       );
