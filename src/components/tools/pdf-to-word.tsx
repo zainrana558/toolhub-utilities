@@ -25,11 +25,20 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import {
+  MAX_CLIENT_BYTES,
+  MAX_PAGES,
+  fileToBytes,
+  yieldToMain,
+} from "./_pdf-client";
+import { extractPdfTextClient } from "./_pdfjs-client";
 
-// Vercel caps request bodies at 4.5 MB. PDF-to-Word stays server-side
-// because the `docx` library is heavy (~1 MB) and we don't want to ship
-// it in the client bundle.
-const MAX_BYTES = 4_500_000; // 4.5 MB — Vercel's actual edge limit
+// Client-side PDF → DOCX. pdfjs-dist extracts text (same path as pdf-to-text),
+// then the `docx` npm package builds a .docx with Packer.toBlob() — both run
+// natively in the browser, so we bypass Vercel's 4.5 MB upload cap entirely.
+// Bundle cost: `docx` adds ~1 MB to this tool's lazy chunk, but it's only
+// downloaded when the user actually opens pdf-to-word.
+const MAX_BYTES = MAX_CLIENT_BYTES;
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -39,6 +48,49 @@ function validatePdf(file: File): string | null {
   if (file.size > MAX_BYTES)
     return `File is too large. Max ${formatBytes(MAX_BYTES)}.`;
   return null;
+}
+
+async function buildDocxFromText(text: string, title: string): Promise<Blob> {
+  // Dynamic import keeps the heavy `docx` package out of the initial chunk
+  // and out of every other tool's chunk. The browser caches it after first
+  // load — subsequent visits hit the browser cache, not the network.
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = await import(
+    "docx"
+  );
+
+  const paragraphs: InstanceType<typeof Paragraph>[] = [
+    new Paragraph({ text: title, heading: HeadingLevel.HEADING_1 }),
+  ];
+
+  // Mirror the server route's paragraph reconstruction: split on blank-line
+  // gaps (paragraph boundaries), then join single newlines as soft breaks
+  // inside the same paragraph.
+  const blocks = text.split(/\n{2,}/);
+  for (const block of blocks) {
+    const lines = block.split(/\n/).filter((l) => l.length > 0);
+    if (lines.length === 0) continue;
+    if (lines.length === 1) {
+      paragraphs.push(new Paragraph({ children: [new TextRun(lines[0])] }));
+    } else {
+      paragraphs.push(
+        new Paragraph({
+          children: lines.flatMap((l, i) =>
+            i === 0
+              ? [new TextRun(l)]
+              : [new TextRun({ text: "", break: 1 }), new TextRun(l)],
+          ),
+        }),
+      );
+    }
+  }
+
+  const doc = new Document({
+    creator: "ToolHub PDF to Word",
+    title,
+    sections: [{ children: paragraphs }],
+  });
+
+  return Packer.toBlob(doc);
 }
 
 export function PdfToWord() {
@@ -67,36 +119,37 @@ export function PdfToWord() {
   const handleConvert = useCallback(async () => {
     if (upload.files.length === 0) return;
     setStatus("processing");
-    setProgress(10);
+    setProgress(5);
     setError(null);
     setResult(null);
 
     try {
-      const fd = new FormData();
-      fd.append("file", upload.files[0].file);
+      const blob = await yieldToMain(async () => {
+        const src = await fileToBytes(upload.files[0].file);
 
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
+        // Stage 1: extract text with pdfjs (10 → 80% of progress bar)
+        const text = await extractPdfTextClient(src, {
+          maxPages: MAX_PAGES,
+          onProgress: (done, total) => {
+            const pct = total > 0 ? 10 + Math.round((done / total) * 70) : 10;
+            setProgress(pct);
+          },
+        });
 
-      const res = await fetch("/api/pdf-to-word", {
-        method: "POST",
-        body: fd,
+        if (!text.trim()) {
+          throw new Error(
+            "No extractable text found. The PDF may be a scanned image (requires OCR) or may use embedded fonts that prevent text extraction.",
+          );
+        }
+
+        // Stage 2: build .docx (80 → 100%)
+        setProgress(85);
+        const baseName = upload.files[0].name.replace(/\.pdf$/i, "");
+        const docxBlob = await buildDocxFromText(text, baseName);
+        setProgress(100);
+        return docxBlob;
       });
 
-      clearInterval(timer);
-      setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Conversion failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
       const baseName = upload.files[0].name.replace(/\.pdf$/i, "");
       setResult({
         blob,
@@ -139,7 +192,7 @@ export function PdfToWord() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle={`PDF up to ${formatBytes(MAX_BYTES)} (Vercel server-side limit). For larger PDFs, use pdf-to-text and paste into Word.`}
+              subtitle={`PDF up to ${formatBytes(MAX_BYTES)}, 200 pages max — converted entirely in your browser`}
             />
           )}
 
@@ -171,7 +224,7 @@ export function PdfToWord() {
                     <div className="flex items-center justify-between text-sm">
                       <span className="flex items-center gap-2 text-muted-foreground">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Extracting text…
+                        Extracting text &amp; building .docx…
                       </span>
                       <span className="font-medium">
                         {Math.round(progress)}%

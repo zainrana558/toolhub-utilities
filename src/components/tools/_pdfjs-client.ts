@@ -3,9 +3,8 @@
 /**
  * Browser-side pdfjs-dist setup.
  *
- * Used by pdf-to-text (and could be used by future client-side pdfjs tools).
- * The matching server-side route lives at /api/pdf-to-text but only as a
- * fallback — normal operation is 100% in the browser.
+ * Used by pdf-to-text (text extraction) and pdf-to-jpg (page rendering).
+ * All PDF processing happens in the browser — no upload, no Vercel 4.5 MB cap.
  *
  * Worker setup: pdfjs needs the worker source as a separate script. We copy
  * the prebuilt worker bundle from node_modules/pdfjs-dist/build/ into
@@ -101,6 +100,114 @@ export async function extractPdfTextClient(
     }
 
     return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  } finally {
+    if (doc) {
+      try {
+        await doc.destroy();
+      } catch {
+        /* already tearing down */
+      }
+    }
+  }
+}
+
+/**
+ * Render each page of a PDF to a JPEG in the browser.
+ *
+ * Mirrors the old server-side /api/pdf-to-jpg route: pdfjs renders each page
+ * onto a <canvas> at the requested scale, then `canvas.toBlob("image/jpeg")`
+ * produces the JPEG bytes. Returns an array of {pageNumber, bytes} for the
+ * caller to either bundle into a ZIP (multi-page) or return as a single JPG.
+ *
+ * Browser equivalent of the Node path that used `node-canvas`. Runs 100%
+ * client-side, so file size is bounded only by the user's tab RAM (we cap at
+ * MAX_CLIENT_BYTES = 50 MB in _pdf-client.ts).
+ *
+ * The canvas is filled with white before rendering so transparent PDF
+ * backgrounds (rare but possible) don't end up black in the JPEG — JPEG has
+ * no alpha channel.
+ *
+ * Memory: each rendered page allocates a canvas of (viewport.width *
+ * viewport.height * 4) bytes. At scale=1.5 an A4 page is ~890×1260 = ~4.5 MB
+ * of canvas memory per page. We free the canvas immediately after toBlob by
+ * setting width=0 (Safari-friendly teardown).
+ */
+export async function renderPdfPagesToJpegs(
+  bytes: Uint8Array,
+  opts: {
+    scale?: number;
+    quality?: number;
+    maxPages?: number;
+    onProgress?: (done: number, total: number) => void;
+  } = {},
+): Promise<{ pageNumber: number; bytes: Uint8Array }[]> {
+  ensureWorker();
+
+  const scale = opts.scale ?? 1.5;
+  const quality = opts.quality ?? 0.85;
+  const maxPages = opts.maxPages ?? 200;
+  const onProgress = opts.onProgress;
+
+  // Copy the input buffer — pdfjs may transfer it to the worker (detaching it)
+  // and we don't want to mutate the caller's Uint8Array.
+  const data = bytes.slice();
+
+  const loadingTask = pdfjs.getDocument({
+    data,
+    isEvalSupported: false,
+    useSystemFonts: true,
+    disableFontFace: false,
+  });
+
+  let doc: PDFDocumentProxy | null = null;
+  try {
+    doc = await loadingTask.promise;
+    const total = Math.min(doc.numPages, maxPages);
+    if (onProgress) onProgress(0, total);
+
+    const out: { pageNumber: number; bytes: Uint8Array }[] = [];
+
+    for (let i = 1; i <= total; i++) {
+      const page = await doc.getPage(i);
+      try {
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Could not get 2D canvas context for PDF rendering.");
+
+        // Flatten transparency onto white (matches the old node-canvas path).
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        await page.render({
+          canvasContext: ctx,
+          viewport,
+          // `intent: "display"` is the default; explicit for clarity.
+          intent: "display",
+        } as Parameters<typeof page.render>[0]).promise;
+
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, "image/jpeg", quality),
+        );
+        if (!blob) throw new Error(`Failed to encode page ${i} as JPEG.`);
+
+        const buf = await blob.arrayBuffer();
+        out.push({ pageNumber: i, bytes: new Uint8Array(buf) });
+
+        // Tear down the canvas — setting width=0 frees the backing store
+        // immediately in all major browsers. Without this, a 50-page render
+        // holds 50 canvases (~225 MB) in memory until GC sweeps them.
+        canvas.width = 0;
+        canvas.height = 0;
+      } finally {
+        page.cleanup();
+      }
+      if (onProgress) onProgress(i, total);
+    }
+
+    return out;
   } finally {
     if (doc) {
       try {

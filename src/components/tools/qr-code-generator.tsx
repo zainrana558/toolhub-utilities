@@ -76,7 +76,6 @@ export function QRCodeGenerator() {
   // Generate immediately on first mount
   useEffect(() => {
     generateQR(text, size, fgColor, bgColor);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDownload = () => {

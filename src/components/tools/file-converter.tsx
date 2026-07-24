@@ -28,13 +28,21 @@ import {
   X,
   RefreshCw,
 } from "lucide-react";
+import {
+  MAX_CLIENT_BYTES,
+  yieldToMain,
+} from "./_pdf-client";
+import {
+  convertClient,
+  detectInputFormat,
+  VALID_OUTPUTS,
+  type InputFormat,
+  type OutputFormat,
+} from "./_convert-client";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-type InputFormat = "pdf" | "docx" | "md" | "txt" | "html";
-type OutputFormat = "txt" | "html" | "markdown" | "pdf" | "docx";
 
 type Status = "idle" | "loaded" | "converting" | "done" | "error";
 
@@ -45,18 +53,8 @@ interface ResultState {
 }
 
 // ---------------------------------------------------------------------------
-// Static conversion matrix — which output formats are valid per input format.
-// PDF is a "render" target, not a parseable source for rich DOCX output, so
-// PDF → DOCX produces a DOCX containing the extracted plain text.
+// Static UI config — input/output labels and accept strings
 // ---------------------------------------------------------------------------
-
-const VALID_OUTPUTS: Record<InputFormat, OutputFormat[]> = {
-  pdf: ["txt", "html", "markdown"],
-  docx: ["txt", "html", "markdown", "pdf"],
-  md: ["html", "pdf", "txt", "docx"],
-  txt: ["html", "pdf", "markdown", "docx"],
-  html: ["txt", "pdf", "markdown", "docx"],
-};
 
 const INPUT_ACCEPT: Record<InputFormat, string> = {
   pdf: ".pdf,application/pdf",
@@ -82,23 +80,7 @@ const OUTPUT_LABEL: Record<OutputFormat, string> = {
   docx: "Word (.docx)",
 };
 
-// Map file extension to InputFormat
-function detectInputFormat(file: File): InputFormat | null {
-  const ext = file.name.split(".").pop()?.toLowerCase() || "";
-  if (ext === "pdf") return "pdf";
-  if (ext === "docx") return "docx";
-  if (ext === "md" || ext === "markdown") return "md";
-  if (ext === "txt") return "txt";
-  if (ext === "html" || ext === "htm") return "html";
-  // Fall back to MIME
-  const mt = file.type.toLowerCase();
-  if (mt === "application/pdf") return "pdf";
-  if (mt.includes("wordprocessing")) return "docx";
-  if (mt === "text/markdown") return "md";
-  if (mt === "text/plain") return "txt";
-  if (mt === "text/html") return "html";
-  return null;
-}
+const MAX_BYTES = MAX_CLIENT_BYTES;
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -134,7 +116,7 @@ export function FileConverter() {
   // -- File handling --------------------------------------------------------
 
   const acceptFile = useCallback((f: File) => {
-    const detected = detectInputFormat(f);
+    const detected = detectInputFormat(f.name, f.type);
     if (!detected) {
       setError(`Unsupported file type: ${f.name}. Supported: PDF, DOCX, MD, TXT, HTML.`);
       setStatus("error");
@@ -143,8 +125,8 @@ export function FileConverter() {
       setTarget(null);
       return;
     }
-    if (f.size > 15 * 1024 * 1024) {
-      setError("File is larger than 50 MB. Please choose a smaller file.");
+    if (f.size > MAX_BYTES) {
+      setError(`File is larger than ${formatBytes(MAX_BYTES)}. Please choose a smaller file.`);
       setStatus("error");
       setFile(null);
       setInputFmt(null);
@@ -153,7 +135,6 @@ export function FileConverter() {
     }
     setFile(f);
     setInputFmt(detected);
-    // Reset target if it's no longer valid for the new input
     setTarget((prev) => (prev && VALID_OUTPUTS[detected].includes(prev) ? prev : null));
     setResult(null);
     setError(null);
@@ -193,48 +174,29 @@ export function FileConverter() {
   // -- Convert --------------------------------------------------------------
 
   const handleConvert = useCallback(async () => {
-    if (!file || !target) return;
+    if (!file || !target || !inputFmt) return;
     setStatus("converting");
     setProgress(10);
     setError(null);
     setResult(null);
 
-    // Declare timer outside the try block so the catch path can clear it —
-    // previously a network/CORS throw skipped `clearInterval`, leaking the
-    // interval and forcing setProgress on a possibly-reset component forever.
+    // Fake progress while the conversion runs client-side, so the UI feels
+    // alive during the heavy lifting (mammoth parse, pdf-lib render, etc).
     let timer: ReturnType<typeof setInterval> | null = null;
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("target", target);
-
-      // Fake progress while the request is in-flight, so the UI feels alive.
       timer = setInterval(() => {
         setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
       }, 400);
 
-      const res = await fetch("/api/convert", {
-        method: "POST",
-        body: fd,
+      const { blob, ext } = await yieldToMain(async () => {
+        return convertClient(file, inputFmt, target);
       });
 
       if (timer) { clearInterval(timer); timer = null; }
       setProgress(100);
 
-      if (!res.ok) {
-        let msg = `Conversion failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {
-          // ignore parse error
-        }
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
       const baseName = stripExt(file.name);
-      const downloadName = `${baseName}-converted.${target === "markdown" ? "md" : target}`;
+      const downloadName = `${baseName}-converted.${ext}`;
       setResult({ blob, fileName: downloadName, size: blob.size });
       setStatus("done");
     } catch (err) {
@@ -244,7 +206,7 @@ export function FileConverter() {
       setError(msg);
       setStatus("error");
     }
-  }, [file, target]);
+  }, [file, target, inputFmt]);
 
   // -- Download -------------------------------------------------------------
 
@@ -313,7 +275,7 @@ export function FileConverter() {
               <div>
                 <p className="font-medium">Drop your file here or click to browse</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Supports .pdf, .docx, .md, .txt, .html (max 50 MB)
+                  Supports .pdf, .docx, .md, .txt, .html (max {formatBytes(MAX_BYTES)})
                 </p>
               </div>
               <input
@@ -509,11 +471,8 @@ export function FileConverter() {
             </div>
           </div>
           <p className="pt-1">
-            Files are processed on the server and immediately discarded after
-            conversion &mdash; nothing is stored. Maximum file size: 4.5 MB
-            (Vercel edge limit). For larger PDFs, use the dedicated client-side
-            tools (rotate, merge, split, watermark, pdf-number, jpg-to-pdf,
-            pdf-to-text, pdf-compressor) which run entirely in your browser.
+            All conversion runs entirely in your browser — your files never
+            leave your device. Maximum file size: {formatBytes(MAX_BYTES)}.
           </p>
         </CardContent>
       </Card>

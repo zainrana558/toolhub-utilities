@@ -72,13 +72,11 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
-      // Cache JS/CSS with content hash
-      {
-        source: "/_next/static/(.*)",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
+      // NOTE: /_next/static/* is intentionally NOT given a custom Cache-Control
+      // header. Next.js already serves those files with `immutable, max-age=31536000`
+      // because their filenames are content-hashed; setting our own header triggers
+      // a build-time warning ("Custom Cache-Control headers detected…") and can
+      // break dev-mode HMR. See https://nextjs.org/docs/app/api-reference/next-config-js/headers.
       // Cache static info pages at CDN edge
       {
         source: "/(about|privacy|terms)",
