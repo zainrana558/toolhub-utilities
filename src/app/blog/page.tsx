@@ -9,10 +9,14 @@ import { SITE_URL } from "@/lib/site-config";
 export const metadata: Metadata = {
   title: "Blog - ToolVerse Guides, Tips & Tutorials",
   description:
-    "In-depth guides on password security, JSON formatting, image compression, color formats, Markdown, QR codes, loan interest, BMI, and more.",
+    "In-depth guides on PDF tools (merge, split, compress, convert), password security, JSON formatting, image compression, color formats, Markdown, QR codes, BMI, and more. 30+ free tutorials.",
   keywords: [
     "toolverse blog",
     "online tools guides",
+    "how to merge pdf",
+    "split pdf guide",
+    "compress pdf without losing quality",
+    "pdf to word conversion",
     "password security guide",
     "json formatting tips",
     "image compression tutorial",
@@ -21,6 +25,10 @@ export const metadata: Metadata = {
     "qr code guide",
     "loan calculator guide",
     "bmi calculator tutorial",
+    "url encoding guide",
+    "word counter tutorial",
+    "case converter guide",
+    "free online tools 2026",
     "free tools blog",
   ],
   robots: {
@@ -31,14 +39,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Blog - ToolVerse Guides, Tips & Tutorials",
     description:
-      "In-depth guides on password security, JSON formatting, image compression, color formats, Markdown, QR codes, loan interest, BMI, and more.",
+      "In-depth guides on PDF tools (merge, split, compress, convert), password security, JSON formatting, image compression, color formats, Markdown, QR codes, BMI, and more. 30+ free tutorials.",
     url: `${SITE_URL}/blog`,
     siteName: "ToolVerse",
   },
   twitter: {
     card: "summary_large_image",
     title: "Blog - ToolVerse Guides, Tips & Tutorials",
-    description: "In-depth guides on password security, JSON formatting, image compression, color formats, Markdown, QR codes, loan interest, BMI, and more.",
+    description: "In-depth guides on PDF tools, password security, JSON, image compression, Markdown, QR codes, BMI, and more. 30+ free tutorials.",
   },
   alternates: { canonical: "/blog" },
 };

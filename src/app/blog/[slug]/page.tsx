@@ -1,6 +1,8 @@
 import { blogPosts } from "@/lib/blog-data";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/site-config";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -56,16 +58,28 @@ export default async function BlogPostPage({
 
   if (!post) return notFound();
 
-  const faqEntities: { "@type": string; name: string; acceptedAnswer: { "@type": string; text: string } }[] = [];
-  // Extract Q&A pairs from content for FAQ schema
-  const h2Matches = post.content.matchAll(/<h2>([^<]+)<\/h2>\s*<p>([^<]+)<\/p>/g);
-  for (const match of h2Matches) {
-    faqEntities.push({
-      "@type": "Question",
-      name: match[1],
-      acceptedAnswer: { "@type": "Answer", text: match[2] },
-    });
-  }
+  const faqEntities = post.faq ?? [];
+
+  // Related posts — score every other post by shared tool links + shared
+  // category, then take the top 3. This is what populates the "Related
+  // guides" block at the bottom of each post. Internal linking between
+  // blog posts distributes PageRank through the blog cluster and helps
+  // Google understand topical relationships.
+  const related = blogPosts
+    .filter((p) => p.slug !== post.slug)
+    .map((p) => {
+      let score = 0;
+      for (const t of p.tools) if (post.tools.includes(t)) score += 3;
+      if (p.category === post.category) score += 1;
+      // Newer posts get a tiny tiebreaker boost so the related list stays
+      // fresh as the blog grows.
+      score += Math.max(0, 30 - Math.floor((Date.parse("2026-07-24") - Date.parse(p.date)) / 86400000)) * 0.01;
+      return { post: p, score };
+    })
+    .filter((r) => r.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((r) => r.post);
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -73,7 +87,11 @@ export default async function BlogPostPage({
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    dateModified: "2026-07-16",
+    // Only emit dateModified if the post was actually updated. Previously
+    // this was hardcoded to a single date across every post, which created
+    // impossible states (dateModified earlier than datePublished) that Google
+    // flags as inconsistent structured data.
+    ...(post.dateModified ? { dateModified: post.dateModified } : {}),
     author: {
       "@type": "Person",
       name: post.author,
@@ -103,7 +121,11 @@ export default async function BlogPostPage({
   const faqSchema = faqEntities.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqEntities,
+    mainEntity: faqEntities.map((q) => ({
+      "@type": "Question",
+      name: q.question,
+      acceptedAnswer: { "@type": "Answer", text: q.answer },
+    })),
   } : null;
 
   return (
@@ -175,6 +197,16 @@ export default async function BlogPostPage({
                     "text-diff-checker": "Text Diff Checker",
                     "pdf-compressor": "PDF Compressor",
                     "file-converter": "File Converter",
+                    "merge-pdf": "Merge PDF",
+                    "split-pdf": "Split PDF",
+                    "rotate-pdf": "Rotate PDF",
+                    "watermark-pdf": "Watermark PDF",
+                    "pdf-number": "PDF Page Number",
+                    "pdf-to-jpg": "PDF to JPG",
+                    "pdf-to-word": "PDF to Word",
+                    "word-to-pdf": "Word to PDF",
+                    "pdf-to-text": "PDF to Text",
+                    "jpg-to-pdf": "JPG to PDF",
                   };
                   return (
                     <a
@@ -189,6 +221,31 @@ export default async function BlogPostPage({
                 })}
               </div>
             </div>
+
+            {related.length > 0 && (
+              <div className="mt-12 pt-8 border-t">
+                <h2 className="text-xl font-semibold mb-4">Related guides</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {related.map((rp) => (
+                    <Link
+                      key={rp.slug}
+                      href={`/blog/${rp.slug}`}
+                      className="group block rounded-lg border p-4 hover:border-primary/50 hover:bg-muted/50 transition-colors"
+                    >
+                      <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                        {rp.category}
+                      </span>
+                      <h3 className="mt-2 font-medium text-sm leading-snug group-hover:text-primary transition-colors">
+                        {rp.title}
+                      </h3>
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground">
+                        Read more <ArrowRight className="h-3 w-3" />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </article>
         </main>
         <footer className="border-t mt-16">
