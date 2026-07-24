@@ -29,6 +29,25 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Force trailing slashes for cleaner URLs
   trailingSlash: false,
+  // Keep heavy native deps out of the bundled server runtime — they should
+  // be required from node_modules at runtime, not inlined into the standalone
+  // server bundle. Sharp and canvas are the main offenders here.
+  serverExternalPackages: ["sharp", "canvas"],
+  experimental: {
+    // Tree-shake per-icon imports from large barrel libraries so we only
+    // ship the icons/components actually used, not the whole index.
+    // lucide-react alone ships ~5,000 icons; without this it adds ~150 KB
+    // to every page that imports a single icon.
+    optimizePackageImports: [
+      "lucide-react",
+      "framer-motion",
+      "@radix-ui/react-icons",
+      "react-syntax-highlighter",
+      "recharts",
+      "date-fns",
+      "marked",
+    ],
+  },
   // Redirect www to non-www (handles at edge, but add as fallback)
   async redirects() {
     return [
@@ -67,12 +86,20 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" },
         ],
       },
-      // Tool pages: aggressive CDN caching with stale-while-revalidate
+      // Tool pages: aggressive CDN caching with stale-while-revalidate.
+      // Pattern includes ALL 32 tool slugs (text + math + dev + image + PDF).
       {
-        source: "/(word-counter|character-counter|password-generator|bmi-calculator|percentage-calculator|age-calculator|loan-calculator|unit-converter|case-converter|color-picker|json-formatter|image-compressor|qr-code-generator|base64-encoder|url-encoder|lorem-ipsum-generator|markdown-previewer|hash-generator|number-base-converter|text-diff-checker|pdf-compressor)",
+        source: "/(word-counter|character-counter|password-generator|bmi-calculator|percentage-calculator|age-calculator|loan-calculator|unit-converter|case-converter|color-picker|json-formatter|image-compressor|qr-code-generator|base64-encoder|url-encoder|lorem-ipsum-generator|markdown-previewer|hash-generator|number-base-converter|text-diff-checker|pdf-compressor|file-converter|pdf-to-jpg|jpg-to-pdf|merge-pdf|split-pdf|rotate-pdf|watermark-pdf|pdf-number|pdf-to-word|word-to-pdf|pdf-to-text)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" },
           { key: "Vary", value: "Accept-Encoding" },
+        ],
+      },
+      // OG images: CDN-cache for a day, stale-while-revalidate for a week
+      {
+        source: "/api/og",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800" },
         ],
       },
       // Hint for Brotli/compression on HTML

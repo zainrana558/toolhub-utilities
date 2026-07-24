@@ -46,14 +46,14 @@ export const metadata: Metadata = {
     title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
     description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
     url: SITE_URL,
-    images: [{ url: `${SITE_URL}/og-default.png`, width: 1200, height: 630, alt: "ToolVerse - 32 Free Online Tools" }],
+    images: [{ url: `${SITE_URL}/api/og`, width: 1200, height: 630, alt: "ToolVerse - 32 Free Online Tools" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ToolVerse - 32 Free Online Tools | No Sign-Up, 100% Private",
     description: "32 free online tools: word counter, password generator, image compressor, QR code generator, PDF tools, and more. No sign-up, no data collection.",
     site: "@toolverse",
-    images: [`${SITE_URL}/og-default.png`],
+    images: [`${SITE_URL}/api/og`],
   },
   alternates: {
     canonical: "/",

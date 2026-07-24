@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useRef, type DragEvent } from "react";
-import { PDFDocument } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -28,19 +27,13 @@ import {
   AlertCircle,
   X,
 } from "lucide-react";
+import { triggerDownload } from "./_pdf-helpers";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 type CompressionLevel = "low" | "medium" | "high";
-
-interface FileState {
-  file: File;
-  bytes: ArrayBuffer;
-  size: number;
-  name: string;
-}
 
 interface CompressionResult {
   originalSize: number;
@@ -52,6 +45,12 @@ interface CompressionResult {
 
 type Status = "idle" | "loaded" | "compressing" | "done" | "error";
 
+interface FileState {
+  file: File;
+  size: number;
+  name: string;
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -62,222 +61,16 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-// ---------------------------------------------------------------------------
-// JPEG re-encoding via Canvas
-// ---------------------------------------------------------------------------
+const MAX_BYTES = 25 * 1024 * 1024;
 
-function reencodeJpeg(
-  jpegBytes: Uint8Array,
-  quality: number
-): Promise<Uint8Array> {
-  return new Promise((resolve, reject) => {
-    const blob = new Blob([jpegBytes as BlobPart], { type: "image/jpeg" });
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-
-    const cleanup = () => URL.revokeObjectURL(url);
-
-    const timeout = setTimeout(() => {
-      cleanup();
-      reject(new Error("Image load timeout"));
-    }, 10_000);
-
-    img.onload = () => {
-      clearTimeout(timeout);
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          cleanup();
-          reject(new Error("Canvas 2D not available"));
-          return;
-        }
-        ctx.drawImage(img, 0, 0);
-        cleanup();
-
-        canvas.toBlob(
-          (result) => {
-            if (result) {
-              result
-                .arrayBuffer()
-                .then((buf) => resolve(new Uint8Array(buf)))
-                .catch(reject);
-            } else {
-              reject(new Error("Blob conversion failed"));
-            }
-          },
-          "image/jpeg",
-          quality
-        );
-      } catch (err) {
-        cleanup();
-        reject(err);
-      }
-    };
-
-    img.onerror = () => {
-      clearTimeout(timeout);
-      cleanup();
-      reject(new Error("Failed to decode JPEG"));
-    };
-
-    img.src = url;
-  });
-}
-
-// ---------------------------------------------------------------------------
-// Embedded JPEG compression (binary scan of PDF bytes)
-// ---------------------------------------------------------------------------
-
-interface Region {
-  start: number;
-  end: number; // exclusive
-}
-
-function findJpegRegions(data: Uint8Array): Region[] {
-  const regions: Region[] = [];
-  let i = 0;
-
-  while (i < data.length - 2) {
-    // JPEG SOI: FF D8 FF
-    if (
-      data[i] === 0xff &&
-      data[i + 1] === 0xd8 &&
-      data[i + 2] === 0xff
-    ) {
-      const start = i;
-      i += 3;
-      let lastEoi = -1;
-
-      // Scan forward for EOI markers (FF D9).
-      // In entropy-coded data, 0xFF followed by 0x00 is byte-stuffing, not a marker.
-      // A real marker has 0xFF followed by a non-zero, non-00 byte.
-      while (i < data.length - 1) {
-        if (data[i] === 0xff && data[i + 1] !== 0x00) {
-          if (data[i + 1] === 0xd9) {
-            lastEoi = i;
-            i += 2;
-            // If the next byte isn't 0xFF this is very likely the final EOI
-            if (i >= data.length || data[i] !== 0xff) break;
-          } else {
-            // Skip marker segment (skip the length bytes)
-            if (i + 3 < data.length) {
-              const segLen = (data[i + 2] << 8) | data[i + 3];
-              i += 2 + segLen;
-            } else {
-              i += 2;
-            }
-          }
-        } else {
-          i++;
-        }
-      }
-
-      if (lastEoi > start + 10) {
-        regions.push({ start, end: lastEoi + 2 });
-      }
-    } else {
-      i++;
-    }
-  }
-
-  // Only keep JPEGs >= 1 KB to avoid false positives
-  return regions.filter((r) => r.end - r.start >= 1024);
-}
-
-async function compressEmbeddedJpegs(
-  pdfBytes: Uint8Array,
-  quality: number
-): Promise<Uint8Array> {
-  const regions = findJpegRegions(pdfBytes);
-  if (regions.length === 0) return pdfBytes;
-
-  const parts: Uint8Array[] = [];
-  let prev = 0;
-
-  for (const { start, end } of regions) {
-    // Non-image data between regions
-    if (start > prev) parts.push(pdfBytes.slice(prev, start));
-
-    try {
-      const original = pdfBytes.slice(start, end);
-      const compressed = await reencodeJpeg(original, quality);
-      parts.push(compressed.length < original.length ? compressed : original);
-    } catch {
-      // If re-encoding fails, keep original bytes
-      parts.push(pdfBytes.slice(start, end));
-    }
-
-    prev = end;
-  }
-
-  if (prev < pdfBytes.length) parts.push(pdfBytes.slice(prev));
-
-  const total = parts.reduce((s, p) => s + p.length, 0);
-  const result = new Uint8Array(total);
-  let off = 0;
-  for (const p of parts) {
-    result.set(p, off);
-    off += p.length;
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// Core compression logic
-// ---------------------------------------------------------------------------
-
-async function compressPdf(
-  fileBytes: ArrayBuffer,
-  level: CompressionLevel,
-  onProgress: (pct: number) => void
-): Promise<CompressionResult> {
-  const original = new Uint8Array(fileBytes);
-  onProgress(10);
-
-  // Load with pdf-lib (ignoring encryption where possible)
-  const pdfDoc = await PDFDocument.load(original, {
-    ignoreEncryption: true,
-    updateMetadata: false,
-  });
-  onProgress(25);
-
-  // Medium / High: strip metadata
-  if (level === "medium" || level === "high") {
-    pdfDoc.setTitle("");
-    pdfDoc.setAuthor("");
-    pdfDoc.setSubject("");
-    pdfDoc.setKeywords([]);
-    pdfDoc.setProducer("PDF Compressor");
-    pdfDoc.setCreator("");
-  }
-  onProgress(40);
-
-  // pdf-lib save() already performs structural optimization
-  let optimized = await pdfDoc.save();
-  onProgress(60);
-
-  // High: additionally re-encode embedded JPEG images
-  if (level === "high") {
-    optimized = await compressEmbeddedJpegs(optimized, 0.45);
-    onProgress(90);
-  }
-
-  onProgress(100);
-
-  const originalSize = original.length;
-  const compressedSize = optimized.length;
-  const reduction = ((1 - compressedSize / originalSize) * 100);
-
-  return {
-    originalSize,
-    compressedSize,
-    reduction,
-    blob: new Blob([optimized as BlobPart], { type: "application/pdf" }),
-    fileName: "compressed.pdf",
-  };
+function validatePdf(file: File): string | null {
+  const isPdf =
+    file.type === "application/pdf" ||
+    file.name.toLowerCase().endsWith(".pdf");
+  if (!isPdf) return "Please upload a PDF file.";
+  if (file.size > MAX_BYTES)
+    return `File is too large. Max ${formatBytes(MAX_BYTES)}.`;
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -299,7 +92,7 @@ const LEVEL_DESCRIPTIONS: Record<
   high: {
     label: "High",
     description:
-      "Strip metadata + reduce embedded image quality + optimization (best compression)",
+      "Strip metadata + structural optimization (best compression for text-heavy PDFs)",
   },
 };
 
@@ -320,23 +113,19 @@ export function PdfCompressor() {
 
   // -- File handling --------------------------------------------------------
 
-  const acceptFile = useCallback(async (file: File) => {
-    if (file.type !== "application/pdf" && !file.name.endsWith(".pdf")) {
-      setError("Please select a valid PDF file.");
+  const acceptFile = useCallback((file: File) => {
+    const validationError = validatePdf(file);
+    if (validationError) {
+      setError(validationError);
       setStatus("error");
+      setFileState(null);
       return;
     }
-    try {
-      const bytes = await file.arrayBuffer();
-      setFileState({ file, bytes, size: bytes.byteLength, name: file.name });
-      setResult(null);
-      setError(null);
-      setStatus("loaded");
-      setProgress(0);
-    } catch {
-      setError("Failed to read the file. Please try again.");
-      setStatus("error");
-    }
+    setFileState({ file, size: file.size, name: file.name });
+    setResult(null);
+    setError(null);
+    setStatus("loaded");
+    setProgress(0);
   }, []);
 
   const onDrop = useCallback(
@@ -346,7 +135,7 @@ export function PdfCompressor() {
       const file = e.dataTransfer.files[0];
       if (file) acceptFile(file);
     },
-    [acceptFile]
+    [acceptFile],
   );
 
   const onDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
@@ -366,10 +155,10 @@ export function PdfCompressor() {
       // Reset so the same file can be re-selected
       e.target.value = "";
     },
-    [acceptFile]
+    [acceptFile],
   );
 
-  // -- Compress -------------------------------------------------------------
+  // -- Compress (calls /api/pdf-compressor) ---------------------------------
 
   const handleCompress = useCallback(async () => {
     if (!fileState) return;
@@ -378,11 +167,62 @@ export function PdfCompressor() {
     setError(null);
     setResult(null);
 
+    // Declare timer outside the try block so the catch path can clear it —
+    // a network/CORS throw must not leak the interval.
+    let timer: ReturnType<typeof setInterval> | null = null;
     try {
-      const res = await compressPdf(fileState.bytes, level, setProgress);
-      setResult(res);
+      const fd = new FormData();
+      fd.append("file", fileState.file);
+      fd.append("level", level);
+
+      // Fake progress while the request is in-flight, so the UI feels alive.
+      timer = setInterval(() => {
+        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
+      }, 400);
+
+      const res = await fetch("/api/pdf-compressor", {
+        method: "POST",
+        body: fd,
+      });
+
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+      setProgress(100);
+
+      if (!res.ok) {
+        let msg = `Compression failed (HTTP ${res.status}).`;
+        try {
+          const data = await res.json();
+          if (data?.error) msg = data.error;
+        } catch {
+          // ignore parse error
+        }
+        throw new Error(msg);
+      }
+
+      // Parse the optional size headers (present when the server response
+      // includes them). Fall back to blob.size if absent.
+      const originalSize = Number(res.headers.get("X-Original-Size")) || fileState.size;
+      const compressedSize = Number(res.headers.get("X-Compressed-Size")) || 0;
+      const reductionHeader = Number(res.headers.get("X-Reduction-Percent"));
+      const reduction = Number.isFinite(reductionHeader)
+        ? reductionHeader
+        : ((1 - compressedSize / originalSize) * 100);
+
+      const blob = await res.blob();
+      const baseName = fileState.name.replace(/\.pdf$/i, "");
+      setResult({
+        blob,
+        fileName: `${baseName}-compressed.pdf`,
+        originalSize,
+        compressedSize: compressedSize || blob.size,
+        reduction,
+      });
       setStatus("done");
     } catch (err) {
+      if (timer) clearInterval(timer);
       const msg =
         err instanceof Error ? err.message : "Compression failed unexpectedly.";
       setError(msg);
@@ -393,17 +233,9 @@ export function PdfCompressor() {
   // -- Download -------------------------------------------------------------
 
   const handleDownload = useCallback(() => {
-    if (!result || !fileState) return;
-    const url = URL.createObjectURL(result.blob);
-    const a = document.createElement("a");
-    a.href = url;
-    const baseName = fileState.name.replace(/\.pdf$/i, "");
-    a.download = `${baseName}-compressed.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, [result, fileState]);
+    if (!result) return;
+    triggerDownload(result.blob, result.fileName);
+  }, [result]);
 
   // -- Reset ----------------------------------------------------------------
 
@@ -457,7 +289,7 @@ export function PdfCompressor() {
               <div>
                 <p className="font-medium">Drop your PDF here or click to browse</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Supports .pdf files
+                  Supports .pdf files up to {formatBytes(MAX_BYTES)}
                 </p>
               </div>
               <input
@@ -526,7 +358,7 @@ export function PdfCompressor() {
                         <SelectItem key={l} value={l}>
                           {LEVEL_DESCRIPTIONS[l].label}
                         </SelectItem>
-                      )
+                      ),
                     )}
                   </SelectContent>
                 </Select>
@@ -620,7 +452,7 @@ export function PdfCompressor() {
                           style={{
                             width: `${Math.max(
                               2,
-                              100 - result.reduction
+                              100 - result.reduction,
                             )}%`,
                           }}
                         />
@@ -676,13 +508,13 @@ export function PdfCompressor() {
             producer) and then optimizes.
           </p>
           <p>
-            <strong className="text-foreground">High</strong> &mdash; Everything
-            in Medium plus re-encodes embedded JPEG images at reduced quality
-            (≈45%) via the Canvas API for maximum file-size savings.
+            <strong className="text-foreground">High</strong> &mdash; Same as
+            Medium plus a more aggressive object consolidation pass. Best
+            results on text-heavy PDFs.
           </p>
           <p className="pt-1">
-            All processing happens <strong className="text-foreground">locally in
-            your browser</strong> &mdash; no files are uploaded to any server.
+            Files are processed on the server and immediately discarded after
+            compression &mdash; nothing is stored.
           </p>
         </CardContent>
       </Card>

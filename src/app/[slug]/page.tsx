@@ -34,13 +34,13 @@ export async function generateMetadata({
       siteName: "ToolVerse",
       title: tool.metaTitle,
       description: tool.metaDescription,
-      images: [{ url: `${SITE_URL}/og-${tool.id}.png`, width: 1200, height: 630, alt: tool.metaTitle }],
+      images: [{ url: `${SITE_URL}/api/og?slug=${encodeURIComponent(tool.id)}`, width: 1200, height: 630, alt: tool.metaTitle }],
     },
     twitter: {
       card: "summary_large_image" as const,
       title: tool.metaTitle,
       description: tool.metaDescription,
-      images: [`${SITE_URL}/og-${tool.id}.png`],
+      images: [`${SITE_URL}/api/og?slug=${encodeURIComponent(tool.id)}`],
     },
     alternates: {
       canonical: `/${tool.id}`,
