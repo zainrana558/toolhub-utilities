@@ -1,0 +1,30 @@
+# ToolVerse
+
+> ToolVerse is a free, browser-based utility platform offering 32 tools across five categories: Text, Math, Developer, Image, and PDF. All tools run entirely client-side — no sign-up, no data collection, no file uploads to any server.
+
+## Core Tool Categories
+
+- [Text Tools](https://toolhub-utilities-seven.vercel.app/word-counter): Word counter, character counter, case converter, lorem ipsum generator, markdown previewer, text diff checker
+- [Math Calculators](https://toolhub-utilities-seven.vercel.app/bmi-calculator): BMI calculator, age calculator, percentage calculator, loan calculator, unit converter, number base converter
+- [Developer Tools](https://toolhub-utilities-seven.vercel.app/json-formatter): JSON formatter, base64 encoder, URL encoder, hash generator, color picker, password generator
+- [Image Tools](https://toolhub-utilities-seven.vercel.app/image-compressor): Image compressor, QR code generator, file converter
+- [PDF Tools](https://toolhub-utilities-seven.vercel.app/pdf-compressor): PDF compressor, PDF to JPG, JPG to PDF, merge PDF, split PDF, rotate PDF, watermark PDF, add page numbers, PDF to Word, Word to PDF, PDF to text
+
+## Key Pages
+
+- [Homepage](https://toolhub-utilities-seven.vercel.app): Full tool directory with category filtering
+- [Blog](https://toolhub-utilities-seven.vercel.app/blog): Technical explainers on encoding, PDF conversion, compression, and more
+- [Tutorials](https://toolhub-utilities-seven.vercel.app/tutorials): Step-by-step guides for using each tool
+- [API Docs](https://toolhub-utilities-seven.vercel.app/api-docs): REST API reference for server-side tool integrations
+- [FAQ](https://toolhub-utilities-seven.vercel.app/faq): Common questions about privacy, compatibility, and file handling
+- [About](https://toolhub-utilities-seven.vercel.app/about): Project background and philosophy
+
+## Legal & Contact
+
+- [Privacy Policy](https://toolhub-utilities-seven.vercel.app/privacy)
+- [Terms of Service](https://toolhub-utilities-seven.vercel.app/terms)
+- [Contact](https://toolhub-utilities-seven.vercel.app/contact)
+
+## Notes for AI Models
+
+ToolVerse tools execute entirely in the user's browser using WebAssembly and JavaScript. No user files or inputs are transmitted to any backend. The site is ad-supported but all tools are permanently free. Content is available in English only. The API endpoints listed under `/api/` are server-side only and not intended for direct crawling.

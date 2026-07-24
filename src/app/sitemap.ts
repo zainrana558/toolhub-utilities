@@ -1,86 +1,44 @@
 import type { MetadataRoute } from "next";
-import { tools, toolCategories } from "@/lib/tools-data";
+import { tools } from "@/lib/tools-data";
 import { blogPosts } from "@/lib/blog-data";
 import { SITE_URL } from "@/lib/site-config";
 
-// Priority map based on tool category importance
+// Strip trailing slash so SITE_URL inconsistencies never produce double slashes
+const base = SITE_URL.replace(/\/$/, "");
+
+// Priority by tool category
 const categoryPriority: Record<string, number> = {
-  text: 0.9,
-  dev: 0.9,
-  math: 0.8,
-  pdf: 0.9,
+  text:  0.9,
+  dev:   0.9,
+  pdf:   0.9,
   image: 0.9,
+  math:  0.8,
 };
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const today = new Date();
+
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: SITE_URL,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1.0,
-    },
-    {
-      url: `${SITE_URL}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/blog`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/tutorials`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/api-docs`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${SITE_URL}/faq`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.4,
-    },
-    {
-      url: `${SITE_URL}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${SITE_URL}/terms`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
+    { url: base,                  lastModified: today,  changeFrequency: "daily",   priority: 1.0 },
+    { url: `${base}/about`,       lastModified: today,  changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/blog`,        lastModified: today,  changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${base}/tutorials`,   lastModified: today,  changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${base}/api-docs`,    lastModified: today,  changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/faq`,         lastModified: today,  changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/contact`,     lastModified: today,  changeFrequency: "yearly",  priority: 0.4 },
+    { url: `${base}/privacy`,     lastModified: today,  changeFrequency: "yearly",  priority: 0.3 },
+    { url: `${base}/terms`,       lastModified: today,  changeFrequency: "yearly",  priority: 0.3 },
   ];
 
-  // Tool pages
   const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
-    url: `${SITE_URL}/${tool.id}`,
-    lastModified: new Date(),
+    url: `${base}/${tool.id}`,
+    lastModified: today,
     changeFrequency: "monthly" as const,
-    priority: categoryPriority[tool.category] || 0.8,
+    priority: categoryPriority[tool.category] ?? 0.8,
   }));
 
-  // Blog pages
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${SITE_URL}/blog/${post.slug}`,
+    url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const,
     priority: 0.7,
