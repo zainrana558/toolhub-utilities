@@ -1,0 +1,338 @@
+# Instincts generated from https://github.com/zainrana558/toolhub-utilities
+# Generated: 2026-07-24T13:59:40.189Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: toolhub-utilities-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Commit Length
+
+## Action
+
+Keep commit messages concise (~36 characters)
+
+## Evidence
+
+- Average commit message length: 36 chars
+- Based on 1 commits
+
+---
+id: toolhub-utilities-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: toolhub-utilities-import-alias
+trigger: "when importing modules"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Import Alias
+
+## Action
+
+Use path aliases (@/, ~/) instead of relative imports
+
+## Evidence
+
+- Import analysis shows alias pattern
+- Example: import { x } from '@/lib/x'
+
+---
+id: toolhub-utilities-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Export Style
+
+## Action
+
+Prefer mixed exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: mixed
+
+---
+id: toolhub-utilities-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: toolhub-utilities-instinct-file-naming
+trigger: "When creating a new file in the codebase"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct File Naming
+
+## Action
+
+Name the file using camelCase format
+
+## Evidence
+
+- Pattern in namingConventions.files: camelCase
+
+---
+id: toolhub-utilities-instinct-function-naming
+trigger: "When defining a new function"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Function Naming
+
+## Action
+
+Name the function using camelCase format
+
+## Evidence
+
+- Pattern in namingConventions.functions: camelCase
+
+---
+id: toolhub-utilities-instinct-class-naming
+trigger: "When defining a new class"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Class Naming
+
+## Action
+
+Name the class using PascalCase format
+
+## Evidence
+
+- Pattern in namingConventions.classes: PascalCase
+
+---
+id: toolhub-utilities-instinct-constant-naming
+trigger: "When defining a constant"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Constant Naming
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE format
+
+## Evidence
+
+- Pattern in namingConventions.constants: SCREAMING_SNAKE_CASE
+
+---
+id: toolhub-utilities-instinct-import-alias
+trigger: "When importing modules"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Import Alias
+
+## Action
+
+Use alias import style
+
+## Evidence
+
+- Pattern in importStyle: alias
+
+---
+id: toolhub-utilities-instinct-export-mixed
+trigger: "When exporting modules or functions"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Export Mixed
+
+## Action
+
+Use both named and default exports as appropriate (mixed export style)
+
+## Evidence
+
+- Pattern in exportStyle: mixed
+
+---
+id: toolhub-utilities-instinct-error-try-catch
+trigger: "When handling errors in code"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Error Try Catch
+
+## Action
+
+Use try-catch blocks for error handling
+
+## Evidence
+
+- Pattern in errorHandling.style: try-catch
+
+---
+id: toolhub-utilities-instinct-no-custom-error-classes
+trigger: "When considering custom error classes"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct No Custom Error Classes
+
+## Action
+
+Avoid creating custom error classes
+
+## Evidence
+
+- Pattern in errorHandling.customErrorClasses: false
+
+---
+id: toolhub-utilities-instinct-git-commit-freeform
+trigger: "When writing a commit message"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Git Commit Freeform
+
+## Action
+
+Use a freeform, concise message without a prefix
+
+## Evidence
+
+- Pattern in commits.type: freeform
+- No prefixes in commits.prefixes
+- Example: 'Add Vercel Web Analytics integration'
+
+---
+id: toolhub-utilities-instinct-git-commit-length
+trigger: "When composing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Git Commit Length
+
+## Action
+
+Keep commit messages concise, around 36 characters on average
+
+## Evidence
+
+- Pattern in commits.averageLength: 36
+
+---
+id: toolhub-utilities-instinct-test-separate-folder
+trigger: "When adding or organizing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Test Separate Folder
+
+## Action
+
+Place tests in a separate folder from source code
+
+## Evidence
+
+- Pattern in architecture.testLocation: separate
+
+---
+id: toolhub-utilities-instinct-test-location-structure
+trigger: "When structuring the project for tests"
+confidence: 0.7
+domain: architecture
+source: repo-analysis
+source_repo: zainrana558/toolhub-utilities
+---
+
+# Toolhub Utilities Instinct Test Location Structure
+
+## Action
+
+Follow a single-package structure with 'src' and 'app' folders, and tests outside these
+
+## Evidence
+
+- Pattern in architecture.folderStructure.srcLayout: ['app']
+- Pattern in architecture.commonFolders: ['src']
+- Pattern in architecture.testLocation: separate
+
