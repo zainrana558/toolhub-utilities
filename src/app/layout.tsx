@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { Analytics } from "@vercel/analytics/next";
 
 import { SITE_URL } from "@/lib/site-config";
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
@@ -208,6 +209,7 @@ export default function RootLayout({
             crossOrigin="anonymous"
           />
         )}
+        <Analytics />
       </body>
     </html>
   );
