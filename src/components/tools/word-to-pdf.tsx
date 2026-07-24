@@ -26,7 +26,9 @@ import {
   type ConvertResult,
 } from "./_pdf-helpers";
 
-const MAX_BYTES = 50 * 1024 * 1024;
+// Vercel caps request bodies at 4.5 MB. Word-to-PDF stays server-side
+// because mammoth is Node-only (relies on fs, Buffer, node streams).
+const MAX_BYTES = 4_500_000; // 4.5 MB — Vercel's actual edge limit
 
 function validateDocx(file: File): string | null {
   const isDocx =
@@ -136,7 +138,7 @@ export function WordToPdf() {
               {...upload}
               accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               title="Drop your .docx file here or click to browse"
-              subtitle={`Word (.docx) up to ${formatBytes(MAX_BYTES)} — legacy .doc not supported`}
+              subtitle={`Word (.docx) up to ${formatBytes(MAX_BYTES)} (Vercel server-side limit) — legacy .doc not supported`}
             />
           )}
 

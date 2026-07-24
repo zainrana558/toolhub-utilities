@@ -510,7 +510,10 @@ export function FileConverter() {
           </div>
           <p className="pt-1">
             Files are processed on the server and immediately discarded after
-            conversion &mdash; nothing is stored. Maximum file size: 50 MB.
+            conversion &mdash; nothing is stored. Maximum file size: 4.5 MB
+            (Vercel edge limit). For larger PDFs, use the dedicated client-side
+            tools (rotate, merge, split, watermark, pdf-number, jpg-to-pdf,
+            pdf-to-text, pdf-compressor) which run entirely in your browser.
           </p>
         </CardContent>
       </Card>

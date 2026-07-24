@@ -25,8 +25,15 @@ import {
   formatBytes,
   type ConvertResult,
 } from "./_pdf-helpers";
+import {
+  MAX_CLIENT_BYTES,
+  MAX_PAGES,
+  fileToBytes,
+  yieldToMain,
+} from "./_pdf-client";
+import { extractPdfTextClient } from "./_pdfjs-client";
 
-const MAX_BYTES = 50 * 1024 * 1024;
+const MAX_BYTES = MAX_CLIENT_BYTES;
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -65,43 +72,38 @@ export function PdfToText() {
   const handleConvert = useCallback(async () => {
     if (upload.files.length === 0) return;
     setStatus("processing");
-    setProgress(10);
+    setProgress(5);
     setError(null);
     setResult(null);
     setPreview(null);
 
     try {
-      const fd = new FormData();
-      fd.append("file", upload.files[0].file);
-
-      const timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 500);
-
-      const res = await fetch("/api/pdf-to-text", {
-        method: "POST",
-        body: fd,
+      const text = await yieldToMain(async () => {
+        const src = await fileToBytes(upload.files[0].file);
+        return extractPdfTextClient(src, {
+          maxPages: MAX_PAGES,
+          onProgress: (done, total) => {
+            // Map [0..total] → [10..95] so the bar visibly advances while
+            // leaving headroom for the final blob construction.
+            const pct = total > 0 ? 10 + Math.round((done / total) * 85) : 10;
+            setProgress(pct);
+          },
+        });
       });
 
-      clearInterval(timer);
-      setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Extraction failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {}
-        throw new Error(msg);
+      if (!text.trim()) {
+        throw new Error(
+          "No extractable text found. The PDF may be a scanned image (requires OCR) or may use embedded fonts that prevent text extraction.",
+        );
       }
 
-      const blob = await res.blob();
+      setProgress(100);
+
       const baseName = upload.files[0].name.replace(/\.pdf$/i, "");
-
-      // Read a preview of the text
-      const text = await blob.text();
-      setPreview(text.length > 2000 ? text.slice(0, 2000) + "\n\n[…truncated preview…]" : text);
-
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      setPreview(
+        text.length > 2000 ? text.slice(0, 2000) + "\n\n[…truncated preview…]" : text,
+      );
       setResult({
         blob,
         fileName: `${baseName}.txt`,
@@ -129,17 +131,14 @@ export function PdfToText() {
   }, [result]);
 
   const handleCopy = useCallback(async () => {
-    if (!preview) return;
+    if (!result) return;
     try {
-      // Fetch the full text from the blob for copying
-      if (result) {
-        const text = await result.blob.text();
-        await navigator.clipboard.writeText(text);
-      }
+      const text = await result.blob.text();
+      await navigator.clipboard.writeText(text);
     } catch {
       // Clipboard may not be available
     }
-  }, [preview, result]);
+  }, [result]);
 
   return (
     <div className="space-y-6">
@@ -156,7 +155,7 @@ export function PdfToText() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle={`PDF up to ${formatBytes(MAX_BYTES)}`}
+              subtitle="PDF up to 50 MB, 200 pages max — extracted entirely in your browser"
             />
           )}
 

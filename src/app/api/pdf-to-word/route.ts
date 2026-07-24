@@ -5,21 +5,31 @@ import path from "node:path";
 /**
  * PDF → Word (DOCX) API
  *
- * Extracts text from a PDF using pdf-parse and packages it into a DOCX file.
+ * Extracts text from a PDF using pdfjs-dist and packages it into a DOCX file.
  * Each PDF paragraph becomes a DOCX paragraph. Headings are not inferred —
  * everything is body text — because text extraction from PDFs is fundamentally
  * heuristic (PDFs don't store paragraph/heading structure).
  *
+ * Stays server-side because the `docx` library is heavy (~1 MB) and we don't
+ * want to ship it in the client bundle. Could be moved client-side in the
+ * future if needed — `docx` is isomorphic.
+ *
+ * Vercel caps request bodies at 4.5 MB on all tiers. For larger PDFs, the
+ * user should use the client-side pdf-to-text tool (which has no upload
+ * limit) and paste into Word manually, OR run pdf-to-word locally.
+ *
  * Limits:
- *   - Max input size: 50 MB
- *   - In-memory rate limit: 15 requests / 10 min / IP
+ *   - Max input size: 4.5 MB (Vercel edge limit)
+ *   - In-memory rate limit: 15 req / 10 min / IP
+ *     ⚠️ NOTE: does NOT work on Vercel serverless — each invocation is a
+ *     fresh instance. Replace with Vercel KV / Upstash for real rate limiting.
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 120;
+export const maxDuration = 60;
 
-const MAX_INPUT_BYTES = 50 * 1024 * 1024;
+const MAX_INPUT_BYTES = 4_500_000; // 4.5 MB — Vercel's actual edge limit
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 15;
 
@@ -219,7 +229,7 @@ export async function POST(req: Request) {
   }
   if (file.size > MAX_INPUT_BYTES) {
     return NextResponse.json(
-      { ok: false, error: `File too large. Max ${MAX_INPUT_BYTES / (1024 * 1024)} MB.` },
+      { ok: false, error: `File too large. Max 4.5 MB on Vercel. For larger PDFs, use the client-side pdf-to-text tool and paste into Word.` },
       { status: 413 },
     );
   }

@@ -2,21 +2,25 @@ import { NextResponse } from "next/server";
 import path from "node:path";
 
 /**
- * PDF → Text (TXT) API
+ * PDF → Text (TXT) API — FALLBACK
  *
- * Extracts text from a PDF using pdf-parse, with a manual fallback that scans
- * the raw PDF content streams for text-showing operators.
+ * The pdf-to-text tool component now extracts text entirely in the browser
+ * using pdfjs-dist (see `src/components/tools/_pdfjs-client.ts`). This server
+ * route is kept as a fallback for direct API consumers and for any future
+ * tool that wants server-side extraction.
  *
  * Limits:
- *   - Max input size: 50 MB
- *   - In-memory rate limit: 20 requests / 10 min / IP
+ *   - Max input size: 4.5 MB (Vercel edge limit)
+ *   - In-memory rate limit: 20 req / 10 min / IP
+ *     ⚠️ NOTE: does NOT work on Vercel serverless — each invocation is a
+ *     fresh instance. Replace with Vercel KV / Upstash for real rate limiting.
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 120;
+export const maxDuration = 60;
 
-const MAX_INPUT_BYTES = 50 * 1024 * 1024;
+const MAX_INPUT_BYTES = 4_500_000; // 4.5 MB — Vercel's actual edge limit
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 20;
 
@@ -183,7 +187,7 @@ export async function POST(req: Request) {
   }
   if (file.size > MAX_INPUT_BYTES) {
     return NextResponse.json(
-      { ok: false, error: `File too large. Max ${MAX_INPUT_BYTES / (1024 * 1024)} MB.` },
+      { ok: false, error: `File too large. Max 4.5 MB on Vercel. The browser-based pdf-to-text tool has no such limit.` },
       { status: 413 },
     );
   }

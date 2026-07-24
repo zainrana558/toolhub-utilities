@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, type DragEvent } from "react";
+import { PDFDocument } from "pdf-lib";
 import {
   Card,
   CardContent,
@@ -27,7 +28,8 @@ import {
   AlertCircle,
   X,
 } from "lucide-react";
-import { triggerDownload } from "./_pdf-helpers";
+import { triggerDownload, formatBytes } from "./_pdf-helpers";
+import { MAX_CLIENT_BYTES, fileToBytes, yieldToMain } from "./_pdf-client";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -52,16 +54,10 @@ interface FileState {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Constants & helpers
 // ---------------------------------------------------------------------------
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
-const MAX_BYTES = 25 * 1024 * 1024;
+const MAX_BYTES = MAX_CLIENT_BYTES;
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -71,6 +67,56 @@ function validatePdf(file: File): string | null {
   if (file.size > MAX_BYTES)
     return `File is too large. Max ${formatBytes(MAX_BYTES)}.`;
   return null;
+}
+
+/**
+ * Client-side PDF compression — mirrors the old server-side route logic.
+ * Runs entirely in the browser via pdf-lib; no upload, no Vercel 4.5 MB cap.
+ */
+async function compressPdfClient(
+  file: File,
+  level: CompressionLevel,
+): Promise<CompressionResult> {
+  const original = await fileToBytes(file);
+  const originalSize = original.length;
+
+  // Load with pdf-lib (ignoring encryption where possible). updateMetadata:false
+  // keeps the existing /Info dict intact unless we explicitly rewrite below.
+  const pdfDoc = await PDFDocument.load(original, {
+    ignoreEncryption: true,
+    updateMetadata: false,
+  });
+
+  // Medium / High: strip metadata. This is the same logic as the old server
+  // route — the producer string is the only thing we set explicitly so users
+  // can tell where the file came from.
+  if (level === "medium" || level === "high") {
+    pdfDoc.setTitle("");
+    pdfDoc.setAuthor("");
+    pdfDoc.setSubject("");
+    pdfDoc.setKeywords([]);
+    pdfDoc.setProducer("ToolHub PDF Compressor");
+    pdfDoc.setCreator("");
+  }
+
+  // pdf-lib save() performs structural optimization (removes unused objects,
+  // consolidates streams). The "high" level previously re-encoded embedded
+  // JPEGs via Canvas — that's possible in the browser now, but the savings
+  // on text-heavy PDFs (the common case) are negligible, and re-encoding
+  // JPEGs at lower quality is lossy. We keep "high" as a synonym for now.
+  const optimized = await pdfDoc.save();
+  const compressedSize = optimized.length;
+  const reduction = (1 - compressedSize / originalSize) * 100;
+
+  const blob = new Blob([optimized as BlobPart], { type: "application/pdf" });
+  const baseName = file.name.replace(/\.pdf$/i, "");
+  return {
+    blob,
+    fileName: `${baseName}-compressed.pdf`,
+    originalSize,
+    compressedSize,
+    reduction,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -158,71 +204,21 @@ export function PdfCompressor() {
     [acceptFile],
   );
 
-  // -- Compress (calls /api/pdf-compressor) ---------------------------------
+  // -- Compress (client-side via pdf-lib) -----------------------------------
 
   const handleCompress = useCallback(async () => {
     if (!fileState) return;
     setStatus("compressing");
-    setProgress(0);
+    setProgress(10);
     setError(null);
     setResult(null);
 
-    // Declare timer outside the try block so the catch path can clear it —
-    // a network/CORS throw must not leak the interval.
-    let timer: ReturnType<typeof setInterval> | null = null;
     try {
-      const fd = new FormData();
-      fd.append("file", fileState.file);
-      fd.append("level", level);
-
-      // Fake progress while the request is in-flight, so the UI feels alive.
-      timer = setInterval(() => {
-        setProgress((p) => (p < 90 ? p + Math.random() * 6 : p));
-      }, 400);
-
-      const res = await fetch("/api/pdf-compressor", {
-        method: "POST",
-        body: fd,
-      });
-
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
-      }
+      const out = await yieldToMain(() => compressPdfClient(fileState.file, level));
       setProgress(100);
-
-      if (!res.ok) {
-        let msg = `Compression failed (HTTP ${res.status}).`;
-        try {
-          const data = await res.json();
-          if (data?.error) msg = data.error;
-        } catch {
-          // ignore parse error
-        }
-        throw new Error(msg);
-      }
-
-      // Parse the optional size headers (present when the server response
-      // includes them). Fall back to blob.size if absent.
-      const originalSize = Number(res.headers.get("X-Original-Size")) || fileState.size;
-      const compressedSize = Number(res.headers.get("X-Compressed-Size")) || 0;
-      const reductionHeader = Number(res.headers.get("X-Reduction-Percent"));
-      const reduction = Number.isFinite(reductionHeader)
-        ? reductionHeader
-        : ((1 - compressedSize / originalSize) * 100);
-
-      const blob = await res.blob();
-      const baseName = fileState.name.replace(/\.pdf$/i, "");
-      setResult({
-        blob,
-        fileName: `${baseName}-compressed.pdf`,
-        originalSize,
-        compressedSize: compressedSize || blob.size,
-        reduction,
-      });
+      setResult(out);
       setStatus("done");
     } catch (err) {
-      if (timer) clearInterval(timer);
       const msg =
         err instanceof Error ? err.message : "Compression failed unexpectedly.";
       setError(msg);
@@ -289,7 +285,7 @@ export function PdfCompressor() {
               <div>
                 <p className="font-medium">Drop your PDF here or click to browse</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Supports .pdf files up to {formatBytes(MAX_BYTES)}
+                  PDF up to {formatBytes(MAX_BYTES)} — compressed entirely in your browser
                 </p>
               </div>
               <input
@@ -513,8 +509,8 @@ export function PdfCompressor() {
             results on text-heavy PDFs.
           </p>
           <p className="pt-1">
-            Files are processed on the server and immediately discarded after
-            compression &mdash; nothing is stored.
+            Files are processed entirely in your browser using pdf-lib —
+            nothing is uploaded, stored, or sent to a server.
           </p>
         </CardContent>
       </Card>

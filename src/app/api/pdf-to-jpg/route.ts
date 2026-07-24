@@ -6,18 +6,32 @@ import { NextResponse } from "next/server";
  * Renders each page of a PDF as a JPG image using pdfjs-dist + node-canvas.
  * Returns a ZIP archive when multiple pages, or a single JPG when one page.
  *
+ * MUST stay server-side: node-canvas is a native dep and pdfjs's rendering
+ * pipeline needs a Canvas implementation. There is no browser equivalent we
+ * can ship (pdfjs can render to <canvas> in the browser, but we'd need to
+ * rewrite this tool's UX around progressive in-browser rendering — out of
+ * scope for the Option C migration).
+ *
+ * Vercel caps request bodies at 4.5 MB on all tiers (Hobby included), so our
+ * 50 MB cap was unreachable in production. Reverted to 4.5 MB so the error
+ * message users see matches reality.
+ *
  * Limits:
- *   - Max input size: 50 MB
- *   - Max pages: 50 (to bound render time)
- *   - In-memory rate limit: 15 requests / 10 min / IP
+ *   - Max input size: 4.5 MB (Vercel edge limit)
+ *   - Max pages: 50 (to bound render time within the 15s function timeout
+ *     on Vercel Hobby)
+ *   - In-memory rate limit: 15 req / 10 min / IP
+ *     ⚠️ NOTE: in-memory rate limiting does NOT work on Vercel serverless —
+ *     each invocation is a fresh instance. This is a best-effort speed bump
+ *     only. Replace with Vercel KV / Upstash for real rate limiting.
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 120;
+export const maxDuration = 60;
 
-const MAX_INPUT_BYTES = 50 * 1024 * 1024;
-const MAX_PAGES = 100;
+const MAX_INPUT_BYTES = 4_500_000; // 4.5 MB — Vercel's actual edge limit
+const MAX_PAGES = 50;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 15;
 
@@ -300,7 +314,7 @@ export async function POST(req: Request) {
   }
   if (file.size > MAX_INPUT_BYTES) {
     return NextResponse.json(
-      { ok: false, error: `File too large. Max ${MAX_INPUT_BYTES / (1024 * 1024)} MB.` },
+      { ok: false, error: `File too large. Max 4.5 MB on Vercel — for larger PDFs, use a client-side tool (rotate, merge, split, watermark, pdf-number, jpg-to-pdf, pdf-to-text).` },
       { status: 413 },
     );
   }

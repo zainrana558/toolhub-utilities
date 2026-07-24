@@ -26,7 +26,10 @@ import {
   type ConvertResult,
 } from "./_pdf-helpers";
 
-const MAX_BYTES = 50 * 1024 * 1024;
+// Vercel caps request bodies at 4.5 MB. PDF-to-Word stays server-side
+// because the `docx` library is heavy (~1 MB) and we don't want to ship
+// it in the client bundle.
+const MAX_BYTES = 4_500_000; // 4.5 MB — Vercel's actual edge limit
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -136,7 +139,7 @@ export function PdfToWord() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle={`PDF up to ${formatBytes(MAX_BYTES)}`}
+              subtitle={`PDF up to ${formatBytes(MAX_BYTES)} (Vercel server-side limit). For larger PDFs, use pdf-to-text and paste into Word.`}
             />
           )}
 

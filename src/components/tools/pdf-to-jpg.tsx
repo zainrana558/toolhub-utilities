@@ -34,7 +34,10 @@ import {
   type ConvertResult,
 } from "./_pdf-helpers";
 
-const MAX_BYTES = 25 * 1024 * 1024;
+// Vercel caps request bodies at 4.5 MB. This tool MUST stay server-side
+// (pdfjs rendering needs a Canvas implementation), so we cap at the real
+// limit and tell the user.
+const MAX_BYTES = 4_500_000; // 4.5 MB — Vercel's actual edge limit
 
 function validatePdf(file: File): string | null {
   const isPdf =
@@ -149,7 +152,7 @@ export function PdfToJpg() {
               {...upload}
               accept=".pdf,application/pdf"
               title="Drop your PDF here or click to browse"
-              subtitle="PDF up to 50 MB, 100 pages max"
+              subtitle="PDF up to 4.5 MB, 50 pages max (Vercel server-side limit)"
             />
           )}
 

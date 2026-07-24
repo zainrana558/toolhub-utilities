@@ -64,3 +64,6 @@ dev.log
 *.log
 mini-services/
 .env
+
+# Build artifacts in /public — generated from node_modules by `prebuild`
+public/pdf.worker.min.mjs
