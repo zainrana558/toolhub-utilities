@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, ThumbsUp, Share2, Link2, Copy, Check, ChevronRight, Home } from "lucide-react";
 import { motion } from "framer-motion";
 import { SITE_URL } from "@/lib/site-config";
+import { ToolErrorBoundary } from "@/components/tool-error-boundary";
 
 const stagger = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
@@ -219,7 +220,9 @@ export function ToolView({ toolId, onBack }: ToolViewProps) {
         className="max-w-4xl"
         variants={fadeUp}
       >
-        <ToolComponent />
+        <ToolErrorBoundary toolName={tool.name}>
+          <ToolComponent />
+        </ToolErrorBoundary>
       </motion.div>
 
       <motion.div variants={fadeUp}>

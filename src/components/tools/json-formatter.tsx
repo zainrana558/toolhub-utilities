@@ -8,6 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, Check, Upload } from "lucide-react";
 
+/**
+ * Cap for file uploads into the JSON formatter.
+ *
+ * `FileReader.readAsText` loads the entire file into a JS string, then we
+ * store it in state and call `JSON.parse` which builds a second in-memory
+ * object graph. Past ~5 MB of text the parse step alone blocks the main
+ * thread for seconds on mid-range phones. 5 MB is far beyond any legitimate
+ * hand-edited JSON document and rejects the "format my 80 MB NDJSON log"
+ * footgun.
+ */
+const MAX_JSON_BYTES = 5 * 1024 * 1024;
+
 export function JSONFormatter() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -58,13 +70,26 @@ export function JSONFormatter() {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setInput(ev.target?.result as string);
-      };
-      reader.readAsText(file);
+    if (!file) return;
+
+    if (file.size > MAX_JSON_BYTES) {
+      setError(
+        `File is too large (${(file.size / (1024 * 1024)).toFixed(1)} MB). ` +
+          `The browser-based JSON formatter is capped at 5 MB — past that point ` +
+          `JSON.parse blocks the UI for seconds. For larger files, use a ` +
+          `streaming JSON parser like jq or json-stream.`
+      );
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setInput(ev.target?.result as string);
+    };
+    reader.onerror = () => {
+      setError("Failed to read file.");
+    };
+    reader.readAsText(file);
   };
 
   const copyOutput = async () => {

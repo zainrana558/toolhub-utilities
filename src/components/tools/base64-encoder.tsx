@@ -12,6 +12,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, Check, Upload, Download, ArrowRight } from "lucide-react";
 
+/**
+ * Hard ceiling for the encode-file path.
+ *
+ * `FileReader.readAsDataURL` returns the entire file as a base64 string in
+ * memory — a 50 MB binary becomes a ~67 MB string, which then gets stored in
+ * React state and re-rendered on every keystroke. Past ~10 MB this pegs the
+ * main thread, inflates the heap by 3-4x, and on mid-range phones crashes the
+ * tab. 10 MB is generous for the legitimate use cases (small icons, fonts,
+ * short audio clips) and rejects the "encode my 200 MB video" footgun.
+ */
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+
 function CopyButton({
   text,
   id,
@@ -110,6 +122,16 @@ export function Base64Encoder() {
       const file = e.target.files?.[0];
       if (!file) return;
 
+      if (file.size > MAX_FILE_BYTES) {
+        setError(
+          `File is too large (${(file.size / (1024 * 1024)).toFixed(1)} MB). ` +
+            `The browser-based Base64 encoder is capped at 10 MB to avoid crashing the tab — ` +
+            `base64 inflates the file ~33% and holds the whole string in memory. ` +
+            `For larger files, use a desktop tool or split the file first.`
+        );
+        return;
+      }
+
       setEncodeFileName(file.name);
       const reader = new FileReader();
       reader.onload = () => {
@@ -133,8 +155,28 @@ export function Base64Encoder() {
       return;
     }
 
+    // Cap decoded output at the same 10 MB ceiling as the encode path. `atob`
+    // returns a binary string, then we materialize a second Uint8Array of the
+    // same length, then a Blob — that's ~3x the decoded size on the heap
+    // before the download link is even clicked. A 30 MB base64 paste would
+    // allocate ~90 MB and stall low-memory devices.
+    const trimmed = decodeInput.trim();
+    const payloadLength = trimmed.startsWith("data:")
+      ? trimmed.length - trimmed.indexOf(",") - 1
+      : trimmed.length;
+    // base64 → bytes is ~4/3 ratio; bail if the *encoded* length already
+    // implies a decoded payload over the cap.
+    const decodedEstimateBytes = (payloadLength * 3) / 4;
+    if (decodedEstimateBytes > MAX_FILE_BYTES) {
+      setError(
+        `Input is too large (~${(decodedEstimateBytes / (1024 * 1024)).toFixed(1)} MB decoded). ` +
+          `The browser-based decoder is capped at 10 MB to avoid crashing the tab.`
+      );
+      return;
+    }
+
     try {
-      let base64Data = decodeInput.trim();
+      let base64Data = trimmed;
       let mimeType = "application/octet-stream";
       const fileName = "decoded-file";
 

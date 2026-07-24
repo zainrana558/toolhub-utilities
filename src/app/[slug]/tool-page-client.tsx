@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ThumbsUp, Share2, Link2, Copy, Check, ChevronRight, Home, Wrench } from "lucide-react";
 import { SITE_URL } from "@/lib/site-config";
+import { ToolErrorBoundary } from "@/components/tool-error-boundary";
 
 // Lazy-load below-the-fold ad slots
 const AdSlot = dynamic(() => import("@/components/ad-slot").then((m) => ({ default: m.AdSlot })), {
@@ -150,7 +151,9 @@ export function ToolPageClient({ toolId }: { toolId: string }) {
 
               {/* ===== INTERACTIVE TOOL — IMMEDIATELY VISIBLE ===== */}
               <motion.div variants={fadeUp}>
-                <ToolComponent />
+                <ToolErrorBoundary toolName={tool.name}>
+                  <ToolComponent />
+                </ToolErrorBoundary>
               </motion.div>
 
               <AdSlot variant="horizontal" />

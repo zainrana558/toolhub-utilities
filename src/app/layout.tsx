@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
 
 import { SITE_URL } from "@/lib/site-config";
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
@@ -194,6 +195,10 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ThemeProvider>
+        {/* Register the offline service worker (production only, deferred
+            to idle so it never blocks first paint). See
+            src/components/service-worker-register.tsx. */}
+        <ServiceWorkerRegister />
         {/* Google AdSense library — loaded once globally only when configured. */}
         {ADSENSE_CLIENT && (
           <Script
