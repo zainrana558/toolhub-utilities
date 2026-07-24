@@ -1344,5 +1344,276 @@ export const blogPosts: BlogPost[] = [
 
 <p>Compress your PDF now with our free <a href="/pdf-compressor">PDF Compressor</a> — runs entirely in your browser. For compressing images before PDF creation, use the <a href="/image-compressor">Image Compressor</a>. For combining compressed PDFs, use <a href="/merge-pdf">Merge PDF</a>. For converting between formats after compression, try the <a href="/file-converter">File Converter</a>.</p>`,
   },
+  {
+    slug: "how-to-merge-pdf-without-losing-quality",
+    title: "How to Merge PDF Files Without Losing Quality (2026 Guide)",
+    description: "Learn how to merge PDF files online free without watermark or quality loss. Compare browser-based mergers, server-side tools, and desktop software. Step-by-step guide included.",
+    date: "2026-07-24",
+    author: "Zain Rana",
+    category: "Productivity",
+    tools: ["merge-pdf", "split-pdf", "pdf-compressor", "jpg-to-pdf"],
+    faq: [
+      { question: "Can I merge PDF files online free without watermark?", answer: "Yes. ToolVerse's Merge PDF tool combines 2 to 20 PDFs into a single document and adds no watermark to the output. Many free PDF mergers stamp their logo on every page of the merged file — ToolVerse does not. The output PDF is clean and identical in quality to your input files. No signup, no email, no branding on your document." },
+      { question: "Does merging PDFs reduce quality?", answer: "No. When you merge PDFs using a page-level merger (like pdf-lib, which ToolVerse uses), the tool reads each input PDF, extracts its pages, and appends them to a new output PDF. The page content — text, images, fonts, and links — is preserved exactly. No re-encoding, no re-compression, no quality loss. The merged PDF is the same quality as the sum of its inputs." },
+      { question: "What is the maximum number of PDFs I can merge at once?", answer: "ToolVerse allows you to merge up to 20 PDFs in a single request, with a per-file limit of 25 MB and a total limit of 100 MB. For larger batches, merge in groups of 20 and then merge the resulting PDFs together. For PDFs larger than 25 MB, compress them first using the PDF Compressor." },
+      { question: "Is it better to merge PDFs online or use desktop software?", answer: "For most use cases, a browser-based merger is sufficient and more convenient — no installation, no updates, works on any device. Desktop software (Adobe Acrobat, PDFsam) is recommended for very large PDFs (100+ MB), batch processing of hundreds of files, or when you need advanced features like per-page reordering, table of contents generation, or form-field merging." },
+    ],
+    content: `<p>Merging PDF files is one of the most common document tasks — combining signed contracts, assembling report chapters, or joining scanned receipts into a single archive. But many free online mergers add a watermark, re-compress your images, or require an account. This guide shows you how to <strong>merge PDF files online free without watermark or quality loss</strong>, and explains what happens under the hood when you merge PDFs.</p>
+
+<h2>Why PDF Merging Can Lose Quality (And How to Avoid It)</h2>
+<p>There are three ways a PDF merger can degrade your files:</p>
+<ul>
+<li><strong>Re-encoding images:</strong> Some mergers re-compress embedded images to reduce the output file size. This is rare in page-level mergers but common in 'optimized' or 'compressed' mergers. The result: blurry images and visible JPEG artifacts.</li>
+<li><strong>Re-encoding fonts:</strong> Some mergers subset or substitute fonts, which can change text appearance. This is more common in OCR-based mergers that re-render text.</li>
+<li><strong>Adding watermarks:</strong> Many free mergers stamp their logo on every page of the merged PDF as a 'free tier' limitation. The watermark is permanent and cannot be removed without re-merging.</li>
+</ul>
+<p>ToolVerse's <a href="/merge-pdf">Merge PDF</a> tool avoids all three: it uses <strong>pdf-lib</strong> to perform a page-level merge, which reads each input PDF, extracts its pages, and appends them to a new output PDF. No image re-encoding, no font substitution, no watermarks. The merged PDF is byte-for-byte identical in quality to the sum of its inputs.</p>
+
+<h2>Step-by-Step: Merge PDF Files Online Free Without Watermark</h2>
+<ol>
+<li><strong>Prepare your PDFs:</strong> Name them with sortable prefixes (01-cover.pdf, 02-report.pdf, 03-appendix.pdf) so they merge in the correct order. The merger combines files in the order you upload them.</li>
+<li><strong>Open the Merge PDF tool:</strong> Go to <a href="/merge-pdf">ToolVerse Merge PDF</a>. No signup required.</li>
+<li><strong>Upload 2 to 20 PDFs:</strong> Click the upload area or drag and drop your files. You can upload up to 20 PDFs per merge, with a per-file limit of 25 MB and a total limit of 100 MB.</li>
+<li><strong>Click 'Merge PDFs':</strong> The tool processes your files in memory and produces a single merged PDF.</li>
+<li><strong>Download the result:</strong> The merged PDF downloads instantly. No watermark, no email capture, no file storage on the server.</li>
+</ol>
+
+<h2>Browser-Based vs Server-Side Mergers</h2>
+<p>There are two architectures for online PDF mergers, and the difference matters for your privacy:</p>
+<p><strong>Browser-based mergers</strong> (like ToolVerse's) run entirely in your browser using JavaScript and WebAssembly. Your PDF files never leave your device — they are read, merged, and downloaded locally. This is the most private option, but may be slower for very large PDFs (100+ MB) because browser JavaScript is slower than native code.</p>
+<p><strong>Server-side mergers</strong> upload your PDFs to a server, merge them there, and send the result back. This is faster for large files but means your files are transmitted over the internet and processed on someone else's server. Even if the server promises to delete files immediately, you have to trust that promise.</p>
+<p>ToolVerse uses a hybrid approach: PDFs are uploaded to the server only for the duration of the merge, processed in memory, and immediately discarded. No file contents are written to disk or logged. For complete privacy, you can verify this by opening your browser's Network tab and confirming the upload and download are the only requests.</p>
+
+<h2>When to Compress Before Merging</h2>
+<p>If your input PDFs are large (10+ MB each), the merged PDF can become unwieldy (50+ MB). For email attachments or web uploads, you may need to compress the merged PDF afterward. A more effective strategy: <strong>compress each input PDF before merging</strong>. This is more efficient than merging then compressing, because each input's images are re-compressed at the source. Use the <a href="/pdf-compressor">PDF Compressor</a> on each input, then merge the compressed PDFs.</p>
+
+<h2>Merging Scanned Documents</h2>
+<p>If you've scanned a multi-page document with a mobile scanning app, you may have multiple single-page PDFs. Merge them into one PDF using the Merge PDF tool, then use the <a href="/rotate-pdf">Rotate PDF</a> tool to fix any pages that scanned sideways. For adding page numbers to the merged document, use <a href="/pdf-number">PDF Page Number</a>.</p>
+
+<h2>Combining Images into a PDF</h2>
+<p>If your source material is images (JPG, PNG) rather than PDFs, use the <a href="/jpg-to-pdf">JPG to PDF</a> tool instead. It combines up to 30 images into a single PDF — one image per page — with EXIF auto-rotation, page size control, and margin options. You can then merge that image-PDF with other PDFs using the Merge PDF tool.</p>
+
+<h2>Alternatives: Desktop PDF Mergers</h2>
+<p>For very large batches (100+ files) or PDFs larger than 100 MB, a desktop merger is more appropriate:</p>
+<ul>
+<li><strong>PDFsam Basic</strong> (free, open-source): Handles 100+ files, per-page reordering, and split/merge in one tool. Available for Windows, Mac, and Linux.</li>
+<li><strong>Adobe Acrobat Pro</strong> (paid): The industry standard. Supports merging with table of contents generation, form-field merging, and bookmark preservation.</li>
+<li><strong>Preview (Mac only):</strong> Built into macOS. Open one PDF, then drag additional PDFs into the sidebar to merge.</li>
+</ul>
+<p>For most users — combining 2 to 20 PDFs under 25 MB each — the browser-based <a href="/merge-pdf">ToolVerse Merge PDF</a> tool is the fastest, most private, and completely free option. No watermark, no signup, no quality loss.</p>`,
+  },
+  {
+    slug: "5-free-ways-to-convert-pdf-to-word-2026",
+    title: "5 Free Ways to Convert PDF to Word in 2026 (No Signup Required)",
+    description: "Compare 5 free PDF to Word conversion methods: browser-based tools, Microsoft Word, Google Docs, Adobe Acrobat online, and open-source OCR. Pros, cons, and which to choose.",
+    date: "2026-07-24",
+    author: "Zain Rana",
+    category: "Productivity",
+    tools: ["pdf-to-word", "pdf-to-text", "file-converter"],
+    faq: [
+      { question: "What is the best free PDF to Word converter online?", answer: "For most users, a browser-based converter like ToolVerse's PDF to Word tool is the best option — it's free, requires no signup, processes your PDF locally in your browser, and produces a clean editable DOCX. For scanned PDFs (images of text), you need an OCR-based tool like Google Drive or Adobe Acrobat Online. For pixel-perfect layout preservation, open the PDF directly in Microsoft Word 2013+." },
+      { question: "Is there a PDF to Word converter online free with no signup?", answer: "Yes. ToolVerse's PDF to Word converter runs entirely in your browser, requires no account, no email, and no sign-up. Just open the page, upload your PDF, and download the editable .docx file. Your PDF never leaves your device, which makes it both faster and more private than server-based converters that require registration." },
+      { question: "Does PDF to Word conversion preserve formatting?", answer: "PDF is a layout format — it stores text as positioned characters, not as structured paragraphs. Any tool that claims to preserve fonts, colors, bold/italic, tables, and images from a PDF to Word conversion is relying on OCR and heuristics, and results vary by document. ToolVerse extracts the text content and reconstructs paragraphs based on line breaks, giving you a clean, editable DOCX without formatting noise." },
+      { question: "Can I convert a scanned PDF to Word?", answer: "Scanned PDFs (where each page is an image of text) require OCR (Optical Character Recognition) before conversion. Browser-based tools like ToolVerse will detect when no text can be extracted and let you know. For scanned PDFs, upload the PDF to Google Drive, right-click, and choose 'Open with Google Docs' — Google's OCR will extract the text. Then download as DOCX." },
+    ],
+    content: `<p>Converting a PDF to an editable Word document is a perennial office task — you receive a contract as a PDF, need to edit a few clauses, and don't have the original DOCX. There are dozens of free PDF to Word converters online, but most require an account, add a watermark, or upload your file to a server. This guide compares <strong>5 free ways to convert PDF to Word in 2026</strong>, with pros, cons, and when to choose each.</p>
+
+<h2>Why PDF to Word Conversion Is Hard</h2>
+<p>PDF and Word are fundamentally different formats. PDF is a <strong>layout format</strong> — it stores text as positioned characters on a page, like a printed page. Word (DOCX) is a <strong>structured document format</strong> — it stores text as paragraphs with formatting (bold, italic, headings, lists). Converting PDF to Word means reverse-engineering the layout back into structure, which is inherently lossy.</p>
+<p>Any tool that promises '100% layout preservation' is using OCR (Optical Character Recognition) and heuristics to guess where paragraphs, columns, and tables are. Results vary wildly by document. A clean, single-column report converts well; a multi-column magazine layout with sidebars converts poorly.</p>
+
+<h2>Method 1: Browser-Based PDF to Word Converter (Recommended)</h2>
+<p><a href="/pdf-to-word">ToolVerse PDF to Word</a> is a free, browser-based converter that requires no signup and processes your PDF locally. It extracts text from the PDF, reconstructs paragraphs based on line breaks, and packages the result as a .docx file.</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>100% free, no signup, no watermark</li>
+<li>Your PDF never leaves your device (most private option)</li>
+<li>Works on any device (phone, tablet, laptop)</li>
+<li>No installation required</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Does not preserve fonts, colors, bold/italic, tables, or images</li>
+<li>Does not work on scanned PDFs (no OCR)</li>
+<li>15 MB file size limit</li>
+</ul>
+<p><strong>Best for:</strong> Extracting text from text-based PDFs (contracts, reports, academic papers) when you need to edit the content, not the layout.</p>
+
+<h2>Method 2: Microsoft Word (2013 or Later)</h2>
+<p>If you have Microsoft Word 2013 or later (including Microsoft 365), you can open a PDF directly in Word. Word performs its own OCR and layout analysis, attempting to preserve fonts, columns, and tables.</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Best layout preservation of any method</li>
+<li>Handles scanned PDFs (built-in OCR)</li>
+<li>No file upload — runs locally</li>
+<li>You're already paying for Word if you have Microsoft 365</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Requires Microsoft Word 2013+ (not free)</li>
+<li>Conversion can take 30+ seconds for large PDFs</li>
+<li>May produce 'Word recovered some content' warnings for complex layouts</li>
+</ul>
+<p><strong>Best for:</strong> Users who already have Microsoft Word and need the best possible layout preservation.</p>
+
+<h2>Method 3: Google Docs (Free OCR)</h2>
+<p>Google Docs has a built-in OCR engine that can convert scanned PDFs to editable text. Upload the PDF to Google Drive, right-click, choose 'Open with Google Docs', and Google will run OCR on the PDF and produce an editable document. You can then download it as DOCX.</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Completely free with a Google account</li>
+<li>Excellent OCR accuracy on scanned documents</li>
+<li>Handles multi-page PDFs well</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Requires a Google account and uploading your PDF to Google's servers</li>
+<li>Layout preservation is poor (text is extracted, structure is lost)</li>
+<li>Not suitable for confidential documents</li>
+</ul>
+<p><strong>Best for:</strong> Scanned PDFs (images of text) when you need OCR and don't mind uploading to Google.</p>
+
+<h2>Method 4: Adobe Acrobat Online</h2>
+<p>Adobe Acrobat Online offers a free PDF to Word converter at adobe.com. It uses Adobe's industry-leading OCR and layout analysis engine, producing the highest-fidelity conversion of any online tool.</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Best-in-class OCR and layout preservation</li>
+<li>Handles scanned PDFs, multi-column layouts, and tables</li>
+<li>Trusted brand for document processing</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Requires an Adobe account (free, but signup needed)</li>
+<li>Free tier limited to a few conversions per month</li>
+<li>Uploads your PDF to Adobe's servers</li>
+<li>Pushes you toward a paid Acrobat Pro subscription</li>
+</ul>
+<p><strong>Best for:</strong> Complex PDFs (multi-column, tables, mixed text+images) when you need the best conversion quality and don't mind creating an account.</p>
+
+<h2>Method 5: ToolVerse File Converter (Multi-Format)</h2>
+<p>If you need to convert PDF to Word AND also convert between other formats (Word to PDF, Markdown to PDF, HTML to Word), the <a href="/file-converter">ToolVerse File Converter</a> handles 17 conversion paths from one interface. The PDF to Word path uses the same text extraction as Method 1, but you can also convert the PDF to TXT, HTML, or Markdown if you don't need a DOCX.</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>17 conversion paths in one tool</li>
+<li>No signup, no watermark</li>
+<li>Files processed in memory and immediately discarded</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Same limitations as Method 1 (no layout preservation, no OCR)</li>
+<li>15 MB file size limit</li>
+</ul>
+<p><strong>Best for:</strong> Users who need multiple format conversions and want one tool for all of them.</p>
+
+<h2>Which Method Should You Choose?</h2>
+<table>
+<thead><tr><th>Your situation</th><th>Recommended method</th></tr></thead>
+<tbody>
+<tr><td>Text-based PDF, need to edit content, want privacy</td><td><a href="/pdf-to-word">ToolVerse PDF to Word</a> (Method 1)</td></tr>
+<tr><td>Scanned PDF (image of text), need OCR</td><td>Google Docs (Method 3)</td></tr>
+<tr><td>Complex layout (columns, tables), need fidelity</td><td>Adobe Acrobat Online (Method 4) or Microsoft Word (Method 2)</td></tr>
+<tr><td>Multiple format conversions needed</td><td><a href="/file-converter">ToolVerse File Converter</a> (Method 5)</td></tr>
+<tr><td>Just need the text, not a DOCX</td><td><a href="/pdf-to-text">ToolVerse PDF to Text</a> (extracts plain .txt)</td></tr>
+</tbody>
+</table>
+
+<h2>Tips for Better Conversion Results</h2>
+<ul>
+<li><strong>Start with a clean PDF:</strong> If the PDF has annotations, form fields, or redactions, remove them before converting. They confuse OCR engines.</li>
+<li><strong>Split large PDFs first:</strong> If your PDF is 100+ pages, split it into chapters using <a href="/split-pdf">Split PDF</a>, then convert each chapter separately. This improves accuracy and reduces processing time.</li>
+<li><strong>Check the output:</strong> Always proofread the converted DOCX. OCR can misread 'rn' as 'm', 'cl' as 'd', and numbers like '0' vs 'O'. Use Word's spell-check to catch errors.</li>
+<li><strong>Don't expect image preservation:</strong> Most free converters extract text only. If you need images from the PDF, use <a href="/pdf-to-jpg">PDF to JPG</a> to extract them as image files, then insert them into your DOCX manually.</li>
+</ul>
+
+<p>For most users — converting text-based PDFs under 15 MB — the browser-based <a href="/pdf-to-word">ToolVerse PDF to Word</a> converter is the fastest, most private, and completely free option. No signup, no watermark, no file upload. For scanned PDFs or complex layouts, pair it with Google Docs or Adobe Acrobat Online.</p>`,
+  },
+  {
+    slug: "how-to-add-page-numbers-to-pdf-free",
+    title: "How to Add Page Numbers to a PDF for Free (Online, No Signup)",
+    description: "Learn how to add page numbers to a PDF online free. Choose position, format ('{n}/{total}', 'Page {n}'), font, color, and starting number. Step-by-step guide with screenshots.",
+    date: "2026-07-24",
+    author: "Zain Rana",
+    category: "Productivity",
+    tools: ["pdf-number", "merge-pdf", "split-pdf", "watermark-pdf"],
+    faq: [
+      { question: "How do I add page numbers to a PDF online for free?", answer: "Upload your PDF to the ToolVerse PDF Page Number tool, choose a position (top or bottom, left/center/right), enter a format string like '{n}/{total}' for '3/24' or 'Page {n}' for 'Page 3', set the font size and color, and click 'Add Page Numbers'. The tool stamps the page number on every page and lets you download the numbered PDF instantly — no signup, no watermark, no file storage." },
+      { question: "What is the best page number format for a PDF?", answer: "The most common format is '{n}/{total}' (e.g., '3/24') because it shows both the current page and the total page count, which helps readers navigate. For formal documents like contracts, 'Page {n}' is conventional. For academic papers, just '{n}' at the bottom-center is standard. Avoid formats that include the document title or date in the page number — they make the PDF harder to maintain." },
+      { question: "Can I add page numbers without affecting the original PDF?", answer: "Yes. The PDF Page Number tool reads your input PDF and produces a new PDF with page numbers added as a separate text layer on each page. The original PDF is never modified. All text, images, fonts, and links from the original are preserved exactly — the page numbers are simply overlaid visually on top of the existing content." },
+      { question: "How do I skip page numbers on the cover page?", answer: "Currently the tool numbers every page uniformly. To skip the cover page, split the PDF using the Split PDF tool (extract pages 2 onwards into a new PDF), add page numbers to that extracted PDF, then merge the cover page and the numbered PDF back together using the Merge PDF tool. Selective numbering (skip specific pages) is on the roadmap." },
+    ],
+    content: `<p>Adding page numbers to a PDF is essential for any multi-page document that will be printed, shared, or cited. Page numbers help readers navigate, let you reference specific pages in meetings ('let's look at page 7'), and are required for most formal documents like contracts, reports, and academic papers. This guide shows you how to <strong>add page numbers to a PDF online free</strong>, with no signup, no watermark, and no software download.</p>
+
+<h2>Why Add Page Numbers to a PDF?</h2>
+<p>Page numbers serve several purposes in professional documents:</p>
+<ul>
+<li><strong>Navigation:</strong> Readers can jump to a specific page ('see page 12 for the financial summary').</li>
+<li><strong>Citation:</strong> Academic papers and legal documents require page numbers for accurate referencing.</li>
+<li><strong>Printing:</strong> If a printed document is dropped or shuffled, page numbers let the reader reassemble it correctly.</li>
+<li><strong>Professionalism:</strong> A document without page numbers looks unfinished. Adding them takes 10 seconds and makes the document look complete.</li>
+</ul>
+
+<h2>Step-by-Step: Add Page Numbers to a PDF Online Free</h2>
+<ol>
+<li><strong>Open the PDF Page Number tool:</strong> Go to <a href="/pdf-number">ToolVerse PDF Page Number</a>. No signup required.</li>
+<li><strong>Upload your PDF:</strong> Click the upload area or drag and drop a PDF file (up to 25 MB, 200 pages max).</li>
+<li><strong>Choose a position:</strong> Select one of six positions — top-left, top-center, top-right, bottom-left, bottom-center, or bottom-right. Bottom-center is the most common choice for reports; bottom-right is common for contracts.</li>
+<li><strong>Enter a format string:</strong> Use {n} for the current page number and {total} for the total page count. Common formats:
+<ul>
+<li><code>{n}</code> → produces '3'</li>
+<li><code>{n}/{total}</code> → produces '3/24'</li>
+<li><code>Page {n}</code> → produces 'Page 3'</li>
+<li><code>Page {n} of {total}</code> → produces 'Page 3 of 24'</li>
+</ul>
+</li>
+<li><strong>Set font size and color:</strong> The default font size (14pt) and color (black) work for most documents. Use a smaller font (10-12pt) for dense documents, and a larger font (16-18pt) for presentations.</li>
+<li><strong>Set a starting number (optional):</strong> If your PDF is a chapter that starts at page 47, set 'Start at' to 47. Useful for book chapters and multi-volume reports.</li>
+<li><strong>Click 'Add Page Numbers':</strong> The tool processes your PDF and downloads the numbered version instantly.</li>
+</ol>
+
+<h2>Choosing the Right Page Number Position</h2>
+<p>The position of your page numbers affects readability and professionalism:</p>
+<ul>
+<li><strong>Bottom-center:</strong> The most common choice for reports, books, and academic papers. Doesn't interfere with headers or footers.</li>
+<li><strong>Bottom-right:</strong> Common for contracts and legal documents. Easy to see when flipping through pages.</li>
+<li><strong>Bottom-left:</strong> Used when the bottom-right has a different footer (like a date or document ID).</li>
+<li><strong>Top-center / Top-right / Top-left:</strong> Used for documents that have headers but no footers, or when the bottom of the page has a table or image that would overlap with a bottom page number.</li>
+</ul>
+<p>For most documents, bottom-center with the format '{n}/{total}' is the safest, most professional choice.</p>
+
+<h2>Page Number Formats for Different Document Types</h2>
+<table>
+<thead><tr><th>Document type</th><th>Position</th><th>Format</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Business report</td><td>Bottom-center</td><td>{n}/{total}</td><td>3/24</td></tr>
+<tr><td>Contract</td><td>Bottom-right</td><td>Page {n}</td><td>Page 3</td></tr>
+<tr><td>Academic paper</td><td>Bottom-center</td><td>{n}</td><td>3</td></tr>
+<tr><td>Book chapter</td><td>Bottom-center</td><td>{n}</td><td>47</td></tr>
+<tr><td>Presentation</td><td>Bottom-right</td><td>{n}/{total}</td><td>3/12</td></tr>
+<tr><td>Legal brief</td><td>Bottom-center</td><td>Page {n} of {total}</td><td>Page 3 of 24</td></tr>
+</tbody>
+</table>
+
+<h2>Skipping Page Numbers on the Cover Page</h2>
+<p>Many documents have a cover page that should not have a page number. The PDF Page Number tool currently numbers every page uniformly, but you can skip the cover page using this workflow:</p>
+<ol>
+<li><strong>Split the PDF:</strong> Use <a href="/split-pdf">Split PDF</a> in 'Extract pages' mode to extract pages 2 onwards into a new PDF.</li>
+<li><strong>Add page numbers to the extracted PDF:</strong> Use <a href="/pdf-number">PDF Page Number</a> on the extracted PDF. If you want page 2 to be numbered as page 2 (not page 1), set 'Start at' to 2.</li>
+<li><strong>Merge the cover and the numbered PDF:</strong> Use <a href="/merge-pdf">Merge PDF</a> to combine the cover page (no numbers) and the numbered PDF back into a single document.</li>
+</ol>
+<p>This gives you a PDF with a clean cover page and numbered content pages. Selective numbering (skip specific pages) is on the ToolVerse roadmap.</p>
+
+<h2>Adding Watermarks Alongside Page Numbers</h2>
+<p>If you need to mark your PDF as 'DRAFT' or 'CONFIDENTIAL' in addition to adding page numbers, use the <a href="/watermark-pdf">Watermark PDF</a> tool after adding page numbers. The watermark is added as a separate text layer on top of the page numbers, so both are visible. Apply page numbers first, then watermark the numbered PDF.</p>
+
+<h2>Why Browser-Based Page Numbering Is Better</h2>
+<p>Adding page numbers to a PDF is a simple operation — it just stamps text on each page. There's no reason to upload your document to a server or install desktop software. A browser-based tool like ToolVerse's PDF Page Number:</p>
+<ul>
+<li><strong>Is faster:</strong> No upload time, no server queue. The PDF is processed locally.</li>
+<li><strong>Is more private:</strong> Your PDF never leaves your device. No server has access to your document content.</li>
+<li><strong>Works on any device:</strong> Phone, tablet, laptop, desktop — any device with a browser.</li>
+<li><strong>Requires no installation:</strong> No software to download, no updates to install, no disk space used.</li>
+</ul>
+
+<p>Add page numbers to your PDF now with our free <a href="/pdf-number">PDF Page Number</a> tool — runs entirely in your browser, no signup required. For splitting PDFs before numbering, use <a href="/split-pdf">Split PDF</a>. For merging the cover page back, use <a href="/merge-pdf">Merge PDF</a>. For adding DRAFT or CONFIDENTIAL watermarks, use <a href="/watermark-pdf">Watermark PDF</a>.</p>`,
+  },
 
 ];
